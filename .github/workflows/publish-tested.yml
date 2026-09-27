@@ -1,0 +1,82 @@
+name: Publish tested desktop artifacts
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Successful Cross-platform desktop run on main
+        required: true
+        type: string
+permissions:
+  actions: read
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      BUILD_RUN: ${{ inputs.run_id }}
+    steps:
+      - name: Validate completed build
+        id: build
+        shell: bash
+        run: |
+          [[ "$BUILD_RUN" =~ ^[0-9]+$ ]]
+          gh api "repos/$GH_REPO/actions/runs/$BUILD_RUN" > /tmp/build-run.json
+          python3 - <<'PY'
+          import json, os
+          r=json.load(open('/tmp/build-run.json'))
+          assert r['conclusion']=='success' and r['status']=='completed'
+          assert r['head_branch']=='main' and r['event']=='push'
+          assert r['path']=='.github/workflows/desktop.yml'
+          assert r['repository']['full_name']==os.environ['GH_REPO']
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f: f.write('sha='+r['head_sha']+'\n')
+          PY
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.build.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+          path: artifacts
+          pattern: CPractice-*
+      - name: Verify reports and prepare checksums
+        run: |
+          python3 - <<'PY'
+          import json, pathlib, subprocess, hashlib
+          root=pathlib.Path('.')
+          version=json.load(open('package.json'))['version']
+          tag='v'+version
+          release=json.loads(subprocess.check_output(['gh','release','view',tag,'--json','isDraft,targetCommitish,databaseId']))
+          assert release['isDraft'], 'Only an existing draft may be populated'
+          run=json.load(open('/tmp/build-run.json'))
+          assert release['targetCommitish']==run['head_sha'], 'Release and tested source must match'
+          for platform,osname,arch in [('macos-arm64','darwin','arm64'),('macos-x64','darwin','x64'),('windows-x64','win32','x64'),('linux-x64','linux','x64')]:
+              for report in ['desktop-smoke','packaged-smoke']:
+                  r=json.load(open(root/'artifacts'/('CPractice-'+platform)/'tests/reports'/(report+'.json')))
+                  assert r['passed'] and r['platform']==osname and r['arch']==arch
+          subprocess.run(['python3','scripts/prepare-release.py','--output','MayWon-CPractice-'+version+'-source.zip'],check=True)
+          assets=sorted(root.glob('artifacts/*/dist/*'))+[root/('MayWon-CPractice-'+version+'-source.zip')]
+          assert len(assets)==7 and len({p.name for p in assets})==7
+          manifest={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in assets}
+          pathlib.Path('SHA256SUMS.txt').write_text(''.join(h+'  '+n+'\n' for n,h in sorted(manifest.items())))
+          pathlib.Path('/tmp/assets.json').write_text(json.dumps([str(p) for p in assets]+['SHA256SUMS.txt']))
+          pathlib.Path('/tmp/release.json').write_text(json.dumps({'tag':tag,'id':release['databaseId']}))
+          PY
+      - name: Upload verified assets and publish
+        run: |
+          python3 - <<'PY'
+          import json, subprocess, pathlib, hashlib, os
+          release=json.load(open('/tmp/release.json'));assets=json.load(open('/tmp/assets.json'))
+          subprocess.run(['gh','release','upload',release['tag'],*assets,'--clobber'],check=True)
+          remote=json.loads(subprocess.check_output(['gh','api','repos/'+os.environ['GH_REPO']+'/releases/'+str(release['id'])+'/assets']))
+          byname={a['name']:a for a in remote}
+          for name in assets:
+              p=pathlib.Path(name);a=byname[p.name]
+              assert a['state']=='uploaded' and a['size']==p.stat().st_size
+              assert a['digest']=='sha256:'+hashlib.sha256(p.read_bytes()).hexdigest(), p.name
+          subprocess.run(['gh','release','edit',release['tag'],'--draft=false','--latest'],check=True)
+          PY

@@ -43,6 +43,11 @@
       "sha256": "bf6f42ee75331eaf56a8784429cb4897c630e1427474709c9f85222423963e23"
     },
     {
+      "path": ".github/workflows/publish-tested.yml",
+      "bytes": 4151,
+      "sha256": "b8e0249d972fe0c7c834d9e53eac1b95d6cb53cae9e223ea949ccb655ee08c2d"
+    },
+    {
       "path": ".gitignore",
       "bytes": 675,
       "sha256": "f01d770256ea6faa1902860b26870579c7bf17623c174b04ec8645a65f64f43c"
@@ -144,8 +149,8 @@
     },
     {
       "path": "RELEASE.md",
-      "bytes": 2474,
-      "sha256": "c1fcfa89237caa708223a3bcbd078ad9e73cba63ef3cc7c13291210797d794fb"
+      "bytes": 3034,
+      "sha256": "056adb6bc822d86fad516cbaa457700fa743cfa302086fa4de95155bd8a0d082"
     },
     {
       "path": "Resources/AppIcon.icns",
