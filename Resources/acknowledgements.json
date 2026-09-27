@@ -110,6 +110,27 @@
           "usage": "仅用于开发期打包编辑器，非应用运行时服务；锁定版本见Editor/package-lock.json。",
           "license": "MIT",
           "version": "0.28.2"
+        },
+        {
+          "title": "Electron",
+          "url": "https://github.com/electron/electron",
+          "version": "44.4.5",
+          "usage": "6.x跨平台窗口、系统文件选择和隔离的浏览器渲染。Chromium/Node.js随桌面运行时提供；保留运行时第三方通知和ThirdParty/Electron-LICENSE.txt。",
+          "license": "MIT；Chromium及传递组件按随附通知"
+        },
+        {
+          "title": "Ajv",
+          "url": "https://github.com/ajv-validator/ajv",
+          "version": "8.20.0",
+          "usage": "跨平台后端验证模型回答的JSON Schema。许可原文ThirdParty/Ajv-LICENSE.txt。",
+          "license": "MIT"
+        },
+        {
+          "title": "electron-builder",
+          "url": "https://github.com/electron-userland/electron-builder",
+          "version": "26.15.3",
+          "usage": "开发期生成Windows、Mac、Linux分发包；依赖树见根目录package-lock.json。",
+          "license": "MIT"
         }
       ]
     },
@@ -133,6 +154,12 @@
           "url": "https://code.visualstudio.com/docs/languages/cpp",
           "usage": "导出工作区提供C/C++、clangd、Error Lens、CMake Tools扩展建议。扩展由各发布者维护，非本应用内置的VS Code扩展宿主，不承诺兼容或安装全部扩展。",
           "license": "各扩展独立许可证与市场条款；不随项目重分发扩展"
+        },
+        {
+          "title": "MSYS2 / GCC",
+          "url": "https://www.msys2.org/",
+          "usage": "Windows用户自行安装的UCRT64 C工具链，未随应用捆绑；Linux也可使用系统GCC。",
+          "license": "各工具与组件各自许可；GCC参见https://gcc.gnu.org/"
         }
       ]
     },

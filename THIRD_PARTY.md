@@ -19,9 +19,9 @@ Codex、Clang、clangd、clang-format、VS Code 及用户自行安装的扩展�
 
 ## 6.0 跨平台桌面依赖
 
-- Electron 44.4.5：MIT；二进制含Chromium、Node.js等组件，打包产物保留其LICENSE和LICENSES.chromium.html。参见https://github.com/electron/electron。
+- Electron 44.4.5：[MIT](ThirdParty/Electron-LICENSE.txt)；二进制含Chromium、Node.js等组件，打包产物保留其LICENSE和LICENSES.chromium.html。参见https://github.com/electron/electron。
 - electron-builder 26.15.3：MIT，仅用于构建，参见https://github.com/electron-userland/electron-builder。
-- Ajv 8.20.0：MIT，用于验证模型输出Schema，参见https://github.com/ajv-validator/ajv。
+- Ajv 8.20.0：[MIT](ThirdParty/Ajv-LICENSE.txt)，用于验证模型输出Schema，参见https://github.com/ajv-validator/ajv。
 - MSYS2/GCC/LLVM：用户自行安装的外部工具，未把工具链捆绑进源码或应用；它们各自的许可证继续适用。
 
 根目录package-lock.json固定完整依赖树，node_modules不提交。所有实际分发的运行时依赖保留原LICENSE。

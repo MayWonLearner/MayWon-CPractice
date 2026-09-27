@@ -31,7 +31,7 @@ A cross-platform C learning desktop app with beginner-friendly lessons, 650 exer
 | 平台 | 环境 | C工具链 |
 |---|---|---|
 | Windows | Windows 10/11，x64 | MSYS2 UCRT64 GCC；可选clangd/clang-format/gdb |
-| macOS | macOS 13+，Apple Silicon或Intel | Apple Command Line Tools；可选Homebrew LLVM |
+| macOS | macOS 13+，Apple Silicon或Intel | Apple Command Line Tools；可选Homebrew LLVM（`brew install llvm`） |
 | Linux | Ubuntu 22.04/24.04 x64；其他现代发行版可从源码构建 | GCC/Clang；可选clangd/clang-format |
 
 Windows ARM设备可尝试x64兼容运行；没有把未实测的原生ARM工具链列为正式验证平台。手机、平板及纯浏览器目前不提供本地C编译版。页面布局支持缩放和较小桌面窗口，快捷键按系统显示。
@@ -197,7 +197,7 @@ npm run smoke
 npm run dist
 ```
 
-`npm test`包含真实C编译、15章代表题、文件题、错误状态、取消、输出限制、跨平台换行与存档测试。`npm run smoke`在隔离临时数据中检查窗口、Monaco、教程、公式渲染及真实IPC判题，不调用AI，完成后删除测试记录。
+`npm test`包含真实C编译、15章代表题、文件题、错误状态、取消、输出限制、跨平台换行、中文路径、语义悬浮与存档测试。`npm run smoke`在隔离临时数据中检查窗口、Monaco、教程、公式渲染及真实IPC判题，不调用AI，完成后删除测试记录。
 
 GitHub Actions分别在Windows、macOS ARM/Intel和Ubuntu运行测试与构建。远程状态以 [Actions](https://github.com/MayWonLearner/MayWon-CPractice/actions) 的实际结果为准；CI不使用个人Codex账号。
 

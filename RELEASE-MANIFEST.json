@@ -34,8 +34,8 @@
     },
     {
       "path": ".github/workflows/desktop.yml",
-      "bytes": 2161,
-      "sha256": "3d6908dd5f2ef1720be2184de9502cdea3c77854cee7422f31376a8f6bd1a6ed"
+      "bytes": 2457,
+      "sha256": "c34e2eccd1852b0cd2e17722114afbc4b63b884f5572b09e42ece5b7f9b346e6"
     },
     {
       "path": ".github/workflows/macos.yml",
@@ -54,8 +54,8 @@
     },
     {
       "path": "Desktop/language.cjs",
-      "bytes": 5061,
-      "sha256": "5354a18af545c26d761da41a9e9afc88ca44ca763cda054979ea4097d3fea17f"
+      "bytes": 5164,
+      "sha256": "1f05fe34033d7fd88000a405bab338147b41ec0c5fdf104dfa4b586231d9a041"
     },
     {
       "path": "Desktop/limit-win.c",
@@ -74,8 +74,8 @@
     },
     {
       "path": "Desktop/platform.cjs",
-      "bytes": 3413,
-      "sha256": "ed8bf9ca754d18a2b9c58e817574fc46a90f7fa1c9d65a4d20450ad7e4204650"
+      "bytes": 4068,
+      "sha256": "3df3417745fc0cf90a7639c1503259c0693ff1f214f7fda66ca786a1219b1bf2"
     },
     {
       "path": "Desktop/preload.cjs",
@@ -89,8 +89,8 @@
     },
     {
       "path": "Desktop/runner.cjs",
-      "bytes": 6946,
-      "sha256": "2a0f6eceac86315d372ca9c4db4ca947e980113f4d17783cf9385d47df2d58e4"
+      "bytes": 7057,
+      "sha256": "ebaea8ea8b3fedb80d29502331c68341825c643a08321949b8c6b08921494098"
     },
     {
       "path": "Desktop/smoke.cjs",
@@ -134,8 +134,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 15068,
-      "sha256": "063eadad6f51463327bfc2dbe79fdea8fa62ebadc2b3778d57f5d8934e961402"
+      "bytes": 15123,
+      "sha256": "f7a2615097b67813b33efdd2e3456a65a81746fcbfa9163d22a93e79ea4e4d7d"
     },
     {
       "path": "RELEASE.md",
@@ -154,13 +154,13 @@
     },
     {
       "path": "Resources/acknowledgements.js",
-      "bytes": 8687,
-      "sha256": "22c3f835c3fb42ce85910ed948ddb2a34c9ef9fa67e44ff2f62d7f0d9d5a0b95"
+      "bytes": 9721,
+      "sha256": "356b9d2cb511ed9d9e6c03618c6e5b1b4dec6791f96a3961aa5ea1f552ae1333"
     },
     {
       "path": "Resources/acknowledgements.json",
-      "bytes": 10282,
-      "sha256": "36ec8a5c75b0f02851be26f6f83710c336d1a789905a4b1521edd3cb4a9eda16"
+      "bytes": 11578,
+      "sha256": "99e79dfd7d134e75e3db99868f4e71929101474e572114b11a836e850a68f170"
     },
     {
       "path": "Resources/analysis-instructions.txt",
@@ -189,8 +189,8 @@
     },
     {
       "path": "Resources/app.js",
-      "bytes": 44610,
-      "sha256": "cb47041a46f5ad683cc344a3a9c06c5a61782fc988c1411cecf0f95e6119d029"
+      "bytes": 44412,
+      "sha256": "306d771f9ceb7f3930d291d55bf8c4c8ba20bb11f35c070fc2911678e724d65f"
     },
     {
       "path": "Resources/chapter-additions.json",
@@ -314,8 +314,8 @@
     },
     {
       "path": "Resources/study.js",
-      "bytes": 20649,
-      "sha256": "f7e4be2f1db9f77cce16037d1874ffc6fced276c660acc2108d4906bbc5a1f94"
+      "bytes": 21105,
+      "sha256": "449ead6c876cac3f01bac0adcb481670cf26646e207a9cfb7a0e419c9a22d48d"
     },
     {
       "path": "Resources/style.css",
@@ -704,8 +704,8 @@
     },
     {
       "path": "Sources/Runner.swift",
-      "bytes": 12874,
-      "sha256": "7dc7d679a41ebbf3bfef2e41fcef2eec151e9a0b9b13de6f4410a68be3e6362a"
+      "bytes": 13136,
+      "sha256": "7698a0e747abd54abe4a9e9e19c5b466c7eb6252b3b7f555834fbb0e030a11b9"
     },
     {
       "path": "Sources/StudyService.swift",
@@ -724,13 +724,23 @@
     },
     {
       "path": "THIRD_PARTY.md",
-      "bytes": 2490,
-      "sha256": "49b3c3c6348a2137ff097898521c63091699798cc870da5a0587281b3c369359"
+      "bytes": 2555,
+      "sha256": "13ad157c7ce88891ccf84830a8fe6673e746409c5258ef1028bab9591fafa135"
+    },
+    {
+      "path": "ThirdParty/Ajv-LICENSE.txt",
+      "bytes": 1090,
+      "sha256": "a05350a88e318e4f5f2c2a1ff1e2e88daa4dd38e6e78b71cccae422bdc762cc3"
     },
     {
       "path": "ThirdParty/DOMPurify-LICENSE.txt",
       "bytes": 11358,
       "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "ThirdParty/Electron-LICENSE.txt",
+      "bytes": 1096,
+      "sha256": "5154e165bd6c2cc0cfbcd8916498c7abab0497923bafcd5cb07673fe8480087d"
     },
     {
       "path": "ThirdParty/KaTeX-LICENSE.txt",
@@ -818,6 +828,11 @@
       "sha256": "373b002a93c5484c27f699d1f8638456c7f6a72083e8a2ff0cfb5a0ba0922f55"
     },
     {
+      "path": "scripts/test-packaged.cjs",
+      "bytes": 895,
+      "sha256": "31c218e4bc0cc6b033bbe0c48529ccdaf30806f3ee17039e385ebd72c553771b"
+    },
+    {
       "path": "tests/StudyServiceTests.swift",
       "bytes": 3678,
       "sha256": "ea35bae47f54ff07b7eef2a535c1143e8b3dff963056dee7a48bffb053e35294"
@@ -839,8 +854,8 @@
     },
     {
       "path": "tests/desktop.test.cjs",
-      "bytes": 4457,
-      "sha256": "864594c66e7e174bc62e7685f69af1ced83574f0617d4d3a70cd1df7cf1f0c36"
+      "bytes": 6397,
+      "sha256": "96c074a0db85177c28bc472f90067d18f0e391e4b40deb2ba73354b362f31f45"
     },
     {
       "path": "tests/diagnostics.test.cjs",
