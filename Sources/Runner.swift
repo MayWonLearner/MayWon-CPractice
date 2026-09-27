@@ -92,8 +92,8 @@ final class Runner: @unchecked Sendable {
         return Execution(code: p.terminationStatus, out: read(outURL), err: read(errURL), timedOut: timeoutHit, milliseconds: Int(Date().timeIntervalSince(start)*1000))
     }
     private func quote(_ s: String) -> String { "\"" + s.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"") + "\"" }
-    private func profile(dir: URL, compiler: Bool) -> String {
-        let readable = ["/System", "/usr/lib", "/usr/share", "/Library/Apple", "/private/preboot", "/private/var/db/dyld", dir.path] + (compiler ? ["/Library/Developer", "/Applications/Xcode.app", "/usr/bin", "/bin", resourceURL.path] : [resourceURL.appendingPathComponent("limit-runner").path])
+    private func profile(dir: URL, compiler: Bool, toolchainPaths: [String] = []) -> String {
+        let readable = ["/System", "/usr/lib", "/usr/share", "/Library/Apple", "/private/preboot", "/private/var/db/dyld", dir.path] + (compiler ? ["/Library/Developer", "/usr/bin", "/bin", resourceURL.path] + toolchainPaths : [resourceURL.appendingPathComponent("limit-runner").path])
         let reads = readable.map { "(subpath \(quote($0)))" }.joined(separator: " ")
         let execs = compiler ? "(allow process-exec) (allow process-fork)" : "(allow process-exec (literal \(quote(dir.appendingPathComponent("program").path))) (literal \(quote(resourceURL.appendingPathComponent("limit-runner").path))))"
         return """
@@ -143,7 +143,8 @@ final class Runner: @unchecked Sendable {
             let sdk = sdkInfo.out.trimmingCharacters(in: .whitespacesAndNewlines)
             guard compilerInfo.code == 0, sdkInfo.code == 0, !compiler.isEmpty, !sdk.isEmpty else { return RunResult(status: "error", diagnostics: "未找到 Apple Clang / macOS SDK。请运行 xcode-select --install。\n" + compilerInfo.err + sdkInfo.err) }
             let compileProfile = dir.appendingPathComponent("compile.sb")
-            try Data(profile(dir: dir, compiler: true).utf8).write(to: compileProfile)
+            let toolchainRoot = URL(fileURLWithPath: compiler).deletingLastPathComponent().deletingLastPathComponent().resolvingSymlinksInPath().path
+            try Data(profile(dir: dir, compiler: true, toolchainPaths: [toolchainRoot, URL(fileURLWithPath: sdk).resolvingSymlinksInPath().path]).utf8).write(to: compileProfile)
             let optimization = request.problemID.hasPrefix("S") || request.problemID.hasPrefix("H") ? "-O2" : "-O0"
             let build = try execute("/usr/bin/sandbox-exec", ["-f",compileProfile.path,compiler,"-isysroot",sdk,"-std=c17","-Wall","-Wextra","-Wpedantic","-fno-common",optimization,"-g","-fno-color-diagnostics","-ferror-limit=12",dir.appendingPathComponent("main.c").path,"-o",dir.appendingPathComponent("program").path], at: dir, input: "", timeout: 20)
             if isCancelled { return RunResult(status: "cancelled") }

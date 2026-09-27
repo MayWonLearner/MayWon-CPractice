@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs/promises'),path=require('node:path'),os=require('node:os');
 const {execute}=require('./process.cjs');
-const {compiler,sdkFlags,toolEnvironment}=require('./platform.cjs');
+const {compiler,sdkFlags,toolEnvironment,developerDirectory}=require('./platform.cjs');
 const normalize=s=>String(s).trim().split(/\s+/u).filter(Boolean).join(' ');
 const safeName=s=>typeof s==='string'&&/^[\w.-]+$/.test(s)&&!['.','..'].includes(s);
 function validateDynamic(request){
@@ -12,7 +12,7 @@ function validateDynamic(request){
 }
 function macProfile(dir,helper,compiling,tool){
  const q=JSON.stringify,read=['/System','/usr/lib','/usr/share','/Library/Apple','/private/preboot','/private/var/db/dyld',dir,helper];
- if(compiling)read.push('/Library/Developer','/Applications/Xcode.app','/usr/bin','/bin',path.dirname(tool));
+ if(compiling){read.push('/Library/Developer','/usr/bin','/bin',path.dirname(tool));const developer=developerDirectory();if(developer)read.push(developer);}
  return `(version 1)(deny default)(allow file-read-metadata)(allow file-read-data (literal "/"))(allow file-read* ${read.map(x=>`(subpath ${q(x)})`).join(' ')} (literal "/dev/null") (literal "/dev/urandom") (literal "/dev/random"))(allow file-write* (subpath ${q(dir)}) (literal "/dev/null"))(allow sysctl-read)(allow mach-lookup)(allow signal (target self))(allow process-info* (target self)) ${compiling?'(allow process-exec)(allow process-fork)':`(allow process-exec (literal ${q(helper)}) (literal ${q(path.join(dir,'program'))}))`}`;
 }
 class Runner{

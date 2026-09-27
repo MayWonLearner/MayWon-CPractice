@@ -37,4 +37,5 @@ function compiler(){
  throw Error(process.platform==='win32'?'未找到 C 编译器。请按 README 安装 MSYS2 UCRT64 GCC。':process.platform==='darwin'?'未找到 C 编译器，请在终端运行 xcode-select --install。':'未找到 C 编译器，请安装 build-essential 或 clang。');
 }
 function sdkFlags(){if(process.platform!=='darwin')return [];const r=spawnSync('/usr/bin/xcrun',['--show-sdk-path'],{encoding:'utf8',timeout:5000});return r.status===0?['-isysroot',r.stdout.trim()]:[];}
-module.exports={findTool,commandFor,searchPaths,toolEnvironment,compiler,sdkFlags};
+function developerDirectory(){if(process.platform!=='darwin')return null;const r=spawnSync('/usr/bin/xcode-select',['-p'],{encoding:'utf8',timeout:5000});if(r.status!==0)return null;try{return fs.realpathSync(r.stdout.trim());}catch{return null;}}
+module.exports={findTool,commandFor,searchPaths,toolEnvironment,compiler,sdkFlags,developerDirectory};
