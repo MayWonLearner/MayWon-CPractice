@@ -77,7 +77,7 @@ async function handle(event,b){
   }
  }catch(e){send('error',e.message);}
 }
-async function finishQuit(){if(closing)return;closing=true;for(const c of active.values())c.abort();await language.stop();await store.queue.catch(()=>{});if(smoke)await fs.rm(dataDir,{recursive:true,force:true});app.quit();}
+async function finishQuit(){if(closing)return;closing=true;for(const c of active.values())c.abort();await language.stop();await store.queue.catch(()=>{});app.quit();}
 if(!smoke&&!app.requestSingleInstanceLock()){app.quit();}else{
  app.on('second-instance',()=>{window?.show();window?.focus();});
  app.whenReady().then(async()=>{

@@ -64,8 +64,8 @@
     },
     {
       "path": "Desktop/main.cjs",
-      "bytes": 11255,
-      "sha256": "60bf394da796aba0bb7bac1f947fd59b7463f3ce3dc167cee91b063123b3b3a1"
+      "bytes": 11197,
+      "sha256": "05db374ece89fbe0647cfb54f3dada119f1653b6fb63045f62e1e36d930aaaf9"
     },
     {
       "path": "Desktop/models.cjs",
@@ -789,8 +789,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 2407,
-      "sha256": "97b44eba38d14f91508ae0a4822d42bedc70cadb4d57137f6c3ba78ac2504797"
+      "bytes": 2415,
+      "sha256": "6a186bf6a5bd6caf9954c5568d829c55f6af2b27abebf898a75c40186a587894"
     },
     {
       "path": "scripts/build-vendor.mjs",
@@ -823,14 +823,19 @@
       "sha256": "79cb8d090d08c66c274ed123b9e4165652c1d7032c6a67acb648ece4a2e1db1d"
     },
     {
+      "path": "scripts/smoke-launcher.cjs",
+      "bytes": 961,
+      "sha256": "6eec353a4ae54f9ed61d90451791a55222611ed60185f2a8f7ef6dbeb14a9d0a"
+    },
+    {
       "path": "scripts/test-js.cjs",
       "bytes": 412,
       "sha256": "373b002a93c5484c27f699d1f8638456c7f6a72083e8a2ff0cfb5a0ba0922f55"
     },
     {
       "path": "scripts/test-packaged.cjs",
-      "bytes": 1232,
-      "sha256": "c5962ef8a53b5a4c60bdfeb5159ca82721073d69bf0476f3739f894434840b6f"
+      "bytes": 920,
+      "sha256": "23b90da3229bfe77a3adb2fe47cf1a9ae9ae06cfc15f54c7d630295faa05c9ec"
     },
     {
       "path": "tests/StudyServiceTests.swift",
