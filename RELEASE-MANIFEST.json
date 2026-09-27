@@ -94,8 +94,8 @@
     },
     {
       "path": "Desktop/smoke.cjs",
-      "bytes": 3715,
-      "sha256": "ceb338d3537796ef4133eaf91ffcd8788abbddc690906405ce411ebd33aaa9ae"
+      "bytes": 3877,
+      "sha256": "72f70ae07e8451c684dbc26f50f22e083c8e07f7a2aa64182b9a344f2bcf7cad"
     },
     {
       "path": "Desktop/state.cjs",

@@ -11,6 +11,7 @@ async function run({window,store,dataDir,restoreState,quit}){
   const judged=await window.webContents.executeJavaScript(`new Promise((resolve,reject)=>{let n=0;const t=setInterval(()=>{const r=CPracticeTest.results.C001;if(r){clearInterval(t);resolve(r.result);}else if(++n>400){clearInterval(t);reject(Error('judge timeout'));}},100);})`);
   assert.equal(judged.status,'passed',JSON.stringify(judged));checks.push({nativeIPCJudge:'passed'});
   await window.webContents.executeJavaScript(`window.webkit.messageHandlers.native.postMessage({action:'save',state:CPracticeTest.snapshot()})`);
+  for(let n=0;(await store.load()).history?.length!==1;n++){if(n>100)throw Error('submission was not saved');await new Promise(resolve=>setTimeout(resolve,25));}
   await restoreState({drafts:{},progress:{},favorites:[],history:[],reviews:{},last:'C001'});
   const restored=await window.webContents.executeJavaScript(`new Promise((resolve,reject)=>{let n=0;const t=setInterval(()=>{if(window.CPracticeTest&&document.querySelector('.module-card')){clearInterval(t);resolve(CPracticeTest.snapshot().history.length);}else if(++n>100){clearInterval(t);reject(Error('restored home not loaded'));}},100);})`);
   assert.equal(restored,0,'The old document must not overwrite an imported backup');
