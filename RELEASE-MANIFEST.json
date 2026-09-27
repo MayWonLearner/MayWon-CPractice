@@ -1,5 +1,5 @@
 {
-  "version": "6.0.0",
+  "version": "6.0.1",
   "scope": "Public tracked source only",
   "files": [
     {
@@ -139,8 +139,8 @@
     },
     {
       "path": "RELEASE.md",
-      "bytes": 2287,
-      "sha256": "4a0c606f9b30013ebc90e61c0399fd37f0acbc2e39b00ba091d2b35f5d5e6474"
+      "bytes": 2474,
+      "sha256": "c1fcfa89237caa708223a3bcbd078ad9e73cba63ef3cc7c13291210797d794fb"
     },
     {
       "path": "Resources/AppIcon.icns",
@@ -785,12 +785,12 @@
     {
       "path": "package-lock.json",
       "bytes": 127594,
-      "sha256": "256ca04e595973f4c38701921e360b077aa419f093586112c650fc53f9cc514b"
+      "sha256": "ebff8578cfb29e443d57177ee390aa5e2987e700cab0348c4af8079a9d54c56f"
     },
     {
       "path": "package.json",
       "bytes": 2415,
-      "sha256": "6a186bf6a5bd6caf9954c5568d829c55f6af2b27abebf898a75c40186a587894"
+      "sha256": "a0300e7eadfb6288c59b28f3348576de2fec0af8c3882036b334bab1cc47e537"
     },
     {
       "path": "scripts/build-vendor.mjs",
@@ -809,8 +809,8 @@
     },
     {
       "path": "scripts/install.cjs",
-      "bytes": 2461,
-      "sha256": "67078751181c20d21e59908ff4a2fee3afe9dc5edd18a5707ca13499d6fee1ec"
+      "bytes": 2614,
+      "sha256": "a0e216757b63c56d48b289fa6a8265888beb289e0e4abc072e2e7bed4091a2af"
     },
     {
       "path": "scripts/make_icon.swift",
@@ -819,8 +819,8 @@
     },
     {
       "path": "scripts/prepare-release.py",
-      "bytes": 1736,
-      "sha256": "79cb8d090d08c66c274ed123b9e4165652c1d7032c6a67acb648ece4a2e1db1d"
+      "bytes": 1785,
+      "sha256": "31818f9e282f5f8dc9a5e6f19d836a04c0c03a01b5c42735d7055f86e6df7194"
     },
     {
       "path": "scripts/smoke-launcher.cjs",
@@ -859,8 +859,8 @@
     },
     {
       "path": "tests/desktop.test.cjs",
-      "bytes": 6397,
-      "sha256": "96c074a0db85177c28bc472f90067d18f0e391e4b40deb2ba73354b362f31f45"
+      "bytes": 7501,
+      "sha256": "bcf030d62c86e3b55893eb46d8174b1017eb80677562bfaa4e17b989c8792f5d"
     },
     {
       "path": "tests/diagnostics.test.cjs",

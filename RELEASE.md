@@ -1,6 +1,8 @@
-# CPractice 6.0.0 · 跨平台桌面版
+# CPractice 6.0.1 · 跨平台桌面版
 
 新增Electron桌面运行层，共用650题、76课、66基础点与全部学习界面。保留macOS Swift外壳，支持从源码分别构建。
+
+6.0.1 修正个人目录安装时的内部符号链接复制。安装后的 Mac 应用不再依赖原构建目录；新增删除原始目录后仍可读取框架文件的回归测试。
 
 ## 本次变化
 
@@ -27,7 +29,7 @@ Windows和Linux构建应在相应系统完成。根目录`package.json`的electr
 
 ```sh
 python3 scripts/prepare-release.py --audit-only
-python3 scripts/prepare-release.py --output ../CPractice-6.0.0-source.zip
+python3 scripts/prepare-release.py --output ../CPractice-6.0.1-source.zip
 ```
 
 源包不得含学习记录、照片、模型原始输出、认证文件、构建缓存或`node_modules`。运行时仍应携带Electron及第三方依赖原许可证。源码引用资料不等于拥有被引用网页的转载权。

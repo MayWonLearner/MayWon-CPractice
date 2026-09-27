@@ -14,7 +14,7 @@ for name in files:
  data=p.read_bytes()
  if secret.search(data): raise SystemExit('Credential-like content: '+name)
  if name!='RELEASE-MANIFEST.json':manifest.append({'path':name,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})
-(ROOT/'RELEASE-MANIFEST.json').write_text(json.dumps({'version':'6.0.0','scope':'Public tracked source only','files':manifest},ensure_ascii=False,indent=2)+'\n')
+(ROOT/'RELEASE-MANIFEST.json').write_text(json.dumps({'version':json.loads((ROOT/'package.json').read_text())['version'],'scope':'Public tracked source only','files':manifest},ensure_ascii=False,indent=2)+'\n')
 if args.output:
  with zipfile.ZipFile(pathlib.Path(args.output).resolve(),'w',zipfile.ZIP_DEFLATED) as z:
   for name in sorted(set(files)|{'RELEASE-MANIFEST.json'}):z.write(ROOT/name,'MayWon-CPractice/'+name)
