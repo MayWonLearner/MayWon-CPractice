@@ -27,7 +27,7 @@ function harness() {
     class ClockDate extends Date {constructor(...args){super(...(args.length?args:[clock.now]));}static now(){return clock.now;}}
     const context={console,queueMicrotask:fn=>fn(),Date:ClockDate,setTimeout:()=>0,clearTimeout(){},window:{CURRICULUM:catalog,webkit:{messageHandlers:{native:{postMessage(){}}}},addEventListener(){}},document:{querySelector:element,querySelectorAll:list,addEventListener(){}}};
     vm.createContext(context);
-    for(const file of ['tutorials.js','learning.js','complexity.js','diagnostic-guides.js','diagnostics.js','collections.js','analysis.js','study.js','remedial.js','app.js'])vm.runInContext(read(file),context,{filename:file});
+    for(const file of ['coursebook.js','tutorials.js','learning.js','complexity.js','diagnostic-guides.js','diagnostics.js','collections.js','analysis.js','study.js','remedial.js','app.js'])vm.runInContext(read(file),context,{filename:file});
     vm.runInContext('persist=()=>{};flush=()=>{};',context);
     return {context,run:source=>vm.runInContext(source,context),element,list,clock};
 }

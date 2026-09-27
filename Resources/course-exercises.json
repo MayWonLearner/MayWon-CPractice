@@ -1,0 +1,608 @@
+{
+  "problems": [
+    {
+      "id": "X201",
+      "module": 15,
+      "bank": "comprehensive",
+      "collection": "course",
+      "level": "提高",
+      "title": "训练营石子对抗",
+      "topic": "Nim / 异或",
+      "tags": [
+        "Nim / 异或"
+      ],
+      "description": "训练营把奖牌放成n堆，两名队员轮流行动，先手先行动。每次必须选一堆，取走至少一枚，至多取完该堆。不能行动的人输。两人均采取最优策略，判断先手能否获胜。空堆允许存在，不能从空堆取奖牌。",
+      "input": "第一行整数n；第二行n个整数a[i]，表示各堆奖牌数量。",
+      "output": "先手能保证获胜输出FIRST，否则输出SECOND，最后换行。",
+      "constraints": "1≤n≤100000；0≤a[i]≤10^9。",
+      "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint main(void)\n{\n    int n;\n    unsigned int value, total = 0;\n    if (scanf(\"%d\", &n) != 1)\n        return 1;\n    for (int i = 0; i < n; ++i)\n    {\n        if (scanf(\"%u\", &value) != 1)\n            return 1;\n        total ^= value; // 汇总独立石堆的 Nim 值。\n    }\n    puts(total ? \"FIRST\" : \"SECOND\");\n    return 0;\n}\n",
+      "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
+      "tests": [
+        {
+          "name": "样例1",
+          "input": "3\n1 2 3\n",
+          "expected": "SECOND",
+          "files": {}
+        },
+        {
+          "name": "样例2",
+          "input": "1\n7\n",
+          "expected": "FIRST",
+          "files": {}
+        },
+        {
+          "name": "样例3",
+          "input": "2\n0 0\n",
+          "expected": "SECOND",
+          "files": {}
+        },
+        {
+          "name": "边界检查4",
+          "input": "4\n4 4 9 9\n",
+          "expected": "SECOND",
+          "files": {}
+        }
+      ],
+      "displayExamples": [
+        0,
+        1,
+        2
+      ],
+      "sampleNotes": {},
+      "hints": [
+        "正常Nim中所有堆大小异或为0是必败态，否则存在一步使异或变成0。样例1中1 xor 2 xor 3=0；样例3一开始就无法行动。该结论不能直接套到“取最后一枚者输”的规则。"
+      ],
+      "explanation": "正常Nim中所有堆大小异或为0是必败态，否则存在一步使异或变成0。样例1中1 xor 2 xor 3=0；样例3一开始就无法行动。该结论不能直接套到“取最后一枚者输”的规则。",
+      "review": [
+        "我能用自己的话说明状态与合法操作。",
+        "我验证了样例和边界，并解释复杂度。"
+      ],
+      "complexity": {
+        "time": "O(n)",
+        "space": "O(1)",
+        "reason": "正常Nim中所有堆大小异或为0是必败态，否则存在一步使异或变成0。样例1中1 xor 2 xor 3=0；样例3一开始就无法行动。该结论不能直接套到“取最后一枚者输”的规则。",
+        "alternative": "先用小规模枚举核对，再实现目标算法。"
+      }
+    },
+    {
+      "id": "X202",
+      "module": 15,
+      "bank": "comprehensive",
+      "collection": "course",
+      "level": "提高",
+      "title": "抽奖训练的平均积分",
+      "topic": "离散期望 / 分数约分",
+      "tags": [
+        "离散期望 / 分数约分"
+      ],
+      "description": "抽奖箱有n类票，第i类有w[i]张，每张写着积分v[i]。随机等概率抽出一张，得到票上积分；票可重复印刷，每张实物票等可能。计算一次抽奖的期望积分，用最简分数表示。",
+      "input": "第一行n；接下来n行，每行两个整数w[i] v[i]。",
+      "output": "输出两个整数p q，以空格分隔，表示最简分数p/q，q>0；期望为0时输出0 1。",
+      "constraints": "1≤n≤100000；1≤w[i]≤1000；0≤v[i]≤1000000。",
+      "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nlong long gcd(long long a, long long b)\n{\n    while (b)\n    {\n        long long r = a % b;\n        a = b;\n        b = r;\n    }\n    return a;\n}\nint main(void)\n{\n    int n;\n    long long weights = 0, weighted = 0, w, v;\n    if (scanf(\"%d\", &n) != 1)\n        return 1;\n    for (int i = 0; i < n; ++i)\n    {\n        if (scanf(\"%lld%lld\", &w, &v) != 2)\n            return 1;\n        weights += w;\n        weighted += w * v; // 先按票数给积分加权。\n    }\n    long long g = gcd(weighted, weights);\n    printf(\"%lld %lld\\n\", weighted / g, weights / g);\n    return 0;\n}\n",
+      "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
+      "tests": [
+        {
+          "name": "样例1",
+          "input": "2\n1 0\n1 2\n",
+          "expected": "1 1",
+          "files": {}
+        },
+        {
+          "name": "样例2",
+          "input": "2\n2 1\n1 2\n",
+          "expected": "4 3",
+          "files": {}
+        },
+        {
+          "name": "样例3",
+          "input": "1\n8 0\n",
+          "expected": "0 1",
+          "files": {}
+        },
+        {
+          "name": "边界检查4",
+          "input": "3\n1000 1000000\n1000 1000000\n1000 1000000\n",
+          "expected": "1000000 1",
+          "files": {}
+        }
+      ],
+      "displayExamples": [
+        0,
+        1,
+        2
+      ],
+      "sampleNotes": {},
+      "hints": [
+        "期望分子为Σw[i]v[i]，分母为Σw[i]，最后用gcd约分。第二例共有3张票，积分和4，故为4/3。加权和最大10^14，需要64位整数。期望不要求是一次实际可能获得的整数。"
+      ],
+      "explanation": "期望分子为Σw[i]v[i]，分母为Σw[i]，最后用gcd约分。第二例共有3张票，积分和4，故为4/3。加权和最大10^14，需要64位整数。期望不要求是一次实际可能获得的整数。",
+      "review": [
+        "我能用自己的话说明状态与合法操作。",
+        "我验证了样例和边界，并解释复杂度。"
+      ],
+      "complexity": {
+        "time": "O(n+log S)，S为总票数",
+        "space": "O(1)",
+        "reason": "期望分子为Σw[i]v[i]，分母为Σw[i]，最后用gcd约分。第二例共有3张票，积分和4，故为4/3。加权和最大10^14，需要64位整数。期望不要求是一次实际可能获得的整数。",
+        "alternative": "先用小规模枚举核对，再实现目标算法。"
+      }
+    },
+    {
+      "id": "X203",
+      "module": 15,
+      "bank": "comprehensive",
+      "collection": "course",
+      "level": "提高",
+      "title": "只取一三四枚的棋局",
+      "topic": "SG / mex",
+      "tags": [
+        "SG / mex"
+      ],
+      "description": "桌上有一堆n枚筹码。两人轮流从中取走1、3或4枚，不能取超过剩余数量的筹码。无法行动者输。请计算这局游戏的SG值；不是只判断输赢。规定SG(0)=0，SG(n)为所有合法后继SG值集合中未出现的最小非负整数。",
+      "input": "输入一个整数n。",
+      "output": "输出SG(n)，最后换行。",
+      "constraints": "0≤n≤1000000。",
+      "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nstatic int sg[1000001];\nint main(void)\n{\n    int n, moves[3] = {1, 3, 4};\n    if (scanf(\"%d\", &n) != 1)\n        return 1;\n    for (int x = 1; x <= n; ++x)\n    {\n        int seen[4] = {0};\n        for (int j = 0; j < 3; ++j)\n            if (x >= moves[j])\n                seen[sg[x - moves[j]]] = 1;\n        while (sg[x] < 4 && seen[sg[x]])\n            ++sg[x]; // 最多三个后继，mex不超过3。\n    }\n    printf(\"%d\\n\", sg[n]);\n    return 0;\n}\n",
+      "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
+      "tests": [
+        {
+          "name": "样例1",
+          "input": "0\n",
+          "expected": "0",
+          "files": {}
+        },
+        {
+          "name": "样例2",
+          "input": "2\n",
+          "expected": "0",
+          "files": {}
+        },
+        {
+          "name": "样例3",
+          "input": "4\n",
+          "expected": "2",
+          "files": {}
+        },
+        {
+          "name": "边界检查4",
+          "input": "7\n",
+          "expected": "0",
+          "files": {}
+        }
+      ],
+      "displayExamples": [
+        0,
+        1,
+        2
+      ],
+      "sampleNotes": {},
+      "hints": [
+        "按剩余筹码数递增，所有合法后继都更小，已经计算。n=4的后继为3、1、0，SG值集合为{1,1,0}，mex为2。若只把SG写成0/1，会丢掉独立游戏组合所需信息。"
+      ],
+      "explanation": "按剩余筹码数递增，所有合法后继都更小，已经计算。n=4的后继为3、1、0，SG值集合为{1,1,0}，mex为2。若只把SG写成0/1，会丢掉独立游戏组合所需信息。",
+      "review": [
+        "我能用自己的话说明状态与合法操作。",
+        "我验证了样例和边界，并解释复杂度。"
+      ],
+      "complexity": {
+        "time": "O(n)",
+        "space": "O(n)",
+        "reason": "按剩余筹码数递增，所有合法后继都更小，已经计算。n=4的后继为3、1、0，SG值集合为{1,1,0}，mex为2。若只把SG写成0/1，会丢掉独立游戏组合所需信息。",
+        "alternative": "先用小规模枚举核对，再实现目标算法。"
+      }
+    },
+    {
+      "id": "X204",
+      "module": 15,
+      "bank": "comprehensive",
+      "collection": "course",
+      "level": "提高",
+      "title": "合并训练录像文件",
+      "topic": "Huffman / 最优合并",
+      "tags": [
+        "Huffman / 最优合并"
+      ],
+      "description": "有n个录像文件，长度分别为a[i]。每次选两个文件合并为一个，耗时等于两者长度之和，新文件长度也等于此和。反复合并到只剩一个文件，求最少总耗时。只有一个文件时无需合并，耗时0。",
+      "input": "第一行n；第二行n个正整数a[i]。",
+      "output": "输出最少总耗时，一个整数。",
+      "constraints": "1≤n≤2000；1≤a[i]≤1000000。",
+      "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nstatic long long a[2000];\nint main(void)\n{\n    int n;\n    long long answer = 0;\n    if (scanf(\"%d\", &n) != 1)\n        return 1;\n    for (int i = 0; i < n; ++i)\n        if (scanf(\"%lld\", &a[i]) != 1)\n            return 1;\n    while (n > 1)\n    {\n        int x = 0;\n        for (int i = 1; i < n; ++i)\n            if (a[i] < a[x])\n                x = i;\n        long long first = a[x];\n        a[x] = a[--n];\n        x = 0;\n        for (int i = 1; i < n; ++i)\n            if (a[i] < a[x])\n                x = i;\n        a[x] += first;\n        answer += a[x];\n    }\n    printf(\"%lld\\n\", answer);\n    return 0;\n}\n",
+      "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
+      "tests": [
+        {
+          "name": "样例1",
+          "input": "3\n2 3 7\n",
+          "expected": "17",
+          "files": {}
+        },
+        {
+          "name": "样例2",
+          "input": "1\n9\n",
+          "expected": "0",
+          "files": {}
+        },
+        {
+          "name": "样例3",
+          "input": "4\n1 1 1 1\n",
+          "expected": "8",
+          "files": {}
+        }
+      ],
+      "displayExamples": [
+        0,
+        1,
+        2
+      ],
+      "sampleNotes": {},
+      "hints": [
+        "每次合并两个最小长度符合Huffman贪心。样例1先合并2和3耗5，再将5与7合并耗12，总17。本题n≤2000允许每轮线性找两个最小值；若n增大，应改用小根堆降至O(n log n)。"
+      ],
+      "explanation": "每次合并两个最小长度符合Huffman贪心。样例1先合并2和3耗5，再将5与7合并耗12，总17。本题n≤2000允许每轮线性找两个最小值；若n增大，应改用小根堆降至O(n log n)。",
+      "review": [
+        "我能用自己的话说明状态与合法操作。",
+        "我验证了样例和边界，并解释复杂度。"
+      ],
+      "complexity": {
+        "time": "O(n²)",
+        "space": "O(n)",
+        "reason": "每次合并两个最小长度符合Huffman贪心。样例1先合并2和3耗5，再将5与7合并耗12，总17。本题n≤2000允许每轮线性找两个最小值；若n增大，应改用小根堆降至O(n log n)。",
+        "alternative": "先用小规模枚举核对，再实现目标算法。"
+      }
+    },
+    {
+      "id": "X205",
+      "module": 15,
+      "bank": "comprehensive",
+      "collection": "course",
+      "level": "提高",
+      "title": "信号开关的最大编码",
+      "topic": "异或线性基",
+      "tags": [
+        "异或线性基"
+      ],
+      "description": "收到n个非负整数编码，可以从中选择任意若干个下标，每个下标至多选一次，将所选编码逐位异或。也允许一个不选，此时结果为0。求可能得到的最大结果。",
+      "input": "第一行n；第二行n个整数a[i]。",
+      "output": "输出最大异或结果，一个十进制整数。",
+      "constraints": "1≤n≤100000；0≤a[i]<2^30。",
+      "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint main(void)\n{\n    unsigned int basis[30] = {0}, x, answer = 0;\n    int n;\n    if (scanf(\"%d\", &n) != 1)\n        return 1;\n    for (int i = 0; i < n; ++i)\n    {\n        if (scanf(\"%u\", &x) != 1)\n            return 1;\n        for (int b = 29; b >= 0; --b)\n        {\n            if (!(x & (1u << b)))\n                continue;\n            if (!basis[b])\n            {\n                basis[b] = x;\n                break;\n            }\n            x ^= basis[b];\n        }\n    }\n    for (int b = 29; b >= 0; --b)\n        if ((answer ^ basis[b]) > answer)\n            answer ^= basis[b];\n    printf(\"%u\\n\", answer);\n    return 0;\n}\n",
+      "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
+      "tests": [
+        {
+          "name": "样例1",
+          "input": "3\n1 2 4\n",
+          "expected": "7",
+          "files": {}
+        },
+        {
+          "name": "样例2",
+          "input": "2\n5 5\n",
+          "expected": "5",
+          "files": {}
+        },
+        {
+          "name": "样例3",
+          "input": "1\n0\n",
+          "expected": "0",
+          "files": {}
+        }
+      ],
+      "displayExamples": [
+        0,
+        1,
+        2
+      ],
+      "sampleNotes": {},
+      "hints": [
+        "从高位消元，将每个主位保留一个基向量；查询同样从高位尝试能让结果变大的异或。重复的5不产生新独立信息，选一个5得到5，选两个得到0。30是本题固定有效位宽。"
+      ],
+      "explanation": "从高位消元，将每个主位保留一个基向量；查询同样从高位尝试能让结果变大的异或。重复的5不产生新独立信息，选一个5得到5，选两个得到0。30是本题固定有效位宽。",
+      "review": [
+        "我能用自己的话说明状态与合法操作。",
+        "我验证了样例和边界，并解释复杂度。"
+      ],
+      "complexity": {
+        "time": "O(30n)",
+        "space": "O(30)",
+        "reason": "从高位消元，将每个主位保留一个基向量；查询同样从高位尝试能让结果变大的异或。重复的5不产生新独立信息，选一个5得到5，选两个得到0。30是本题固定有效位宽。",
+        "alternative": "先用小规模枚举核对，再实现目标算法。"
+      }
+    },
+    {
+      "id": "X206",
+      "module": 15,
+      "bank": "comprehensive",
+      "collection": "course",
+      "level": "提高",
+      "title": "两轮得分的方案表",
+      "topic": "多项式卷积",
+      "tags": [
+        "多项式卷积"
+      ],
+      "description": "第一轮得分i有a[i]种方案，i从0到n-1；第二轮得分j有b[j]种方案，j从0到m-1。两轮独立选择，每对方案视为一种完整方案。输出每个总分k的方案数，k从0到n+m-2。这里的数是方案数，不是概率。",
+      "input": "第一行n m；第二行n个整数a[i]；第三行m个整数b[j]。",
+      "output": "按总分递增输出n+m-1个整数，空格分隔，最后换行。",
+      "constraints": "1≤n,m≤500；0≤a[i],b[j]≤1000。",
+      "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nstatic long long a[500], b[500], c[999];\nint main(void)\n{\n    int n, m;\n    if (scanf(\"%d%d\", &n, &m) != 2)\n        return 1;\n    for (int i = 0; i < n; ++i)\n        if (scanf(\"%lld\", &a[i]) != 1)\n            return 1;\n    for (int j = 0; j < m; ++j)\n        if (scanf(\"%lld\", &b[j]) != 1)\n            return 1;\n    for (int i = 0; i < n; ++i)\n        for (int j = 0; j < m; ++j)\n            c[i + j] += a[i] * b[j];\n    for (int k = 0; k < n + m - 1; ++k)\n        printf(\"%s%lld\", k ? \" \" : \"\", c[k]);\n    putchar('\\n');\n    return 0;\n}\n",
+      "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
+      "tests": [
+        {
+          "name": "样例1",
+          "input": "2 2\n1 2\n3 4\n",
+          "expected": "3 10 8",
+          "files": {}
+        },
+        {
+          "name": "样例2",
+          "input": "1 1\n0\n8\n",
+          "expected": "0",
+          "files": {}
+        },
+        {
+          "name": "样例3",
+          "input": "3 1\n2 0 5\n2\n",
+          "expected": "4 0 10",
+          "files": {}
+        }
+      ],
+      "displayExamples": [
+        0,
+        1,
+        2
+      ],
+      "sampleNotes": {},
+      "hints": [
+        "所有i+j=k的方案乘积贡献到c[k]。第一例总分1来自0+1的1×4种和1+0的2×3种，共10。先实现确定正确的朴素卷积，再学习大规模FFT/NTT；这里不需要变换。"
+      ],
+      "explanation": "所有i+j=k的方案乘积贡献到c[k]。第一例总分1来自0+1的1×4种和1+0的2×3种，共10。先实现确定正确的朴素卷积，再学习大规模FFT/NTT；这里不需要变换。",
+      "review": [
+        "我能用自己的话说明状态与合法操作。",
+        "我验证了样例和边界，并解释复杂度。"
+      ],
+      "complexity": {
+        "time": "O(nm)",
+        "space": "O(n+m)",
+        "reason": "所有i+j=k的方案乘积贡献到c[k]。第一例总分1来自0+1的1×4种和1+0的2×3种，共10。先实现确定正确的朴素卷积，再学习大规模FFT/NTT；这里不需要变换。",
+        "alternative": "先用小规模枚举核对，再实现目标算法。"
+      }
+    },
+    {
+      "id": "X207",
+      "module": 15,
+      "bank": "comprehensive",
+      "collection": "course",
+      "level": "提高",
+      "title": "超长奖学金账单求和",
+      "topic": "高精度加法",
+      "tags": [
+        "高精度加法"
+      ],
+      "description": "两笔奖学金以十进制非负整数记录，位数可能超过机器整数范围。计算两笔总额，输出标准十进制表示，不保留多余前导零。",
+      "input": "两行，每行一个由数字0到9组成的字符串。允许输入包含前导零。",
+      "output": "输出它们的和，仅一行；和为零时输出0。",
+      "constraints": "每行长度1到1000。",
+      "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint main(void)\n{\n    char a[1001], b[1001], result[1002];\n    if (scanf(\"%1000s%1000s\", a, b) != 2)\n        return 1;\n    int i = (int)strlen(a) - 1, j = (int)strlen(b) - 1, n = 0, carry = 0;\n    while (i >= 0 || j >= 0 || carry)\n    {\n        int value = carry;\n        if (i >= 0)\n            value += a[i--] - '0';\n        if (j >= 0)\n            value += b[j--] - '0';\n        result[n++] = (char)('0' + value % 10);\n        carry = value / 10;\n    }\n    while (n > 1 && result[n - 1] == '0')\n        --n;\n    while (n > 0)\n        putchar(result[--n]);\n    putchar('\\n');\n    return 0;\n}\n",
+      "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
+      "tests": [
+        {
+          "name": "样例1",
+          "input": "999\n1\n",
+          "expected": "1000",
+          "files": {}
+        },
+        {
+          "name": "样例2",
+          "input": "000\n0\n",
+          "expected": "0",
+          "files": {}
+        },
+        {
+          "name": "样例3",
+          "input": "0012\n003\n",
+          "expected": "15",
+          "files": {}
+        },
+        {
+          "name": "边界检查4",
+          "input": "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999\n1\n",
+          "expected": "10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "files": {}
+        }
+      ],
+      "displayExamples": [
+        0,
+        1,
+        2
+      ],
+      "sampleNotes": {},
+      "hints": [
+        "从末尾个位向前相加，结果逆序存储，value%10存当前位，value/10传进位。最后去掉高位多余零，再倒序输出。不能用double代替高精度整数，否则长输入丢失精度。"
+      ],
+      "explanation": "从末尾个位向前相加，结果逆序存储，value%10存当前位，value/10传进位。最后去掉高位多余零，再倒序输出。不能用double代替高精度整数，否则长输入丢失精度。",
+      "review": [
+        "我能用自己的话说明状态与合法操作。",
+        "我验证了样例和边界，并解释复杂度。"
+      ],
+      "complexity": {
+        "time": "O(n+m)",
+        "space": "O(n+m)",
+        "reason": "从末尾个位向前相加，结果逆序存储，value%10存当前位，value/10传进位。最后去掉高位多余零，再倒序输出。不能用double代替高精度整数，否则长输入丢失精度。",
+        "alternative": "先用小规模枚举核对，再实现目标算法。"
+      }
+    },
+    {
+      "id": "X208",
+      "module": 15,
+      "bank": "comprehensive",
+      "collection": "course",
+      "level": "提高",
+      "title": "选课承诺能否同时满足",
+      "topic": "2-SAT / 强连通分量",
+      "tags": [
+        "2-SAT / 强连通分量"
+      ],
+      "description": "学校有n门课，每门课只能选择“选”或“不选”。有m条要求，每条由两个文字组成，要求至少一个成立。正整数x表示“选第x门”，负整数-x表示“不选第x门”。判断是否存在满足全部要求的选择，不要求输出选择方案。",
+      "input": "第一行n m；接下来m行，每行两个非零整数a b，表示(a或b)。",
+      "output": "有可行选择输出YES，否则输出NO。",
+      "constraints": "1≤n≤100；0≤m≤1000；1≤|a|,|b|≤n。",
+      "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nstatic int reach[200][200];\nint node(int x)\n{\n    return 2 * (abs(x) - 1) + (x < 0);\n}\nint main(void)\n{\n    int n, m, a, b;\n    if (scanf(\"%d%d\", &n, &m) != 2)\n        return 1;\n    for (int i = 0; i < m; ++i)\n    {\n        if (scanf(\"%d%d\", &a, &b) != 2)\n            return 1;\n        a = node(a);\n        b = node(b);\n        reach[a ^ 1][b] = reach[b ^ 1][a] = 1;\n    }\n    for (int k = 0; k < 2 * n; ++k)\n        for (int i = 0; i < 2 * n; ++i)\n            for (int j = 0; j < 2 * n; ++j)\n                reach[i][j] |= reach[i][k] && reach[k][j];\n    for (int i = 0; i < n; ++i)\n        if (reach[2 * i][2 * i + 1] && reach[2 * i + 1][2 * i])\n        {\n            puts(\"NO\");\n            return 0;\n        }\n    puts(\"YES\");\n    return 0;\n}\n",
+      "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
+      "tests": [
+        {
+          "name": "样例1",
+          "input": "1 2\n1 1\n-1 -1\n",
+          "expected": "NO",
+          "files": {}
+        },
+        {
+          "name": "样例2",
+          "input": "2 2\n1 2\n-1 2\n",
+          "expected": "YES",
+          "files": {}
+        },
+        {
+          "name": "样例3",
+          "input": "1 0\n",
+          "expected": "YES",
+          "files": {}
+        }
+      ],
+      "displayExamples": [
+        0,
+        1,
+        2
+      ],
+      "sampleNotes": {},
+      "hints": [
+        "子句(a∨b)对应¬a→b和¬b→a。若同一变量与否定互相可达，则处在同一SCC，产生矛盾。本题仅200个文字节点，可用Floyd求传递闭包；大规模改用Tarjan/Kosaraju线性求SCC。第一例同时强制选与不选，故无解。"
+      ],
+      "explanation": "子句(a∨b)对应¬a→b和¬b→a。若同一变量与否定互相可达，则处在同一SCC，产生矛盾。本题仅200个文字节点，可用Floyd求传递闭包；大规模改用Tarjan/Kosaraju线性求SCC。第一例同时强制选与不选，故无解。",
+      "review": [
+        "我能用自己的话说明状态与合法操作。",
+        "我验证了样例和边界，并解释复杂度。"
+      ],
+      "complexity": {
+        "time": "O(n³+m)",
+        "space": "O(n²)",
+        "reason": "子句(a∨b)对应¬a→b和¬b→a。若同一变量与否定互相可达，则处在同一SCC，产生矛盾。本题仅200个文字节点，可用Floyd求传递闭包；大规模改用Tarjan/Kosaraju线性求SCC。第一例同时强制选与不选，故无解。",
+        "alternative": "先用小规模枚举核对，再实现目标算法。"
+      }
+    },
+    {
+      "id": "X209",
+      "module": 15,
+      "bank": "comprehensive",
+      "collection": "course",
+      "level": "提高",
+      "title": "整份训练餐的资源分配",
+      "topic": "枚举 / 整数规划边界",
+      "tags": [
+        "枚举 / 整数规划边界"
+      ],
+      "description": "食堂最多制作100份A餐和100份B餐。A餐每份用2单位面粉、1单位牛奶，收入p；B餐每份用1单位面粉、2单位牛奶，收入q。现有F单位面粉和M单位牛奶，允许剩余，也允许不做餐。只制作整份餐，求最大收入。",
+      "input": "一行四个整数F M p q。",
+      "output": "输出最大收入，一个整数。",
+      "constraints": "0≤F,M≤300；0≤p,q≤10000。每种餐份数为0到100的整数。",
+      "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint main(void)\n{\n    int f, m, p, q, best = 0;\n    if (scanf(\"%d%d%d%d\", &f, &m, &p, &q) != 4)\n        return 1;\n    for (int a = 0; a <= 100; ++a)\n        for (int b = 0; b <= 100; ++b)\n            if (2 * a + b <= f && a + 2 * b <= m && a * p + b * q > best)\n                best = a * p + b * q;\n    printf(\"%d\\n\", best);\n    return 0;\n}\n",
+      "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
+      "tests": [
+        {
+          "name": "样例1",
+          "input": "3 3 4 5\n",
+          "expected": "9",
+          "files": {}
+        },
+        {
+          "name": "样例2",
+          "input": "0 0 9 9\n",
+          "expected": "0",
+          "files": {}
+        },
+        {
+          "name": "样例3",
+          "input": "2 2 3 7\n",
+          "expected": "7",
+          "files": {}
+        }
+      ],
+      "displayExamples": [
+        0,
+        1,
+        2
+      ],
+      "sampleNotes": {},
+      "hints": [
+        "枚举0..100的全部整数产量并检查两个资源不等式，因此不会遗漏可行整份方案。最后一例不能制作半份餐；连续线性规划即使给出分数解，也不能直接四舍五入当成整份最优解。本题用于理解建模边界，不需要单纯形。"
+      ],
+      "explanation": "枚举0..100的全部整数产量并检查两个资源不等式，因此不会遗漏可行整份方案。最后一例不能制作半份餐；连续线性规划即使给出分数解，也不能直接四舍五入当成整份最优解。本题用于理解建模边界，不需要单纯形。",
+      "review": [
+        "我能用自己的话说明状态与合法操作。",
+        "我验证了样例和边界，并解释复杂度。"
+      ],
+      "complexity": {
+        "time": "O(B²)，B=100",
+        "space": "O(1)",
+        "reason": "枚举0..100的全部整数产量并检查两个资源不等式，因此不会遗漏可行整份方案。最后一例不能制作半份餐；连续线性规划即使给出分数解，也不能直接四舍五入当成整份最优解。本题用于理解建模边界，不需要单纯形。",
+        "alternative": "先用小规模枚举核对，再实现目标算法。"
+      }
+    },
+    {
+      "id": "X210",
+      "module": 15,
+      "bank": "comprehensive",
+      "collection": "course",
+      "level": "提高",
+      "title": "已知红票来自哪个箱子",
+      "topic": "条件概率 / 贝叶斯",
+      "tags": [
+        "条件概率 / 贝叶斯"
+      ],
+      "description": "先以相同概率选择甲箱或乙箱，再从选中的箱子等概率抽一张票。甲箱有a张红票和b张蓝票，乙箱有c张红票和d张蓝票。已经观察到抽出的是红票，求它来自甲箱的条件概率，用最简分数表示。",
+      "input": "一行四个整数a b c d。",
+      "output": "输出最简分数的分子p和正分母q，以空格分隔。",
+      "constraints": "0≤a,b,c,d≤10000；a+b>0，c+d>0，a+c>0，保证观察到红票的事件概率大于0。",
+      "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nlong long gcd(long long a, long long b)\n{\n    while (b)\n    {\n        long long r = a % b;\n        a = b;\n        b = r;\n    }\n    return a;\n}\nint main(void)\n{\n    long long a, b, c, d;\n    if (scanf(\"%lld%lld%lld%lld\", &a, &b, &c, &d) != 4)\n        return 1;\n    long long numerator = a * (c + d);\n    long long denominator = numerator + c * (a + b);\n    long long g = gcd(numerator, denominator);\n    printf(\"%lld %lld\\n\", numerator / g, denominator / g);\n    return 0;\n}\n",
+      "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
+      "tests": [
+        {
+          "name": "样例1",
+          "input": "1 1 1 3\n",
+          "expected": "2 3",
+          "files": {}
+        },
+        {
+          "name": "样例2",
+          "input": "0 1 2 0\n",
+          "expected": "0 1",
+          "files": {}
+        },
+        {
+          "name": "样例3",
+          "input": "2 0 0 8\n",
+          "expected": "1 1",
+          "files": {}
+        }
+      ],
+      "displayExamples": [
+        0,
+        1,
+        2
+      ],
+      "sampleNotes": {},
+      "hints": [
+        "P(甲且红)=a/(2(a+b))，P(红)=a/(2(a+b))+c/(2(c+d))，相除通分得a(c+d)/[a(c+d)+c(a+b)]。第一例甲箱红票率1/2，乙箱1/4，观察红票后甲的概率2/3；不能用a/(a+c)替代，因为两个箱子大小可能不同。"
+      ],
+      "explanation": "P(甲且红)=a/(2(a+b))，P(红)=a/(2(a+b))+c/(2(c+d))，相除通分得a(c+d)/[a(c+d)+c(a+b)]。第一例甲箱红票率1/2，乙箱1/4，观察红票后甲的概率2/3；不能用a/(a+c)替代，因为两个箱子大小可能不同。",
+      "review": [
+        "我能用自己的话说明状态与合法操作。",
+        "我验证了样例和边界，并解释复杂度。"
+      ],
+      "complexity": {
+        "time": "O(log D)，D为分数分母",
+        "space": "O(1)",
+        "reason": "P(甲且红)=a/(2(a+b))，P(红)=a/(2(a+b))+c/(2(c+d))，相除通分得a(c+d)/[a(c+d)+c(a+b)]。第一例甲箱红票率1/2，乙箱1/4，观察红票后甲的概率2/3；不能用a/(a+c)替代，因为两个箱子大小可能不同。",
+        "alternative": "先用小规模枚举核对，再实现目标算法。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,851 @@
+{
+  "method": "从空词表开始拟合多项式朴素贝叶斯；字符二元组与英文标识符；无预训练权重。任务是定位相关教材，不是解题或理解测验。",
+  "limitations": [
+    "预训练High只扮演回答提问的教师，不扮演从零学习者。",
+    "这是固定探针的课程定位实验，不证明真人学习效果，不衡量算法掌握程度。",
+    "探针与答案未参与训练；提问后数据已针对已发现困难补充，因此提问后分数属于适应结果，不是新的盲测成绩。",
+    "低置信度与错误定位提示可读性审查方向；最后修改由具体语义与可运行示例验证，不能为提分堆关键词。"
+  ],
+  "inputs": [
+    {
+      "path": "Resources/foundations-v5.json",
+      "sha256": "7d144dd27678a47b84b019626555bbbc43f9fb2f770b729b7cb161d00d8b910c"
+    },
+    {
+      "path": "Resources/coursebook.json",
+      "sha256": "25667f1a14576c85a8b737ed589e761cec84702a761e169d7932b2a8306f1249"
+    }
+  ],
+  "documents": 321,
+  "answerDocuments": 3,
+  "metrics": {
+    "before": {
+      "correct": 0,
+      "total": 20,
+      "accuracy": 0
+    },
+    "afterReading": {
+      "correct": 18,
+      "total": 20,
+      "accuracy": 0.9
+    },
+    "afterQuestions": {
+      "correct": 19,
+      "total": 20,
+      "accuracy": 0.95
+    }
+  },
+  "before": [
+    {
+      "id": "input-address",
+      "question": "读入第二个数组格子时，是给scanf一个数还是给它写入的位置？",
+      "expected": [
+        "F01-03",
+        "F05-04"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    },
+    {
+      "id": "newline",
+      "question": "为什么按了回车还没有读到字符串结束的那个零？",
+      "expected": [
+        "F06-02",
+        "F04-01",
+        "F01-08"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    },
+    {
+      "id": "getchar-eof",
+      "question": "getchar的EOF为什么不能先塞进char再判断？",
+      "expected": [
+        "F01-08",
+        "F06-04"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    },
+    {
+      "id": "assignment-output",
+      "question": "只写total的赋值，屏幕为什么没有自动显示计算结果？",
+      "expected": [
+        "F01-10",
+        "P01"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    },
+    {
+      "id": "integer-division",
+      "question": "5除以2放进double为什么还是2，不是2.5？",
+      "expected": [
+        "F02-01"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    },
+    {
+      "id": "ctype",
+      "question": "isdigit返回的真值能否只按等于1来判断？",
+      "expected": [
+        "F06-07"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    },
+    {
+      "id": "uninitialized",
+      "question": "还没把字符读进数组，就拿当前格子判断while条件有什么问题？",
+      "expected": [
+        "F04-01",
+        "F05-03"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    },
+    {
+      "id": "negative-window",
+      "question": "数组有负数时，右边扩展窗口会让和下降，原来的双指针还能照用吗？",
+      "expected": [
+        "F15-01",
+        "A04"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    },
+    {
+      "id": "dp-direction",
+      "question": "一个物品只许选一次，背包容量从小往大更新为何会重复选？",
+      "expected": [
+        "A13"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    },
+    {
+      "id": "negative-edge",
+      "question": "图里有负边时为什么不能直接用Dijkstra定案？",
+      "expected": [
+        "A09"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    },
+    {
+      "id": "compression-distance",
+      "question": "坐标压成排名后，排名差能直接当原来的实际长度吗？",
+      "expected": [
+        "A03",
+        "A22"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    },
+    {
+      "id": "inverse",
+      "question": "模6时能通过一个乘法逆元完成除以3吗？",
+      "expected": [
+        "A17"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    },
+    {
+      "id": "persistent",
+      "question": "修改今天的版本怎样避免把历史账本的共享节点也改掉？",
+      "expected": [
+        "A21"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    },
+    {
+      "id": "flow-reverse",
+      "question": "网络流已经送出去的量为什么还要建立反向残量边？",
+      "expected": [
+        "A20"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    },
+    {
+      "id": "complexity",
+      "question": "循环先执行n次，再执行n次，怎样统计总工作量和辅助存储？",
+      "expected": [
+        "F15-03",
+        "P06"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    },
+    {
+      "id": "pseudocode",
+      "question": "伪代码中箭头和等号分别表示什么，RETURN和OUTPUT有何不同？",
+      "expected": [
+        "P04"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    },
+    {
+      "id": "sg",
+      "question": "mex集合里没出现的最小非负数如何决定游戏的SG值？",
+      "expected": [
+        "A29"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    },
+    {
+      "id": "expectation",
+      "question": "两个随机量不独立时，它们相加的期望仍能相加吗？",
+      "expected": [
+        "A28"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    },
+    {
+      "id": "st-overlap",
+      "question": "为什么ST表查询最小值时两段可重叠，求和却不行？",
+      "expected": [
+        "A06"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    },
+    {
+      "id": "suffix-count",
+      "question": "后缀自动机一个状态代表的不同子串数量为何看最长长度和链接长度之差？",
+      "expected": [
+        "A16"
+      ],
+      "predicted": null,
+      "correct": false,
+      "margin": 0,
+      "evidence": null
+    }
+  ],
+  "afterReading": [
+    {
+      "id": "input-address",
+      "question": "读入第二个数组格子时，是给scanf一个数还是给它写入的位置？",
+      "expected": [
+        "F01-03",
+        "F05-04"
+      ],
+      "predicted": "F01-03",
+      "correct": true,
+      "margin": 0.10114761481723988,
+      "evidence": {
+        "source": "foundation:F01-03/beginner",
+        "sha256": "bcfb7c368018d78dce44e1885fe3bf39f84cba5a26d5684aa6d0e12a02a3f031"
+      }
+    },
+    {
+      "id": "newline",
+      "question": "为什么按了回车还没有读到字符串结束的那个零？",
+      "expected": [
+        "F06-02",
+        "F04-01",
+        "F01-08"
+      ],
+      "predicted": "F06-05",
+      "correct": false,
+      "margin": 0.15897489174792234,
+      "evidence": {
+        "source": "foundation:F06-05/professional",
+        "sha256": "71168786883965cf357fa383c6ac5d9c9232e45a8585c0185b18fff0f40b2e52"
+      }
+    },
+    {
+      "id": "getchar-eof",
+      "question": "getchar的EOF为什么不能先塞进char再判断？",
+      "expected": [
+        "F01-08",
+        "F06-04"
+      ],
+      "predicted": "F01-08",
+      "correct": true,
+      "margin": 0.2559336414636517,
+      "evidence": {
+        "source": "foundation:F01-08/beginner",
+        "sha256": "4d80d6a4508e883c65efdbafa47fc01590ce208e9655a9153ecc32b67c2e6965"
+      }
+    },
+    {
+      "id": "assignment-output",
+      "question": "只写total的赋值，屏幕为什么没有自动显示计算结果？",
+      "expected": [
+        "F01-10",
+        "P01"
+      ],
+      "predicted": "F01-10",
+      "correct": true,
+      "margin": 0.31911215335647114,
+      "evidence": {
+        "source": "foundation:F01-10/beginner",
+        "sha256": "1bf18600927daea11f57ce158f5e209340ce623717f186e25791f6d9cec1eea6"
+      }
+    },
+    {
+      "id": "integer-division",
+      "question": "5除以2放进double为什么还是2，不是2.5？",
+      "expected": [
+        "F02-01"
+      ],
+      "predicted": "F05-07",
+      "correct": false,
+      "margin": 0.03961204402852481,
+      "evidence": {
+        "source": "foundation:F05-07/professional",
+        "sha256": "76791746585642ac0b0a79a77dd44f3054ec1f2f502c4242a98aa50418a142ab"
+      }
+    },
+    {
+      "id": "ctype",
+      "question": "isdigit返回的真值能否只按等于1来判断？",
+      "expected": [
+        "F06-07"
+      ],
+      "predicted": "F06-07",
+      "correct": true,
+      "margin": 1.3101900811339462,
+      "evidence": {
+        "source": "foundation:F06-07/beginner",
+        "sha256": "ca290e4224d512b549eca4db1622b17f12ea84c48209ddeef5367e21bcc0712c"
+      }
+    },
+    {
+      "id": "uninitialized",
+      "question": "还没把字符读进数组，就拿当前格子判断while条件有什么问题？",
+      "expected": [
+        "F04-01",
+        "F05-03"
+      ],
+      "predicted": "F04-01",
+      "correct": true,
+      "margin": 0.25563615790712824,
+      "evidence": {
+        "source": "foundation:F04-01/professional",
+        "sha256": "1c70b743fd0f8363a6b93c89168396b748aa0d7208142645d01d05aa8930d837"
+      }
+    },
+    {
+      "id": "negative-window",
+      "question": "数组有负数时，右边扩展窗口会让和下降，原来的双指针还能照用吗？",
+      "expected": [
+        "F15-01",
+        "A04"
+      ],
+      "predicted": "A04",
+      "correct": true,
+      "margin": 0.14247848114555595,
+      "evidence": {
+        "source": "coursebook:A04/beginner",
+        "sha256": "d0deb7d0cce0b861392ba808f4854078dd2bee8749cf1701180067cfc4e4aef8"
+      }
+    },
+    {
+      "id": "dp-direction",
+      "question": "一个物品只许选一次，背包容量从小往大更新为何会重复选？",
+      "expected": [
+        "A13"
+      ],
+      "predicted": "A13",
+      "correct": true,
+      "margin": 1.2387541083706877,
+      "evidence": {
+        "source": "coursebook:A13/beginner",
+        "sha256": "e044a87bcf8a47a6b7edf75c6f2a51a0d53795ba8eec7c240c4699aadb8c6279"
+      }
+    },
+    {
+      "id": "negative-edge",
+      "question": "图里有负边时为什么不能直接用Dijkstra定案？",
+      "expected": [
+        "A09"
+      ],
+      "predicted": "A09",
+      "correct": true,
+      "margin": 0.47119863421314534,
+      "evidence": {
+        "source": "coursebook:A09/professional",
+        "sha256": "f6cf7627863c5ba5d730ea6676c22ca5610f32adb6be309fac0ecfea158769f8"
+      }
+    },
+    {
+      "id": "compression-distance",
+      "question": "坐标压成排名后，排名差能直接当原来的实际长度吗？",
+      "expected": [
+        "A03",
+        "A22"
+      ],
+      "predicted": "A03",
+      "correct": true,
+      "margin": 1.0774144241025745,
+      "evidence": {
+        "source": "coursebook:A03/beginner",
+        "sha256": "10f0a442d5ad44ca7af43da0c706a393d94d22c7fdfd34c92c42ea4d8f4fdf12"
+      }
+    },
+    {
+      "id": "inverse",
+      "question": "模6时能通过一个乘法逆元完成除以3吗？",
+      "expected": [
+        "A17"
+      ],
+      "predicted": "A17",
+      "correct": true,
+      "margin": 0.45387926480246144,
+      "evidence": {
+        "source": "coursebook:A17/beginner",
+        "sha256": "a1d933dfcb335fb56cc2ee8566a7ca1912cabae00db3ac22876c26c49b776bb1"
+      }
+    },
+    {
+      "id": "persistent",
+      "question": "修改今天的版本怎样避免把历史账本的共享节点也改掉？",
+      "expected": [
+        "A21"
+      ],
+      "predicted": "A21",
+      "correct": true,
+      "margin": 0.9927981556922223,
+      "evidence": {
+        "source": "coursebook:A21/beginner",
+        "sha256": "1e8ab238c3010e31093e536fe45b7dd950aa80efdf93dd7b0d11b00185d4c1f5"
+      }
+    },
+    {
+      "id": "flow-reverse",
+      "question": "网络流已经送出去的量为什么还要建立反向残量边？",
+      "expected": [
+        "A20"
+      ],
+      "predicted": "A20",
+      "correct": true,
+      "margin": 0.9117781445259023,
+      "evidence": {
+        "source": "coursebook:A20/beginner",
+        "sha256": "68e36a9a8c32de48681f3b504b796800b109c25854c2083a3d3aaf153a2aa347"
+      }
+    },
+    {
+      "id": "complexity",
+      "question": "循环先执行n次，再执行n次，怎样统计总工作量和辅助存储？",
+      "expected": [
+        "F15-03",
+        "P06"
+      ],
+      "predicted": "F15-03",
+      "correct": true,
+      "margin": 0.9201086385328141,
+      "evidence": {
+        "source": "foundation:F15-03/professional",
+        "sha256": "143118e6195041cbf7b07d686ba0ddfa2b083e050c79ed47557ad4d1cdb65478"
+      }
+    },
+    {
+      "id": "pseudocode",
+      "question": "伪代码中箭头和等号分别表示什么，RETURN和OUTPUT有何不同？",
+      "expected": [
+        "P04"
+      ],
+      "predicted": "P04",
+      "correct": true,
+      "margin": 0.5330106431995274,
+      "evidence": {
+        "source": "coursebook:P04/professional",
+        "sha256": "5835190e68408e954cf6871e87ab8cf6aa962c0954328998a2751f4b5f6890eb"
+      }
+    },
+    {
+      "id": "sg",
+      "question": "mex集合里没出现的最小非负数如何决定游戏的SG值？",
+      "expected": [
+        "A29"
+      ],
+      "predicted": "A29",
+      "correct": true,
+      "margin": 1.3563651970509785,
+      "evidence": {
+        "source": "coursebook:A29/professional",
+        "sha256": "3aaf4403becec6bf95a3b4a83a60cf19a57cf5e553fbe14e9b90f4b1f52a8c20"
+      }
+    },
+    {
+      "id": "expectation",
+      "question": "两个随机量不独立时，它们相加的期望仍能相加吗？",
+      "expected": [
+        "A28"
+      ],
+      "predicted": "A28",
+      "correct": true,
+      "margin": 0.120428420629068,
+      "evidence": {
+        "source": "coursebook:A28/professional",
+        "sha256": "524b97a02f1245d98113e0c9e3736f581d97c4122ba6378ff198278d54ef1139"
+      }
+    },
+    {
+      "id": "st-overlap",
+      "question": "为什么ST表查询最小值时两段可重叠，求和却不行？",
+      "expected": [
+        "A06"
+      ],
+      "predicted": "A06",
+      "correct": true,
+      "margin": 0.31244789179295474,
+      "evidence": {
+        "source": "coursebook:A06/professional",
+        "sha256": "092119edcc386607c750b07db57b52394035ef9d3eb73113adc8dc39fc62c49d"
+      }
+    },
+    {
+      "id": "suffix-count",
+      "question": "后缀自动机一个状态代表的不同子串数量为何看最长长度和链接长度之差？",
+      "expected": [
+        "A16"
+      ],
+      "predicted": "A16",
+      "correct": true,
+      "margin": 1.5055520211333926,
+      "evidence": {
+        "source": "coursebook:A16/professional",
+        "sha256": "e86056ba85394e88f0877daad3f93c1d0f9e655d0b9f89cc2e691e1b3f477e73"
+      }
+    }
+  ],
+  "afterQuestions": [
+    {
+      "id": "input-address",
+      "question": "读入第二个数组格子时，是给scanf一个数还是给它写入的位置？",
+      "expected": [
+        "F01-03",
+        "F05-04"
+      ],
+      "predicted": "F01-03",
+      "correct": true,
+      "margin": 0.10163089543717341,
+      "evidence": {
+        "source": "foundation:F01-03/beginner",
+        "sha256": "bcfb7c368018d78dce44e1885fe3bf39f84cba5a26d5684aa6d0e12a02a3f031"
+      }
+    },
+    {
+      "id": "newline",
+      "question": "为什么按了回车还没有读到字符串结束的那个零？",
+      "expected": [
+        "F06-02",
+        "F04-01",
+        "F01-08"
+      ],
+      "predicted": "F06-02",
+      "correct": true,
+      "margin": 0.5344056710445573,
+      "evidence": {
+        "source": "in-app-archive:52c5ce0b-0ad1-4a81-943f-f50199c82f42",
+        "sha256": "edc2ee6adb4cf11dc4dafaae020fb8c5bb449ed48078ed1acc0162677c23ddbd"
+      }
+    },
+    {
+      "id": "getchar-eof",
+      "question": "getchar的EOF为什么不能先塞进char再判断？",
+      "expected": [
+        "F01-08",
+        "F06-04"
+      ],
+      "predicted": "F01-08",
+      "correct": true,
+      "margin": 1.3861289037794409,
+      "evidence": {
+        "source": "in-app-archive:7b800d28-b3bf-4713-861c-59d430664c5a",
+        "sha256": "a5641d61fd66ddb820bc78a2b23e1076ba8afb6eb60966577c6d612b367bebdf"
+      }
+    },
+    {
+      "id": "assignment-output",
+      "question": "只写total的赋值，屏幕为什么没有自动显示计算结果？",
+      "expected": [
+        "F01-10",
+        "P01"
+      ],
+      "predicted": "F01-10",
+      "correct": true,
+      "margin": 0.0767481635268652,
+      "evidence": {
+        "source": "foundation:F01-10/beginner",
+        "sha256": "1bf18600927daea11f57ce158f5e209340ce623717f186e25791f6d9cec1eea6"
+      }
+    },
+    {
+      "id": "integer-division",
+      "question": "5除以2放进double为什么还是2，不是2.5？",
+      "expected": [
+        "F02-01"
+      ],
+      "predicted": "F02-01",
+      "correct": true,
+      "margin": 0.8511250965129191,
+      "evidence": {
+        "source": "in-app-archive:f66bb76d-76a9-4076-a789-b9cebacb216a",
+        "sha256": "ff05ad5fa018b0755e44b818e6d3715741deebb62f02c059b0fdc0870e5f5dda"
+      }
+    },
+    {
+      "id": "ctype",
+      "question": "isdigit返回的真值能否只按等于1来判断？",
+      "expected": [
+        "F06-07"
+      ],
+      "predicted": "F06-07",
+      "correct": true,
+      "margin": 0.793072753469902,
+      "evidence": {
+        "source": "foundation:F06-07/beginner",
+        "sha256": "ca290e4224d512b549eca4db1622b17f12ea84c48209ddeef5367e21bcc0712c"
+      }
+    },
+    {
+      "id": "uninitialized",
+      "question": "还没把字符读进数组，就拿当前格子判断while条件有什么问题？",
+      "expected": [
+        "F04-01",
+        "F05-03"
+      ],
+      "predicted": "F01-08",
+      "correct": false,
+      "margin": 0.24327305045002223,
+      "evidence": {
+        "source": "in-app-archive:7b800d28-b3bf-4713-861c-59d430664c5a",
+        "sha256": "a5641d61fd66ddb820bc78a2b23e1076ba8afb6eb60966577c6d612b367bebdf"
+      }
+    },
+    {
+      "id": "negative-window",
+      "question": "数组有负数时，右边扩展窗口会让和下降，原来的双指针还能照用吗？",
+      "expected": [
+        "F15-01",
+        "A04"
+      ],
+      "predicted": "A04",
+      "correct": true,
+      "margin": 0.14527594741051786,
+      "evidence": {
+        "source": "coursebook:A04/beginner",
+        "sha256": "d0deb7d0cce0b861392ba808f4854078dd2bee8749cf1701180067cfc4e4aef8"
+      }
+    },
+    {
+      "id": "dp-direction",
+      "question": "一个物品只许选一次，背包容量从小往大更新为何会重复选？",
+      "expected": [
+        "A13"
+      ],
+      "predicted": "A13",
+      "correct": true,
+      "margin": 1.2369301221942308,
+      "evidence": {
+        "source": "coursebook:A13/beginner",
+        "sha256": "e044a87bcf8a47a6b7edf75c6f2a51a0d53795ba8eec7c240c4699aadb8c6279"
+      }
+    },
+    {
+      "id": "negative-edge",
+      "question": "图里有负边时为什么不能直接用Dijkstra定案？",
+      "expected": [
+        "A09"
+      ],
+      "predicted": "A09",
+      "correct": true,
+      "margin": 0.43303632045582674,
+      "evidence": {
+        "source": "coursebook:A09/professional",
+        "sha256": "f6cf7627863c5ba5d730ea6676c22ca5610f32adb6be309fac0ecfea158769f8"
+      }
+    },
+    {
+      "id": "compression-distance",
+      "question": "坐标压成排名后，排名差能直接当原来的实际长度吗？",
+      "expected": [
+        "A03",
+        "A22"
+      ],
+      "predicted": "A03",
+      "correct": true,
+      "margin": 1.0005438622478593,
+      "evidence": {
+        "source": "coursebook:A03/beginner",
+        "sha256": "10f0a442d5ad44ca7af43da0c706a393d94d22c7fdfd34c92c42ea4d8f4fdf12"
+      }
+    },
+    {
+      "id": "inverse",
+      "question": "模6时能通过一个乘法逆元完成除以3吗？",
+      "expected": [
+        "A17"
+      ],
+      "predicted": "A17",
+      "correct": true,
+      "margin": 0.4476776297189584,
+      "evidence": {
+        "source": "coursebook:A17/beginner",
+        "sha256": "a1d933dfcb335fb56cc2ee8566a7ca1912cabae00db3ac22876c26c49b776bb1"
+      }
+    },
+    {
+      "id": "persistent",
+      "question": "修改今天的版本怎样避免把历史账本的共享节点也改掉？",
+      "expected": [
+        "A21"
+      ],
+      "predicted": "A21",
+      "correct": true,
+      "margin": 0.9942639934835134,
+      "evidence": {
+        "source": "coursebook:A21/beginner",
+        "sha256": "1e8ab238c3010e31093e536fe45b7dd950aa80efdf93dd7b0d11b00185d4c1f5"
+      }
+    },
+    {
+      "id": "flow-reverse",
+      "question": "网络流已经送出去的量为什么还要建立反向残量边？",
+      "expected": [
+        "A20"
+      ],
+      "predicted": "A20",
+      "correct": true,
+      "margin": 0.8501346305049484,
+      "evidence": {
+        "source": "coursebook:A20/beginner",
+        "sha256": "68e36a9a8c32de48681f3b504b796800b109c25854c2083a3d3aaf153a2aa347"
+      }
+    },
+    {
+      "id": "complexity",
+      "question": "循环先执行n次，再执行n次，怎样统计总工作量和辅助存储？",
+      "expected": [
+        "F15-03",
+        "P06"
+      ],
+      "predicted": "F15-03",
+      "correct": true,
+      "margin": 0.8594313011602512,
+      "evidence": {
+        "source": "foundation:F15-03/professional",
+        "sha256": "143118e6195041cbf7b07d686ba0ddfa2b083e050c79ed47557ad4d1cdb65478"
+      }
+    },
+    {
+      "id": "pseudocode",
+      "question": "伪代码中箭头和等号分别表示什么，RETURN和OUTPUT有何不同？",
+      "expected": [
+        "P04"
+      ],
+      "predicted": "P04",
+      "correct": true,
+      "margin": 0.5300757014465827,
+      "evidence": {
+        "source": "coursebook:P04/professional",
+        "sha256": "5835190e68408e954cf6871e87ab8cf6aa962c0954328998a2751f4b5f6890eb"
+      }
+    },
+    {
+      "id": "sg",
+      "question": "mex集合里没出现的最小非负数如何决定游戏的SG值？",
+      "expected": [
+        "A29"
+      ],
+      "predicted": "A29",
+      "correct": true,
+      "margin": 1.3608297669206886,
+      "evidence": {
+        "source": "coursebook:A29/professional",
+        "sha256": "3aaf4403becec6bf95a3b4a83a60cf19a57cf5e553fbe14e9b90f4b1f52a8c20"
+      }
+    },
+    {
+      "id": "expectation",
+      "question": "两个随机量不独立时，它们相加的期望仍能相加吗？",
+      "expected": [
+        "A28"
+      ],
+      "predicted": "A28",
+      "correct": true,
+      "margin": 0.11748212649835033,
+      "evidence": {
+        "source": "coursebook:A28/professional",
+        "sha256": "524b97a02f1245d98113e0c9e3736f581d97c4122ba6378ff198278d54ef1139"
+      }
+    },
+    {
+      "id": "st-overlap",
+      "question": "为什么ST表查询最小值时两段可重叠，求和却不行？",
+      "expected": [
+        "A06"
+      ],
+      "predicted": "A06",
+      "correct": true,
+      "margin": 0.32272266170364006,
+      "evidence": {
+        "source": "coursebook:A06/professional",
+        "sha256": "092119edcc386607c750b07db57b52394035ef9d3eb73113adc8dc39fc62c49d"
+      }
+    },
+    {
+      "id": "suffix-count",
+      "question": "后缀自动机一个状态代表的不同子串数量为何看最长长度和链接长度之差？",
+      "expected": [
+        "A16"
+      ],
+      "predicted": "A16",
+      "correct": true,
+      "margin": 1.4314215836449176,
+      "evidence": {
+        "source": "coursebook:A16/professional",
+        "sha256": "e86056ba85394e88f0877daad3f93c1d0f9e655d0b9f89cc2e691e1b3f477e73"
+      }
+    }
+  ]
+}

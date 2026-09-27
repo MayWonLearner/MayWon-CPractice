@@ -1,0 +1,22 @@
+[
+ {"id":"input-address","question":"读入第二个数组格子时，是给scanf一个数还是给它写入的位置？","sources":["F01-03","F05-04"]},
+ {"id":"newline","question":"为什么按了回车还没有读到字符串结束的那个零？","sources":["F06-02","F04-01","F01-08"]},
+ {"id":"getchar-eof","question":"getchar的EOF为什么不能先塞进char再判断？","sources":["F01-08","F06-04"]},
+ {"id":"assignment-output","question":"只写total的赋值，屏幕为什么没有自动显示计算结果？","sources":["F01-10","P01"]},
+ {"id":"integer-division","question":"5除以2放进double为什么还是2，不是2.5？","sources":["F02-01"]},
+ {"id":"ctype","question":"isdigit返回的真值能否只按等于1来判断？","sources":["F06-07"]},
+ {"id":"uninitialized","question":"还没把字符读进数组，就拿当前格子判断while条件有什么问题？","sources":["F04-01","F05-03"]},
+ {"id":"negative-window","question":"数组有负数时，右边扩展窗口会让和下降，原来的双指针还能照用吗？","sources":["F15-01","A04"]},
+ {"id":"dp-direction","question":"一个物品只许选一次，背包容量从小往大更新为何会重复选？","sources":["A13"]},
+ {"id":"negative-edge","question":"图里有负边时为什么不能直接用Dijkstra定案？","sources":["A09"]},
+ {"id":"compression-distance","question":"坐标压成排名后，排名差能直接当原来的实际长度吗？","sources":["A03","A22"]},
+ {"id":"inverse","question":"模6时能通过一个乘法逆元完成除以3吗？","sources":["A17"]},
+ {"id":"persistent","question":"修改今天的版本怎样避免把历史账本的共享节点也改掉？","sources":["A21"]},
+ {"id":"flow-reverse","question":"网络流已经送出去的量为什么还要建立反向残量边？","sources":["A20"]},
+ {"id":"complexity","question":"循环先执行n次，再执行n次，怎样统计总工作量和辅助存储？","sources":["F15-03","P06"]},
+ {"id":"pseudocode","question":"伪代码中箭头和等号分别表示什么，RETURN和OUTPUT有何不同？","sources":["P04"]},
+ {"id":"sg","question":"mex集合里没出现的最小非负数如何决定游戏的SG值？","sources":["A29"]},
+ {"id":"expectation","question":"两个随机量不独立时，它们相加的期望仍能相加吗？","sources":["A28"]},
+ {"id":"st-overlap","question":"为什么ST表查询最小值时两段可重叠，求和却不行？","sources":["A06"]},
+ {"id":"suffix-count","question":"后缀自动机一个状态代表的不同子串数量为何看最长长度和链接长度之差？","sources":["A16"]}
+]

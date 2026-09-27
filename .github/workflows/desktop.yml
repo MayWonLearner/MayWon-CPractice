@@ -52,6 +52,8 @@ jobs:
       - run: npm run doctor
       - run: npm test
       - run: npm run test:legacy
+      - run: npm run test:course
+      - run: python tests/course-exercises.test.py
       - name: Desktop window and IPC smoke test
         if: runner.os != 'Linux'
         run: npm run smoke

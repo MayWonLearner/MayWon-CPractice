@@ -3,3 +3,14 @@
 /* Narrow practice panes place the note directly after its paragraph in normal flow. */
 .annotation-content>.annotation-rail{border-left:0;border-top:1px solid #405362;padding:16px 0;margin:16px 0}.annotation-content>.annotation-rail .annotation-sticky{position:static;max-height:440px}
 .annotated-document.annotation-idle{display:block}.annotation-rail[hidden]{display:none}
+
+.coursebook-entry { display:flex; gap:12px; flex-wrap:wrap; margin:18px 0 24px; }
+.course-flow { margin:20px 0; color:#9bcece; border:1px solid var(--border,#334155); border-radius:12px; padding:12px; }
+.course-flow svg { display:block; width:100%; height:auto; }
+.course-flow figcaption { font-size:13px; line-height:1.8; }
+#coursebook-outline { max-height:65vh; overflow:auto; }
+#coursebook-outline button[hidden] { display:none; }
+#coursebook-outline .lesson-link span { min-width:42px; }
+
+#coursebook-search{min-height:0;height:40px;resize:none;margin:8px 0 14px;padding:8px 10px}
+.lesson-walkthrough h4 code{white-space:pre-wrap}

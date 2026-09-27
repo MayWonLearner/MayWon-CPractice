@@ -1,5 +1,5 @@
 {
-  "version": "6.0.1",
+  "version": "6.1.0",
   "scope": "Public tracked source only",
   "files": [
     {
@@ -34,8 +34,8 @@
     },
     {
       "path": ".github/workflows/desktop.yml",
-      "bytes": 2507,
-      "sha256": "67ce69b5de36a2bbdd2e70a7d59b944869fa18a6c5b74d2fb5d4e405896a9ba9"
+      "bytes": 2591,
+      "sha256": "9994d07a7cdf21a57aeae9bddb0390cdc0fb59668185929989ef4b9da5a6a9ae"
     },
     {
       "path": ".github/workflows/macos.yml",
@@ -58,14 +58,19 @@
       "sha256": "1f05fe34033d7fd88000a405bab338147b41ec0c5fdf104dfa4b586231d9a041"
     },
     {
+      "path": "Desktop/learning-audit.cjs",
+      "bytes": 2494,
+      "sha256": "3ded8779410ea83b770f5e33c17b53abc8b70ddf58041f3905ab8d9149c52f79"
+    },
+    {
       "path": "Desktop/limit-win.c",
       "bytes": 1770,
       "sha256": "06a9facb33bd9bccae60bbfcaf428b138c39f1a8784240c66f28628c3adc0593"
     },
     {
       "path": "Desktop/main.cjs",
-      "bytes": 11585,
-      "sha256": "0fcc1670b7516477b0c8a50aa6621e42462e54e67137b24ab51ddf521de421a8"
+      "bytes": 12881,
+      "sha256": "485c69c26748b188bf71f9e9e19753ed66e079c9ffa272961f3bbca50a7ba756"
     },
     {
       "path": "Desktop/models.cjs",
@@ -79,8 +84,8 @@
     },
     {
       "path": "Desktop/preload.cjs",
-      "bytes": 760,
-      "sha256": "81a3986ca334bcaf3e3cddcfd0b6ad5851ce613cd0abd4fcbb7ec141357e8512"
+      "bytes": 776,
+      "sha256": "3f4c4e0428d5514cdef01950775c4d520ba8736aeb0eb3bdd4d1a0a9b4cc6064"
     },
     {
       "path": "Desktop/process.cjs",
@@ -94,8 +99,8 @@
     },
     {
       "path": "Desktop/smoke.cjs",
-      "bytes": 3877,
-      "sha256": "72f70ae07e8451c684dbc26f50f22e083c8e07f7a2aa64182b9a344f2bcf7cad"
+      "bytes": 4970,
+      "sha256": "daf04067d990ff13c69ffd7c0956f2e37f162e225307403769173f6aee9a195e"
     },
     {
       "path": "Desktop/state.cjs",
@@ -134,8 +139,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 15123,
-      "sha256": "f7a2615097b67813b33efdd2e3456a65a81746fcbfa9163d22a93e79ea4e4d7d"
+      "bytes": 17239,
+      "sha256": "dae781613b1672511186e2ded6e3c6e04d2e14fb8411b6d5621fd86bd6d8cbe8"
     },
     {
       "path": "RELEASE.md",
@@ -154,13 +159,13 @@
     },
     {
       "path": "Resources/acknowledgements.js",
-      "bytes": 9721,
-      "sha256": "356b9d2cb511ed9d9e6c03618c6e5b1b4dec6791f96a3961aa5ea1f552ae1333"
+      "bytes": 10708,
+      "sha256": "0bfefecbe13c48dfbdeaef27a1f69db81cacfc367ecad86ff3676dfe6384b5b4"
     },
     {
       "path": "Resources/acknowledgements.json",
-      "bytes": 11578,
-      "sha256": "99e79dfd7d134e75e3db99868f4e71929101474e572114b11a836e850a68f170"
+      "bytes": 12769,
+      "sha256": "7bff37f10f00aca96f078cd1585849b11f03e14a24e57dd16a0edbb882f5425c"
     },
     {
       "path": "Resources/analysis-instructions.txt",
@@ -189,8 +194,8 @@
     },
     {
       "path": "Resources/app.js",
-      "bytes": 44412,
-      "sha256": "306d771f9ceb7f3930d291d55bf8c4c8ba20bb11f35c070fc2911678e724d65f"
+      "bytes": 44554,
+      "sha256": "5e7fbeac5c04f1f0bcb8588c9735b62f7e3a815103527c17dfd6ae6294cc5bfb"
     },
     {
       "path": "Resources/chapter-additions.json",
@@ -213,14 +218,34 @@
       "sha256": "49864fb6c15e17115a2296a435e7fa10f4e40445e41d686cd386f7a1a34634dc"
     },
     {
+      "path": "Resources/course-exercises.json",
+      "bytes": 34156,
+      "sha256": "d9d4a6b477e2c67a6caa175fe213bc097bd3527243fddcf6a5c443f67cf1450d"
+    },
+    {
+      "path": "Resources/coursebook-data.js",
+      "bytes": 393833,
+      "sha256": "7d8e9899b35a6d9db6e04e8f5b32be05c2d1b50251eaa5c13f24c22b3022f738"
+    },
+    {
+      "path": "Resources/coursebook.js",
+      "bytes": 7779,
+      "sha256": "86955936e5a5356066f429d4e515196f39dd9eb2208814dfda7498ab69d87d64"
+    },
+    {
+      "path": "Resources/coursebook.json",
+      "bytes": 457710,
+      "sha256": "25667f1a14576c85a8b737ed589e761cec84702a761e169d7932b2a8306f1249"
+    },
+    {
       "path": "Resources/curriculum.js",
-      "bytes": 52184533,
-      "sha256": "58be096b61b0dbd68a71c9066ead4be0db7b0c1134bd03c3d85bfe198bb3a2b9"
+      "bytes": 52213974,
+      "sha256": "092a89f59da0cac3cf39758f2c7eac978b379db0e9ad30415d31d84714f9796b"
     },
     {
       "path": "Resources/curriculum.json",
-      "bytes": 52841895,
-      "sha256": "6375ace2a54243759962c828925db1ee40a595eabb4f040d106fe1ddb24d4157"
+      "bytes": 52876029,
+      "sha256": "63e0730989e5668484e16b3798423c731abc8ef6cf556b16a668962d58cb5d5e"
     },
     {
       "path": "Resources/desktop.js",
@@ -238,6 +263,11 @@
       "sha256": "270aa4f3b3595a9f064880462dad8eafba9b4eea7ebbe07a9aa6f9f14c6b52c6"
     },
     {
+      "path": "Resources/diagrams/score-loop.drawio",
+      "bytes": 1649,
+      "sha256": "2170e2d15f4235f6d7de73d27a7e4be4113fa47ef38e9204730b2d77394869b5"
+    },
+    {
       "path": "Resources/editor.bundle.css",
       "bytes": 345187,
       "sha256": "09f77fb5e87a78b46bea002c59b64bb1556ca7af787f84aafd2072460820b396"
@@ -249,18 +279,18 @@
     },
     {
       "path": "Resources/foundations-v5.js",
-      "bytes": 176459,
-      "sha256": "e8b2b240f5563060c075d3a2b16c3613be9939918a3b27c9de52ffe28d30089c"
+      "bytes": 165952,
+      "sha256": "0dfd3d412d3fe62c381230091ada7c7a012bd8a482192cc8e2c7910808f69f67"
     },
     {
       "path": "Resources/foundations-v5.json",
-      "bytes": 227717,
-      "sha256": "e364e4f88ef16452b924f78104fab6f660d7e962be75d5ce822a642c44448bba"
+      "bytes": 214424,
+      "sha256": "7d144dd27678a47b84b019626555bbbc43f9fb2f770b729b7cb161d00d8b910c"
     },
     {
       "path": "Resources/index.html",
-      "bytes": 3961,
-      "sha256": "9899afa619a81be613e3389bc3e92b75770dee6f17399de7cfff1446968fac1b"
+      "bytes": 4040,
+      "sha256": "9bc9a62d6dd47952f8161f8eadcda2a96314f2f676c949daf9e6952781dd6e0e"
     },
     {
       "path": "Resources/learning.js",
@@ -329,13 +359,13 @@
     },
     {
       "path": "Resources/tutorial-v5.css",
-      "bytes": 6166,
-      "sha256": "3d4bb392dc8638cf21e1c26ca9745e8240311d378040aea042fab8114460e01c"
+      "bytes": 6802,
+      "sha256": "76aea659cf7bbb7bd2a446fd2b32e71d064cb8577168e7db974c9c0b29988a7a"
     },
     {
       "path": "Resources/tutorials.js",
-      "bytes": 22219,
-      "sha256": "68724841961171b31c4d7326681950b668a7858d9ae586c2ded1acf442de07a5"
+      "bytes": 22717,
+      "sha256": "6346cd96569d1d85c50fd453d518c3864a3ceda21a8de87bad687f8ebcc66438"
     },
     {
       "path": "Resources/vendor/auto-render.js",
@@ -669,8 +699,8 @@
     },
     {
       "path": "Resources/vscode-extensions.json",
-      "bytes": 186,
-      "sha256": "86df8db87703875858aa529a36bd8894b2a0e59e88d1f265e735198013659d20"
+      "bytes": 254,
+      "sha256": "f369d5cdf3d6d719828d92efed13463b73da5c0b32883d3d766db0443519e380"
     },
     {
       "path": "Resources/vscode-launch.json",
@@ -719,8 +749,8 @@
     },
     {
       "path": "Sources/main.swift",
-      "bytes": 18035,
-      "sha256": "b7626c5d3f3b528c90e91826b236418b8a2054d0bca835e1a32bb6860675add5"
+      "bytes": 19630,
+      "sha256": "8ac8f9dc15f4623e3eea17ab6c80f6d953a5c068deddce902904da41e2725f17"
     },
     {
       "path": "THIRD_PARTY.md",
@@ -773,6 +803,26 @@
       "sha256": "9b7510e5f7b35b01f22e0badbd735f119b08a9217d155fd81b3e07800b7344e7"
     },
     {
+      "path": "docs/LEARNING-EXPERIMENT.md",
+      "bytes": 4357,
+      "sha256": "cfb649fca8d9ab272199590e2ac49b03b3cda1fb10aa0dcd80e43fef9f4a854a"
+    },
+    {
+      "path": "docs/TEACHING-COVERAGE.md",
+      "bytes": 12213,
+      "sha256": "fbd827732e892bc95ddae27676fa6f53027b235e39b42497572c28d207eecf31"
+    },
+    {
+      "path": "docs/learning-evidence/results.json",
+      "bytes": 24347,
+      "sha256": "fe640cda12bb116579476f6b2040fac677dd9aee358117efef49aa688085700f"
+    },
+    {
+      "path": "docs/learning-evidence/teacher-answers.json",
+      "bytes": 24702,
+      "sha256": "ee941ee981676c824ce49b99418a0627d208dde1855fb0d8cab1620e4ef6e7d1"
+    },
+    {
       "path": "examples/hello.c",
       "bytes": 76,
       "sha256": "3ed9b71c980d3598b3a29f1363d18a4902149fcf56599e8d064b7df059651b90"
@@ -785,12 +835,12 @@
     {
       "path": "package-lock.json",
       "bytes": 127594,
-      "sha256": "ebff8578cfb29e443d57177ee390aa5e2987e700cab0348c4af8079a9d54c56f"
+      "sha256": "73b95b0badd2142baa80c9f7f8e9a37f282f36c63ad3a7e334b0460ff73163fb"
     },
     {
       "path": "package.json",
-      "bytes": 2415,
-      "sha256": "a0300e7eadfb6288c59b28f3348576de2fec0af8c3882036b334bab1cc47e537"
+      "bytes": 2594,
+      "sha256": "27dd248b43440c0edca5cad585b73b7bddfb8011ebd29a6ac12408e0a28a900a"
     },
     {
       "path": "scripts/build-vendor.mjs",
@@ -813,6 +863,11 @@
       "sha256": "a0e216757b63c56d48b289fa6a8265888beb289e0e4abc072e2e7bed4091a2af"
     },
     {
+      "path": "scripts/learning-experiment.cjs",
+      "bytes": 5577,
+      "sha256": "3e9b4d2fba829a7da9b8b790025ff6b745031f9af40e97f641a777e712772e35"
+    },
+    {
       "path": "scripts/make_icon.swift",
       "bytes": 3856,
       "sha256": "b558970d041ca5e3c00c8fac96644144d405362a47983c05326200f86719f160"
@@ -821,6 +876,11 @@
       "path": "scripts/prepare-release.py",
       "bytes": 1785,
       "sha256": "31818f9e282f5f8dc9a5e6f19d836a04c0c03a01b5c42735d7055f86e6df7194"
+    },
+    {
+      "path": "scripts/run-learning-audit.cjs",
+      "bytes": 974,
+      "sha256": "a8e5c24356a7a75295dae7d28a36156a0df2aa03b8c1d25272ab29c5cf7bf34f"
     },
     {
       "path": "scripts/smoke-launcher.cjs",
@@ -858,6 +918,16 @@
       "sha256": "85c8dd74147491e03d18666331048c02034fde07fe36308f82f1526bce6d0a1c"
     },
     {
+      "path": "tests/course-content.test.cjs",
+      "bytes": 2523,
+      "sha256": "20faac100925e19ee8ea52c63cf7490939b90e010b2c83a2b3ff64457e0dbfb6"
+    },
+    {
+      "path": "tests/course-exercises.test.py",
+      "bytes": 1990,
+      "sha256": "1d3308d259bda987c2d5447b58f5f2459437b47295ee4318bfbd5f05e82bb6a9"
+    },
+    {
       "path": "tests/desktop.test.cjs",
       "bytes": 7501,
       "sha256": "bcf030d62c86e3b55893eb46d8174b1017eb80677562bfaa4e17b989c8792f5d"
@@ -873,14 +943,19 @@
       "sha256": "97157063e6048d454d0ea738e63f858a78103216cb107f0ad08743d7e733d6bb"
     },
     {
+      "path": "tests/learning-probes.json",
+      "bytes": 2629,
+      "sha256": "5ce7a515a28bd3a088b9b0e728c963698f47278744a0a980d40538f49542441c"
+    },
+    {
       "path": "tests/learning.test.cjs",
       "bytes": 3713,
       "sha256": "f1da41181c352417978c90b59426a3c833545bfccccd69a97f51367c2780690d"
     },
     {
       "path": "tests/review-regressions.cjs",
-      "bytes": 6048,
-      "sha256": "d012a32451312c862bca65bfa701d55dbd9c4d870d4302500029880e2a4fa749"
+      "bytes": 6064,
+      "sha256": "d768f2aa07300d531d6e916ef36abcfff74e3e8eb637f0b30a91d5c2c1343b06"
     },
     {
       "path": "tests/v5-study-ui.cjs",

@@ -112,6 +112,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
             }
         }catch{send("error","创建 VS Code 工作区失败："+error.localizedDescription)}
     }
+    func openCourseFlowchart() {
+        let editor=URL(fileURLWithPath:"/Applications/Visual Studio Code.app")
+        guard FileManager.default.fileExists(atPath:editor.path) else {send("error","请先安装 Visual Studio Code，再在扩展页安装 hediet 的 Draw.io Integration。");return}
+        do {
+            let dir=dataURL.deletingLastPathComponent().appendingPathComponent("VSCode/flowcharts")
+            try FileManager.default.createDirectory(at:dir.appendingPathComponent(".vscode"),withIntermediateDirectories:true)
+            let file=dir.appendingPathComponent("score-loop.drawio")
+            if !FileManager.default.fileExists(atPath:file.path) {try FileManager.default.copyItem(at:resourceURL.appendingPathComponent("diagrams/score-loop.drawio"),to:file)}
+            let extensions=try Data(contentsOf:resourceURL.appendingPathComponent("vscode-extensions.json"))
+            try extensions.write(to:dir.appendingPathComponent(".vscode/extensions.json"),options:.atomic)
+            let config=NSWorkspace.OpenConfiguration();config.activates=true
+            NSWorkspace.shared.open([dir,file],withApplicationAt:editor,configuration:config){[weak self] _,error in
+                DispatchQueue.main.async {if let error {self?.send("error",error.localizedDescription)}else{self?.send("notice","流程图已打开；首次使用请接受工作区推荐，安装 Draw.io Integration。已有图不会覆盖。")}}
+            }
+        }catch{send("error","打开流程图失败："+error.localizedDescription)}
+    }
     func reloadVSCode(_ body: [String:Any]) {
         guard let id=body["problemID"] as? String,let dir=workspaceURL(id) else{return}
         do {let data=try Data(contentsOf:dir.appendingPathComponent("main.c"));guard data.count<=262144,let code=String(data:data,encoding:.utf8) else {send("error","源码需为 UTF-8 且不超过 256 KB。");return};send("imported",["code":code,"name":"main.c"])}catch{send("error","还没有该题的 VS Code 工作区，请先点击“VS Code”。")}
@@ -186,6 +202,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
         case "stop":runner.cancel()
         case "language":language.handle(body)
         case "openVSCode":openVSCode(body)
+        case "openFlowchart":openCourseFlowchart()
         case "reloadVSCode":reloadVSCode(body)
         case "import":
             let panel=NSOpenPanel();panel.allowedContentTypes=[UTType(filenameExtension:"c") ?? .sourceCode];panel.allowsMultipleSelection=false

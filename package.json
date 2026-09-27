@@ -1,8 +1,8 @@
 {
   "name": "maywon-cpractice",
   "productName": "CPractice",
-  "version": "6.0.1",
-  "description": "跨平台 C 语言学习工作台：双层教程、650 道练习、本地评测与 AI 导师",
+  "version": "6.1.0",
+  "description": "跨平台 C 语言学习工作台：双层教程、660 道练习、本地评测与 AI 导师",
   "author": "MayWonLearner",
   "license": "MIT",
   "repository": "https://github.com/MayWonLearner/MayWon-CPractice",
@@ -17,7 +17,10 @@
     "smoke": "node scripts/smoke-launcher.cjs",
     "dist": "electron-builder --publish never",
     "pack": "electron-builder --dir --publish never",
-    "doctor": "node scripts/doctor.cjs"
+    "doctor": "node scripts/doctor.cjs",
+    "test:course": "node --test tests/course-content.test.cjs",
+    "learn:audit": "node scripts/learning-experiment.cjs",
+    "learn:ask": "node scripts/run-learning-audit.cjs"
   },
   "devDependencies": {
     "electron": "44.4.5",

@@ -6,7 +6,7 @@
 
 面向中文零基础学习者，支持 **Windows、macOS（Apple Silicon / Intel）和 Linux**。教程与题库随应用提供，可离线学习和本地评测；AI 功能通过你自己登录的 Codex 按需使用。
 
-A cross-platform C learning desktop app with beginner-friendly lessons, 650 exercises, a Monaco editor, local judging, annotations and an optional AI tutor. The learning content is currently in Chinese.
+A cross-platform C learning desktop app with beginner-friendly lessons, 660 exercises, a Monaco editor, local judging, annotations and an optional AI tutor. The learning content is currently in Chinese.
 
 [下载版本](https://github.com/MayWonLearner/MayWon-CPractice/releases) · [报告问题](https://github.com/MayWonLearner/MayWon-CPractice/issues) · [安装与使用](#安装) · [来源与致谢](#来源与致谢)
 
@@ -14,8 +14,8 @@ A cross-platform C learning desktop app with beginner-friendly lessons, 650 exer
 
 | 板块 | 内容 |
 |---|---|
-| 完整教程 | 15章、76课，另有66个基础点细讲；小白生活例子与专业机制双层解释，术语对照、常见误解、伪代码、多行C程序、默认隐藏的理解题答案。 |
-| 分级题库 | 300道章节练习（每章20题）+200道经典综合题+50道足球/篮球题+100道竞赛困难题，共650题。 |
+| 完整教程 | 15章、76课，另有66个基础点细讲；6.1新增6节前置课、35节算法/竞赛课与100篇题目导读；小白生活例子与专业机制双层解释，术语对照、常见误解、伪代码、多行C程序、默认隐藏的理解题答案。 |
+| 分级题库 | 300道章节练习（每章20题）+200道经典综合题+50道足球/篮球题+100道竞赛困难题，另有10道进阶入门台阶题，共660题。 |
 | 代码工作台 | Monaco编辑器，语法着色、Enter自动缩进、补全、格式化、查找、`.c`导入/导出、VS Code工作区往返；安装clangd后提供语义诊断、跳转与重命名。 |
 | 本地验证 | C17编译、标准输入、自定义运行、逐检查点评测、文件输入输出题、中文错误解释、时间和输出限制、取消运行。 |
 | 具体错误分析 | GPT-5.6-Sol Medium分析当前代码、失败输入和问题行；悬浮显示可替换代码、逐行中文`//`注释、修改理由和复习引用。不会自动覆盖草稿。 |
@@ -238,3 +238,30 @@ tests/         合成回归测试，不含私人数据
 欢迎提交教程勘误、题面歧义、最小复现和跨平台兼容问题。参见 [CONTRIBUTING.md](CONTRIBUTING.md)、[SECURITY.md](SECURITY.md) 与 [RELEASE.md](RELEASE.md)。
 
 原创代码、教程与题目采用 [MIT License](LICENSE)。第三方内容按各自许可证授权；MIT不替代第三方许可。本项目与OpenAI、Microsoft、LeetCode及引用作者没有官方隶属关系。
+
+
+## 6.1 教程更新
+
+主页与“学习教程”页都可进入“从零开始”“算法与竞赛进阶”“100道竞赛题逐题导读”。基础点删除了重复的例子展示；每个点保留双层讲解、术语、边界、自查答案，伪代码改为有赋值与控制流的结构化写法。前置课先解释环境、标准输入输出、伪代码符号、流程图与复杂度，避免先抛术语。
+
+进阶课按 [教学覆盖索引](docs/TEACHING-COVERAGE.md) 连接NOI大纲与现有100道困难题，每题可回到对应先修课程。新增10道完整编程题提供SG、概率、贝叶斯、线性基、Huffman、卷积、高精度、2-SAT等台阶。高阶选拔主题的概念导论不等于完整专题训练或官方认证；C++内容在独立编译环境学习，本应用判题仍为C17。
+
+前置课P05内提供可视流程图。“在VS Code中编辑流程图”会准备原创 `.drawio` 文件，并在桌面版中按需安装 `hediet.vscode-drawio`。也可手动执行：
+
+```sh
+code --install-extension hediet.vscode-drawio
+```
+
+需要已经安装完整VS Code及其 `code` 命令。扩展由官方Marketplace单独安装，默认支持离线编辑；应用内Monaco并不运行VS Code扩展。已有流程图不会被模板覆盖。保留的Swift外壳会打开流程图与工作区推荐，首次需在VS Code接受扩展安装。
+
+[学习实验报告](docs/LEARNING-EXPERIMENT.md)提供从空词表拟合的小型学习模型、20个固定探针、3次真实内置High提问和可复现结果。它用于发现教材定位与可读性缺口，不冒充从零训练的GPT，也不把课程定位率当作真人理解效果。
+
+新增验证命令：
+
+```sh
+npm run test:course
+python3 tests/course-exercises.test.py
+npm run learn:audit
+```
+
+Windows可用 `npm.cmd` 与 `python`。测试使用临时编译目录，不写入个人学习记录。AI实验不在CI中自动调用。

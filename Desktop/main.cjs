@@ -5,7 +5,8 @@ const {pathToFileURL}=require('node:url');
 const {Runner}=require('./runner.cjs'),{Models}=require('./models.cjs'),{Language}=require('./language.cjs'),{StateStore,validateState}=require('./state.cjs');
 const {findTool,commandFor,compiler,toolEnvironment}=require('./platform.cjs');
 const {execute}=require('./process.cjs');
-const smoke=process.argv.includes('--smoke-test');
+const learningAudit=!app.isPackaged&&process.argv.includes('--learning-audit');
+const smoke=process.argv.includes('--smoke-test')||learningAudit;
 const resources=app.isPackaged?path.join(process.resourcesPath,'learning'):path.join(__dirname,'../Resources');
 const nativeSources=app.isPackaged?process.resourcesPath:path.join(__dirname,'../Sources');
 const dataDir=process.env.CPRACTICE_DATA_DIR||(smoke?path.join(os.tmpdir(),'CPracticeSmoke-'+process.pid):path.join(app.getPath('appData'),'CPractice Desktop'));
@@ -39,12 +40,24 @@ async function openVSCode(b){
  await fs.writeFile(source,b.code);const cc=compiler(),binary=path.join(dir,process.platform==='win32'?'program.exe':'program');
  const configs={
   'settings.json':{'files.associations':{'*.c':'c'},'editor.tabSize':4,'editor.insertSpaces':true,'editor.formatOnSave':true,'C_Cpp.intelliSenseEngine':'disabled'},
-  'extensions.json':{recommendations:['llvm-vs-code-extensions.vscode-clangd','ms-vscode.cpptools','vadimcn.vscode-lldb']},
+  'extensions.json':{recommendations:['llvm-vs-code-extensions.vscode-clangd','ms-vscode.cpptools','vadimcn.vscode-lldb','hediet.vscode-drawio']},
   'tasks.json':{version:'2.0.0',tasks:[{label:'编译当前 C 程序',type:'process',command:cc.file,args:['-std=c17','-Wall','-Wextra','-g','${file}','-o',binary,'-lm'],group:{kind:'build',isDefault:true},problemMatcher:['$gcc']}]},
   'launch.json':{version:'0.2.0',configurations:[process.platform==='win32'?{name:'调试当前 C 程序',type:'cppdbg',request:'launch',program:binary,cwd:dir,MIMode:'gdb',miDebuggerPath:findTool('gdb')||'gdb',externalConsole:true,preLaunchTask:'编译当前 C 程序'}:{name:'调试当前 C 程序',type:'lldb',request:'launch',program:binary,cwd:dir,preLaunchTask:'编译当前 C 程序'}]}
  };
  for(const [name,value] of Object.entries(configs))await fs.writeFile(path.join(dir,'.vscode',name),JSON.stringify(value,null,2));
  const cmd=commandFor(findTool('code')),r=await execute(cmd.file,[...cmd.args,dir],{env:toolEnvironment(),timeout:15000});if(r.code!==0)throw Error('无法打开 VS Code，请检查 code 命令安装。');send('notice','已打开 VS Code，修改后可返回本应用取回代码。');
+}
+async function openFlowchart(){
+ const cmd=commandFor(findTool('code')),dir=path.join(dataDir,'VSCode','flowcharts');
+ await fs.mkdir(dir,{recursive:true});
+ const file=path.join(dir,'score-loop.drawio');
+ try{await fs.writeFile(file,await fs.readFile(path.join(resources,'diagrams','score-loop.drawio')),{flag:'wx'});}catch(e){if(e.code!=='EEXIST')throw e;}
+ send('notice','正在为 VS Code 安装 Draw.io Integration…');
+ const installed=await execute(cmd.file,[...cmd.args,'--install-extension','hediet.vscode-drawio'],{env:toolEnvironment(),timeout:120000});
+ if(installed.code!==0)throw Error('draw.io 扩展安装未完成。可在 VS Code 扩展页搜索 hediet 的 Draw.io Integration 后重试。');
+ const opened=await execute(cmd.file,[...cmd.args,dir,file],{env:toolEnvironment(),timeout:15000});
+ if(opened.code!==0)throw Error('流程图已准备，但 VS Code 未能打开。');
+ send('notice','已打开流程图，已有修改会保留。');
 }
 async function handle(event,b){
  if(!validSender(event)||!b||typeof b.action!=='string')return;
@@ -79,6 +92,7 @@ async function handle(event,b){
     await restoreState(imported);break;
    }
    case 'openVSCode':await openVSCode(b);break;
+   case 'openFlowchart':await openFlowchart();break;
    case 'reloadVSCode':{const f=path.join(workspace(b.problemID),'main.c');if((await fs.stat(f)).size>262144)throw Error('代码过大。');send('imported',{code:new TextDecoder('utf-8',{fatal:true}).decode(await fs.readFile(f)),name:'main.c'});break;}
    case 'openURL':{const url=new URL(b.url);if(url.protocol==='https:'&&!url.username&&!url.password)await shell.openExternal(url.href);break;}
   }
@@ -102,7 +116,8 @@ if(!smoke&&!app.requestSingleInstanceLock()){app.quit();}else{
   ipcMain.on('cpractice:action',handle);ipcMain.on('cpractice:flushed',event=>{if(validSender(event)&&window.closingRequested)finishQuit();});
   window.on('close',event=>{if(closing)return;event.preventDefault();if(window.closingRequested)return;window.closingRequested=true;window.webContents.send('cpractice:closing');setTimeout(()=>{if(!closing)finishQuit();},3000).unref();});
   await window.loadFile(path.join(resources,'index.html'));
-  if(smoke)require('./smoke.cjs').run({window,runner,store,resources,dataDir,restoreState,quit:finishQuit}).catch(async e=>{console.error(e);process.exitCode=1;await finishQuit();});
+  if(learningAudit)require('./learning-audit.cjs').run({window,quit:finishQuit}).catch(async e=>{console.error(e);process.exitCode=1;await finishQuit();});
+  else if(smoke)require('./smoke.cjs').run({window,runner,store,resources,dataDir,restoreState,quit:finishQuit}).catch(async e=>{console.error(e);process.exitCode=1;await finishQuit();});
  });
  app.on('window-all-closed',()=>app.quit());
 }

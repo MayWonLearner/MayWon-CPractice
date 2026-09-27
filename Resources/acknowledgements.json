@@ -209,6 +209,29 @@
           "usage": "发现规则、来源、许可证或题面错误时，请通过项目GitHub的内容纠错模板提交链接和最小示例，不要提交个人凭据或同学的私人代码。"
         }
       ]
+    },
+    {
+      "title": "6.1 教学修订与竞赛范围核对",
+      "items": [
+        {
+          "title": "CCF NOI 大纲（2025年修订版）官方发布页",
+          "url": "https://www.noi.cn/xw/2025-04-18/841584.shtml",
+          "usage": "2026-09-27核对入门、提高、NOI及选拔拓展范围，课程解释与例子由本项目独立编写。",
+          "license": "仅链接；不打包大纲PDF或页面正文"
+        },
+        {
+          "title": "廖雪峰：Python教程简介",
+          "url": "https://liaoxuefeng.com/books/python/introduction/index.html",
+          "usage": "参考先解释环境与基本概念、再进入完整示例的教学顺序；没有迁移其Python示例或语言性能断言。",
+          "license": "仅链接；不复制正文"
+        },
+        {
+          "title": "hediet / vscode-drawio",
+          "url": "https://github.com/hediet/vscode-drawio",
+          "usage": "通过官方扩展ID安装Draw.io Integration，在VS Code编辑本项目原创流程图。Monaco本身不运行该扩展。",
+          "license": "扩展单独安装，其许可适用于扩展自身；本仓库不打包其代码"
+        }
+      ]
     }
   ]
 }

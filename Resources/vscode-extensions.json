@@ -1,1 +1,12 @@
-{"recommendations":["ms-vscode.cpptools","llvm-vs-code-extensions.vscode-clangd","usernamehw.errorlens","ms-vscode.cmake-tools"],"unwantedRecommendations":["formulahendry.code-runner"]}
+{
+  "recommendations": [
+    "ms-vscode.cpptools",
+    "llvm-vs-code-extensions.vscode-clangd",
+    "usernamehw.errorlens",
+    "ms-vscode.cmake-tools",
+    "hediet.vscode-drawio"
+  ],
+  "unwantedRecommendations": [
+    "formulahendry.code-runner"
+  ]
+}
