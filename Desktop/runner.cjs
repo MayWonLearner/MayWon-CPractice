@@ -34,11 +34,12 @@ class Runner{
    const helperSource=path.join(this.nativeSources,process.platform==='win32'?'limit-win.c':'limit-runner.c');
    // Relative input/output arguments avoid legacy Windows compiler argv code-page loss.
    await fs.copyFile(helperSource,path.join(dir,'limit-helper.c'));
-   const buildEnv={...env,TMPDIR:dir,TMP:'.',TEMP:'.'};
-   const prep=await execute(cc.file,[...sdkFlags(),'-O2','limit-helper.c',...(process.platform==='win32'?['-municode']:[]),'-o',path.basename(helper)],{cwd:dir,env:buildEnv,timeout:30000,signal});
+   const buildEnv={...env,TMPDIR:process.platform==='win32'?'.':dir,TMP:'.',TEMP:'.'};
+   const intermediates=process.platform==='win32'&&cc.name==='gcc'?['-save-temps=obj']:[];
+   const prep=await execute(cc.file,[...sdkFlags(),...intermediates,'-O2','limit-helper.c',...(process.platform==='win32'?['-municode']:[]),'-o',path.basename(helper)],{cwd:dir,env:buildEnv,timeout:30000,signal});
    if(prep.code!==0)throw Error('无法准备运行限制器：'+prep.err);
    await fs.writeFile(path.join(dir,'main.c'),request.code);
-   const flags=[...sdkFlags(),'-std=c17','-Wall','-Wextra','-Wpedantic','-fno-common','-O2','-g',...(cc.name==='clang'?['-fno-color-diagnostics','-ferror-limit=12']:['-fdiagnostics-color=never','-fmax-errors=12']),'main.c','-o',path.basename(binary),'-lm'];
+   const flags=[...sdkFlags(),...intermediates,'-std=c17','-Wall','-Wextra','-Wpedantic','-fno-common','-O2','-g',...(cc.name==='clang'?['-fno-color-diagnostics','-ferror-limit=12']:['-fdiagnostics-color=never','-fmax-errors=12']),'main.c','-o',path.basename(binary),'-lm'];
    let buildFile=cc.file,buildArgs=flags;
    if(process.platform==='darwin'){const profile=path.join(dir,'compile.sb');await fs.writeFile(profile,macProfile(dir,helper,true,cc.file));buildFile='/usr/bin/sandbox-exec';buildArgs=['-f',profile,cc.file,...flags];}
    const built=await execute(buildFile,buildArgs,{cwd:dir,env:buildEnv,timeout:30000,signal});
