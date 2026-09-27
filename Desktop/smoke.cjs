@@ -1,7 +1,7 @@
 'use strict';
 // Explicit --smoke-test uses disposable app data and never calls a model.
 const fs=require('node:fs/promises'),path=require('node:path'),assert=require('node:assert/strict');
-async function run({window,store,dataDir,quit}){
+async function run({window,store,dataDir,restoreState,quit}){
  const checks=[];
  try{
   await window.webContents.executeJavaScript(`new Promise((resolve,reject)=>{let n=0;const t=setInterval(()=>{if(window.CPracticeTest&&document.querySelector('.module-card')){clearInterval(t);resolve(true);}else if(++n>100){clearInterval(t);reject(Error('home not loaded'));}},100);})`);
@@ -10,7 +10,15 @@ async function run({window,store,dataDir,quit}){
   await window.webContents.executeJavaScript(`(()=>{CPracticeTest.openProblem('C001');CEditor.instance.setValue(CURRICULUM.problems.find(p=>p.id==='C001').solution);CPracticeTest.startRun('judge');})()`);
   const judged=await window.webContents.executeJavaScript(`new Promise((resolve,reject)=>{let n=0;const t=setInterval(()=>{const r=CPracticeTest.results.C001;if(r){clearInterval(t);resolve(r.result);}else if(++n>400){clearInterval(t);reject(Error('judge timeout'));}},100);})`);
   assert.equal(judged.status,'passed',JSON.stringify(judged));checks.push({nativeIPCJudge:'passed'});
+  await window.webContents.executeJavaScript(`window.webkit.messageHandlers.native.postMessage({action:'save',state:CPracticeTest.snapshot()})`);
+  await restoreState({drafts:{},progress:{},favorites:[],history:[],reviews:{},last:'C001'});
+  const restored=await window.webContents.executeJavaScript(`new Promise((resolve,reject)=>{let n=0;const t=setInterval(()=>{if(window.CPracticeTest&&document.querySelector('.module-card')){clearInterval(t);resolve(CPracticeTest.snapshot().history.length);}else if(++n>100){clearInterval(t);reject(Error('restored home not loaded'));}},100);})`);
+  assert.equal(restored,0,'The old document must not overwrite an imported backup');
   await store.queue;
+  assert.equal((await store.load()).history.length,0);
+  const backup=(await fs.readdir(dataDir)).find(n=>n.startsWith('before-restore-'));
+  assert.ok(backup);assert.equal(JSON.parse(await fs.readFile(path.join(dataDir,backup),'utf8')).history.length,1);
+  checks.push({backupRestore:'passed',previousRecordsBackedUp:true});
   const dest=process.env.CPRACTICE_SMOKE_REPORT||path.join(process.cwd(),'tests/reports/desktop-smoke.json');await fs.mkdir(path.dirname(dest),{recursive:true});await fs.writeFile(dest,JSON.stringify({platform:process.platform,arch:process.arch,passed:true,checks},null,2));console.log('Desktop smoke passed:',process.platform,process.arch);
  }finally{await quit();}
 }

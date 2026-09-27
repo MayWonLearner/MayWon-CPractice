@@ -10,7 +10,7 @@ const resources=app.isPackaged?path.join(process.resourcesPath,'learning'):path.
 const nativeSources=app.isPackaged?process.resourcesPath:path.join(__dirname,'../Sources');
 const dataDir=process.env.CPRACTICE_DATA_DIR||(smoke?path.join(os.tmpdir(),'CPracticeSmoke-'+process.pid):path.join(app.getPath('appData'),'CPractice Desktop'));
 app.setPath('userData',dataDir);
-let window,closing=false,state={},store=new StateStore(dataDir);const active=new Map();
+let window,closing=false,restoring=false,state={},store=new StateStore(dataDir);const active=new Map();
 const runner=new Runner(resources,nativeSources);
 // Development keeps the Windows helper with desktop sources; packaged builds copy both together.
 if(!app.isPackaged&&process.platform==='win32')runner.nativeSources=__dirname;
@@ -24,6 +24,14 @@ async function runTask(key,b,work){
 }
 function validSender(event){return event.sender===window?.webContents&&event.senderFrame===window.webContents.mainFrame&&event.senderFrame.url===pathToFileURL(path.join(resources,'index.html')).href;}
 async function saveDialog(name,content,extensions){const r=await dialog.showSaveDialog(window,{defaultPath:path.basename(name),filters:[{name:'CPractice',extensions}]});if(!r.canceled&&r.filePath){await fs.writeFile(r.filePath,content);send('notice','已保存文件。');}}
+async function restoreState(imported){
+ if(active.size)throw Error('请先停止运行或取消模型请求，再导入备份。');
+ await store.queue;
+ await fs.writeFile(path.join(dataDir,'before-restore-'+Date.now()+'.json'),JSON.stringify(state,null,2),{mode:0o600});
+ restoring=true;state=validateState(imported);await store.save(state);
+ // Ignore the old document's pagehide autosave until the new document requests state.
+ await new Promise(resolve=>{window.webContents.once('did-finish-load',resolve);window.reload();});
+}
 function workspace(id){if(!/^(?:[CBXSH][0-9]{3,4}|R[0-9A-Fa-f]{32})$/.test(id))throw Error('练习编号无效。');return path.join(dataDir,'VSCode',id);}
 async function openVSCode(b){
  if(typeof b.code!=='string'||Buffer.byteLength(b.code)>262144)throw Error('代码过大。');const dir=workspace(b.problemID),source=path.join(dir,'main.c');
@@ -42,8 +50,8 @@ async function handle(event,b){
  if(!validSender(event)||!b||typeof b.action!=='string')return;
  try{
   switch(b.action){
-   case 'ready':send('state',state);break;
-   case 'save':state=validateState(b.state);await store.save(state);send('saved',true);break;
+   case 'ready':restoring=false;send('state',state);break;
+   case 'save':if(restoring)break;state=validateState(b.state);await store.save(state);send('saved',true);break;
    case 'run':case 'judge':{
     if(active.has('run'))return;const controller=new AbortController();active.set('run',controller);
     try{const result=await runner.run({...b,mode:b.action},{signal:controller.signal});send('result',{problemID:b.problemID,code:b.code,mode:b.action,result});}finally{active.delete('run');}break;
@@ -68,8 +76,7 @@ async function handle(event,b){
     if((await fs.stat(r.filePaths[0])).size>134217728)throw Error('备份超过128MB。');
     const imported=validateState(JSON.parse(await fs.readFile(r.filePaths[0],'utf8')));
     const answer=await dialog.showMessageBox(window,{type:'question',message:'用该备份恢复学习记录？',detail:'当前记录会先自动备份到应用数据目录。恢复后重载界面，跨系统也可使用同一份备份。',buttons:['取消','恢复'],defaultId:0,cancelId:0});if(answer.response!==1)break;
-    await store.queue;await fs.writeFile(path.join(dataDir,'before-restore-'+Date.now()+'.json'),JSON.stringify(state,null,2),{mode:0o600});
-    for(const c of active.values())c.abort();state=imported;await store.save(state);window.reload();break;
+    await restoreState(imported);break;
    }
    case 'openVSCode':await openVSCode(b);break;
    case 'reloadVSCode':{const f=path.join(workspace(b.problemID),'main.c');if((await fs.stat(f)).size>262144)throw Error('代码过大。');send('imported',{code:new TextDecoder('utf-8',{fatal:true}).decode(await fs.readFile(f)),name:'main.c'});break;}
@@ -95,7 +102,7 @@ if(!smoke&&!app.requestSingleInstanceLock()){app.quit();}else{
   ipcMain.on('cpractice:action',handle);ipcMain.on('cpractice:flushed',event=>{if(validSender(event)&&window.closingRequested)finishQuit();});
   window.on('close',event=>{if(closing)return;event.preventDefault();if(window.closingRequested)return;window.closingRequested=true;window.webContents.send('cpractice:closing');setTimeout(()=>{if(!closing)finishQuit();},3000).unref();});
   await window.loadFile(path.join(resources,'index.html'));
-  if(smoke)require('./smoke.cjs').run({window,runner,store,resources,dataDir,quit:finishQuit}).catch(async e=>{console.error(e);process.exitCode=1;await finishQuit();});
+  if(smoke)require('./smoke.cjs').run({window,runner,store,resources,dataDir,restoreState,quit:finishQuit}).catch(async e=>{console.error(e);process.exitCode=1;await finishQuit();});
  });
  app.on('window-all-closed',()=>app.quit());
 }

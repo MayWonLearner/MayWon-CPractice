@@ -64,8 +64,8 @@
     },
     {
       "path": "Desktop/main.cjs",
-      "bytes": 11197,
-      "sha256": "05db374ece89fbe0647cfb54f3dada119f1653b6fb63045f62e1e36d930aaaf9"
+      "bytes": 11585,
+      "sha256": "0fcc1670b7516477b0c8a50aa6621e42462e54e67137b24ab51ddf521de421a8"
     },
     {
       "path": "Desktop/models.cjs",
@@ -94,8 +94,8 @@
     },
     {
       "path": "Desktop/smoke.cjs",
-      "bytes": 2704,
-      "sha256": "570821a47eaa143f725345bf0532b2497cbd5969a2865281b3a4c219023ac10d"
+      "bytes": 3715,
+      "sha256": "ceb338d3537796ef4133eaf91ffcd8788abbddc690906405ce411ebd33aaa9ae"
     },
     {
       "path": "Desktop/state.cjs",
