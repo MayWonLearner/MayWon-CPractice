@@ -1,0 +1,22 @@
+name: 功能建议
+description: 描述实际学习场景和希望改善的操作。
+title: '[建议] '
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 现在遇到了什么问题
+      description: 请给出具体学习或使用场景。
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: 期望的操作与结果
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 如何验证改进有效
+      description: 可列出一两个可观察的行为或例子。

@@ -1,0 +1,198 @@
+{
+  "type": "object",
+  "properties": {
+    "summary": {
+      "type": "string"
+    },
+    "alreadyFixed": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "line": {
+            "type": "integer"
+          },
+          "code": {
+            "type": "string"
+          },
+          "evidence": {
+            "type": "string"
+          },
+          "beginner": {
+            "type": "string"
+          },
+          "professional": {
+            "type": "string"
+          },
+          "minimalFix": {
+            "type": "string"
+          },
+          "repair": {
+            "type": "object",
+            "properties": {
+              "startLine": {
+                "type": "integer"
+              },
+              "endLine": {
+                "type": "integer"
+              },
+              "code": {
+                "type": "string",
+                "description": "完整替换代码；每条有效语句单独成行，并附具体中文 // 行尾注释。独立花括号行注明代码块含义，保留缩进换行。"
+              },
+              "steps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 2
+              },
+              "explanation": {
+                "type": "string"
+              },
+              "verification": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "startLine",
+              "endLine",
+              "code",
+              "steps",
+              "explanation",
+              "verification"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "title",
+          "line",
+          "code",
+          "evidence",
+          "beginner",
+          "professional",
+          "minimalFix",
+          "repair"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "walkthrough": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "expected": {
+          "type": "string"
+        },
+        "actual": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "input",
+        "steps",
+        "expected",
+        "actual"
+      ],
+      "additionalProperties": false
+    },
+    "minimalPatch": {
+      "type": "string",
+      "description": "可直接阅读的 C17 修改代码，每条语句及独立花括号行均附中文 // 注释，解释该行在本题的作用与原因。"
+    },
+    "complexity": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "type": "string"
+        },
+        "space": {
+          "type": "string"
+        },
+        "explanation": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "time",
+        "space",
+        "explanation"
+      ],
+      "additionalProperties": false
+    },
+    "verification": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "reviews": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "quoteId": {
+            "type": "string"
+          },
+          "explanation": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "quoteId",
+          "explanation"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string"
+          },
+          "answer": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "question",
+          "answer"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "summary",
+    "alreadyFixed",
+    "issues",
+    "walkthrough",
+    "minimalPatch",
+    "complexity",
+    "verification",
+    "reviews",
+    "questions"
+  ],
+  "additionalProperties": false
+}

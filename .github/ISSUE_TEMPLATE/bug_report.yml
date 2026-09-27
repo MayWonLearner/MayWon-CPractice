@@ -1,0 +1,48 @@
+name: 应用问题
+description: 报告可复现的界面、编译、存档或连接问题。
+title: '[Bug] '
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请使用最小合成示例。不要上传完整学习存档、Codex 登录文件、令牌或私人照片。
+        涉及安全漏洞时，请参阅 SECURITY.md 的私密报告方式。
+  - type: input
+    id: version
+    attributes:
+      label: 应用版本
+      placeholder: '例如：5.0.0，源码构建'
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: macOS 与芯片架构
+      placeholder: '例如：macOS 15，Apple Silicon'
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 最小复现步骤
+      description: 从哪个页面开始、点击了什么、输入了什么？
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期行为与实际行为
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 可公开的错误信息或最小代码
+      description: 移除个人信息；可粘贴文字或脱敏截图。
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: 隐私核对
+      options:
+        - label: 我没有附上凭据、完整学习记录或未经同意的个人资料。
+          required: true

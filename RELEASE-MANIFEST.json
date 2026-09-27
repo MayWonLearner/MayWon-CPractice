@@ -1,0 +1,871 @@
+{
+  "version": "6.0.0",
+  "scope": "Public tracked source only",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 587,
+      "sha256": "4056587f27b3dad978ad2f9fc2b43fc5297e40d40557eaff9bfa8d009b295297"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
+      "bytes": 1420,
+      "sha256": "3d02e68cc065115db9755cdd9ff7d1e24fb2a7fd4a7004ab2254e7fb14781bc0"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "bytes": 27,
+      "sha256": "13064e7bea658e01e718b414fbb7b3b244f36411fe25ee2055c151f7b534547a"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/content_issue.yml",
+      "bytes": 881,
+      "sha256": "b8742309c2838e380de3c1bb0a93b3247912e31d56341ee58f5e34017bed70a2"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.yml",
+      "bytes": 585,
+      "sha256": "e1f6a5309ec7389ca6acd9bf4f75c34708d7ec60c9e5aad72e7bedfa18a00814"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "bytes": 726,
+      "sha256": "e2a3ece9a0da191f2904608704abb3905db37d0f87307facdf741f3bf8bf6b5b"
+    },
+    {
+      "path": ".github/workflows/desktop.yml",
+      "bytes": 2161,
+      "sha256": "3d6908dd5f2ef1720be2184de9502cdea3c77854cee7422f31376a8f6bd1a6ed"
+    },
+    {
+      "path": ".github/workflows/macos.yml",
+      "bytes": 2172,
+      "sha256": "bf6f42ee75331eaf56a8784429cb4897c630e1427474709c9f85222423963e23"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 675,
+      "sha256": "f01d770256ea6faa1902860b26870579c7bf17623c174b04ec8645a65f64f43c"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "bytes": 2541,
+      "sha256": "85fcb40011d6105eb7317ea647130f8ab55e0ef67d26f4bac1d43dd42febe475"
+    },
+    {
+      "path": "Desktop/language.cjs",
+      "bytes": 5061,
+      "sha256": "5354a18af545c26d761da41a9e9afc88ca44ca763cda054979ea4097d3fea17f"
+    },
+    {
+      "path": "Desktop/limit-win.c",
+      "bytes": 1723,
+      "sha256": "f872253ece7e6014c54035aba841a4c4759aa54ba5df9b23d2595321e0101eaa"
+    },
+    {
+      "path": "Desktop/main.cjs",
+      "bytes": 11179,
+      "sha256": "8d40f8bcdd182d4800d8b0a225f3cacd3b1cd748aaff0d2b0feb13a060fbc46f"
+    },
+    {
+      "path": "Desktop/models.cjs",
+      "bytes": 8997,
+      "sha256": "7770ca81fa848b9f3c6e54cfb557d5d8f5c1cdc02a7f99523c69af5ffb75cb54"
+    },
+    {
+      "path": "Desktop/platform.cjs",
+      "bytes": 3413,
+      "sha256": "ed8bf9ca754d18a2b9c58e817574fc46a90f7fa1c9d65a4d20450ad7e4204650"
+    },
+    {
+      "path": "Desktop/preload.cjs",
+      "bytes": 760,
+      "sha256": "81a3986ca334bcaf3e3cddcfd0b6ad5851ce613cd0abd4fcbb7ec141357e8512"
+    },
+    {
+      "path": "Desktop/process.cjs",
+      "bytes": 1733,
+      "sha256": "a169402f2ca5b2d5c579aebd74e1b2f7f4d52724c88f6d8911076216d520b9af"
+    },
+    {
+      "path": "Desktop/runner.cjs",
+      "bytes": 6946,
+      "sha256": "2a0f6eceac86315d372ca9c4db4ca947e980113f4d17783cf9385d47df2d58e4"
+    },
+    {
+      "path": "Desktop/smoke.cjs",
+      "bytes": 2753,
+      "sha256": "5a44b13857ebba6e21fc457ef1590cde930ed330d715e70238c439ed8bd4da13"
+    },
+    {
+      "path": "Desktop/state.cjs",
+      "bytes": 1449,
+      "sha256": "f9da7c359d22a4bdb87fded572f5a2f2d86dc358cd3c4fe17f37c2b0fa1e4120"
+    },
+    {
+      "path": "Editor/build.mjs",
+      "bytes": 825,
+      "sha256": "07ac2dcb0c0480e820e48718110780fec04b88c6a91fde7232b59294d65fb9e4"
+    },
+    {
+      "path": "Editor/contributions.js",
+      "bytes": 5700,
+      "sha256": "9aaeebe13a34aeda558d13ce1853f36f43f19be6d209968e154529cf39794d2c"
+    },
+    {
+      "path": "Editor/editor.js",
+      "bytes": 15348,
+      "sha256": "35b7309d165c99fd7cc97b6659942ea7944df80d3c1d3cdc271b49544d381a18"
+    },
+    {
+      "path": "Editor/package-lock.json",
+      "bytes": 15417,
+      "sha256": "53ea2c77a314c17da34a50d039f77b4036cddce93cdfc030f19ecfa9e2c7a7e2"
+    },
+    {
+      "path": "Editor/package.json",
+      "bytes": 114,
+      "sha256": "7700b38e7aa7f5f239860065fab1451606f6f657683be21b2223a21c87297532"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1097,
+      "sha256": "76608529f78f7d0742be09a13055dcbf314a736e25fb82c3487bf611051e7bfa"
+    },
+    {
+      "path": "README.md",
+      "bytes": 15068,
+      "sha256": "063eadad6f51463327bfc2dbe79fdea8fa62ebadc2b3778d57f5d8934e961402"
+    },
+    {
+      "path": "RELEASE.md",
+      "bytes": 2287,
+      "sha256": "4a0c606f9b30013ebc90e61c0399fd37f0acbc2e39b00ba091d2b35f5d5e6474"
+    },
+    {
+      "path": "Resources/AppIcon.icns",
+      "bytes": 144326,
+      "sha256": "175d32d1c99783d0e4e886870ae0b9372d00a16fc022b41d4425f4e8b0f9b65f"
+    },
+    {
+      "path": "Resources/AppIcon.png",
+      "bytes": 60059,
+      "sha256": "0fbc672391563f2bff5e3b90846e6995ea1f84ddf8166f5fa19dfbd9b6cf71b5"
+    },
+    {
+      "path": "Resources/acknowledgements.js",
+      "bytes": 8687,
+      "sha256": "22c3f835c3fb42ce85910ed948ddb2a34c9ef9fa67e44ff2f62d7f0d9d5a0b95"
+    },
+    {
+      "path": "Resources/acknowledgements.json",
+      "bytes": 10282,
+      "sha256": "36ec8a5c75b0f02851be26f6f83710c336d1a789905a4b1521edd3cb4a9eda16"
+    },
+    {
+      "path": "Resources/analysis-instructions.txt",
+      "bytes": 6714,
+      "sha256": "6d421e60e2e7a408bec1fdd3e0b5df14f3d0e1caf5461e79a8fd68ebc5345bde"
+    },
+    {
+      "path": "Resources/analysis-schema.json",
+      "bytes": 4312,
+      "sha256": "87e0e2a01e7c1ec38a2b67adc76545985b8d26b3f581009ed4b4e3f5d336b24e"
+    },
+    {
+      "path": "Resources/analysis.js",
+      "bytes": 13586,
+      "sha256": "9c91b4f3998278947d6ab0288dad77782cb6847ed69ac8a84746d098728674a8"
+    },
+    {
+      "path": "Resources/annotations.js",
+      "bytes": 14017,
+      "sha256": "5e96bcf9105ae250f80f4c499692a229e87ba8108fe69488816667ad997c5e73"
+    },
+    {
+      "path": "Resources/app-mark.png",
+      "bytes": 5010,
+      "sha256": "6eb6990b4c72b7399c9754ecc9f8f7b076b45a4f6c474639444c7cfb7750bd85"
+    },
+    {
+      "path": "Resources/app.js",
+      "bytes": 44610,
+      "sha256": "cb47041a46f5ad683cc344a3a9c06c5a61782fc988c1411cecf0f95e6119d029"
+    },
+    {
+      "path": "Resources/chapter-additions.json",
+      "bytes": 782909,
+      "sha256": "f9eba0230c454748139fcf20155b02e04cacf897445a805dead1272c3a49fd7a"
+    },
+    {
+      "path": "Resources/collections.js",
+      "bytes": 3554,
+      "sha256": "8b76dbb55c1d972cd56146e08bcf0f16689e936d9bd49de439c177fe22f68a15"
+    },
+    {
+      "path": "Resources/complexity.js",
+      "bytes": 5962,
+      "sha256": "8dfc30ca4a9d9e1ab3354adcdc2e3f5e900de7acf62750f17e0bacc066416112"
+    },
+    {
+      "path": "Resources/comprehensive.json",
+      "bytes": 782694,
+      "sha256": "49864fb6c15e17115a2296a435e7fa10f4e40445e41d686cd386f7a1a34634dc"
+    },
+    {
+      "path": "Resources/curriculum.js",
+      "bytes": 52184533,
+      "sha256": "58be096b61b0dbd68a71c9066ead4be0db7b0c1134bd03c3d85bfe198bb3a2b9"
+    },
+    {
+      "path": "Resources/curriculum.json",
+      "bytes": 52841895,
+      "sha256": "6375ace2a54243759962c828925db1ee40a595eabb4f040d106fe1ddb24d4157"
+    },
+    {
+      "path": "Resources/desktop.js",
+      "bytes": 1275,
+      "sha256": "eefae413c75e53b899867347a6c361e1950128729af881e553d02b0e33879123"
+    },
+    {
+      "path": "Resources/diagnostic-guides.js",
+      "bytes": 28506,
+      "sha256": "f5aee971e7cb038b9833677f8168626d290aac2355ebd408d731b007df196d98"
+    },
+    {
+      "path": "Resources/diagnostics.js",
+      "bytes": 8805,
+      "sha256": "270aa4f3b3595a9f064880462dad8eafba9b4eea7ebbe07a9aa6f9f14c6b52c6"
+    },
+    {
+      "path": "Resources/editor.bundle.css",
+      "bytes": 345187,
+      "sha256": "09f77fb5e87a78b46bea002c59b64bb1556ca7af787f84aafd2072460820b396"
+    },
+    {
+      "path": "Resources/editor.bundle.js",
+      "bytes": 4152609,
+      "sha256": "4448f96b8e6b6beb59089b245c9340c4ab581f19fda26b59bff5b7eb62741aec"
+    },
+    {
+      "path": "Resources/foundations-v5.js",
+      "bytes": 176459,
+      "sha256": "e8b2b240f5563060c075d3a2b16c3613be9939918a3b27c9de52ffe28d30089c"
+    },
+    {
+      "path": "Resources/foundations-v5.json",
+      "bytes": 227717,
+      "sha256": "e364e4f88ef16452b924f78104fab6f660d7e962be75d5ce822a642c44448bba"
+    },
+    {
+      "path": "Resources/index.html",
+      "bytes": 3961,
+      "sha256": "9899afa619a81be613e3389bc3e92b75770dee6f17399de7cfff1446968fac1b"
+    },
+    {
+      "path": "Resources/learning.js",
+      "bytes": 20255,
+      "sha256": "c223d1ef81ac754ddbb493a69321f951d0d756a0310f642e550be6df96c8515e"
+    },
+    {
+      "path": "Resources/olympiad-a.json",
+      "bytes": 4384375,
+      "sha256": "e941d14b9ec51bdcd2c5a999b0f929fd07e149dc415a7a6ad553548011da573e"
+    },
+    {
+      "path": "Resources/olympiad-b.json",
+      "bytes": 45103144,
+      "sha256": "7b1594008c0c68d8c834eec2045e756bad7f3fcd22de24d0d543f256b06880a5"
+    },
+    {
+      "path": "Resources/remedial-instructions.txt",
+      "bytes": 4369,
+      "sha256": "72925bdf4e491f0160428d9f1920a537e8e6594605f2819d2fdecfd852dc1c55"
+    },
+    {
+      "path": "Resources/remedial-schema.json",
+      "bytes": 4514,
+      "sha256": "2df68fe52750a49f79289c44caf60f7c6c202c5d45fd5dbb8c1662e4719bb100"
+    },
+    {
+      "path": "Resources/remedial.js",
+      "bytes": 4723,
+      "sha256": "aebcdf3f6ff2f455dd56d81d527680fc520c51e82529153e4c574e0856dc5325"
+    },
+    {
+      "path": "Resources/sports.json",
+      "bytes": 468328,
+      "sha256": "9ccea0da62adef86ce90ff6fd699cdc37d5ee232b524a98e974c6cd8463d6c68"
+    },
+    {
+      "path": "Resources/study-instructions.txt",
+      "bytes": 3299,
+      "sha256": "270ad5826e5482e7e54e3682cf669267587f1607da4298cc27bc052d50e04402"
+    },
+    {
+      "path": "Resources/study-schema.json",
+      "bytes": 482,
+      "sha256": "d6efa859d3ff8a1410df56ff6e0b4422d66e65e580384a8daa1424b82ce37c9a"
+    },
+    {
+      "path": "Resources/study.css",
+      "bytes": 7116,
+      "sha256": "35e38c329aac5f46a01f4ebb80ac2fad58d0bd588ada6bf79e46e99c2f5a233e"
+    },
+    {
+      "path": "Resources/study.js",
+      "bytes": 20649,
+      "sha256": "f7e4be2f1db9f77cce16037d1874ffc6fced276c660acc2108d4906bbc5a1f94"
+    },
+    {
+      "path": "Resources/style.css",
+      "bytes": 35810,
+      "sha256": "201d58cbf2c86982534b8ae265f00175369eab35433e82c954a0cde95a1cc757"
+    },
+    {
+      "path": "Resources/tutorial-upgrades.json",
+      "bytes": 833017,
+      "sha256": "b133895676be0c4b589e0fac5192a959fbdf2cb95c1f160860d16adf6324e268"
+    },
+    {
+      "path": "Resources/tutorial-v5.css",
+      "bytes": 6166,
+      "sha256": "3d4bb392dc8638cf21e1c26ca9745e8240311d378040aea042fab8114460e01c"
+    },
+    {
+      "path": "Resources/tutorials.js",
+      "bytes": 22219,
+      "sha256": "68724841961171b31c4d7326681950b668a7858d9ae586c2ded1acf442de07a5"
+    },
+    {
+      "path": "Resources/vendor/auto-render.js",
+      "bytes": 3486,
+      "sha256": "e5372d199bcdae8b4de71d0f7ceba72a4ba12774a27c60a6f1f77d03b3228ee4"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_AMS-Regular.ttf",
+      "bytes": 63632,
+      "sha256": "68534840bcfdd2bffb6f0e8deb48684dd01e7f04ea2813267577afb906de1d13"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_AMS-Regular.woff",
+      "bytes": 33516,
+      "sha256": "30da91e84c893f875e252689faebdc590b2871145e8adc7f9a9d4dbd8ce0b251"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_AMS-Regular.woff2",
+      "bytes": 28076,
+      "sha256": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Caligraphic-Bold.ttf",
+      "bytes": 12368,
+      "sha256": "07d8e303ce4fc12b4bb54f1004170dd190a1f3db45d400fe68060df3e0897268"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Caligraphic-Bold.woff",
+      "bytes": 7716,
+      "sha256": "1ae6bd7475590e97e7f145a89e09ccde322f7a6bc0b91607b1c8b8ee28290fed"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Caligraphic-Bold.woff2",
+      "bytes": 6912,
+      "sha256": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Caligraphic-Regular.ttf",
+      "bytes": 12344,
+      "sha256": "ed0b74372feefcbb9c0666b2e210da37b7e49fa7fbbf3eeb11db5f693dacfbb7"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Caligraphic-Regular.woff",
+      "bytes": 7656,
+      "sha256": "3398dd02302557a793f2863f88e02d96ce10df2abffa07c8e9fa90775116e65c"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Caligraphic-Regular.woff2",
+      "bytes": 6908,
+      "sha256": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Fraktur-Bold.ttf",
+      "bytes": 19584,
+      "sha256": "9163df9c7122432e6495b4229fa9071cf9ae86a758ae5efc4924ec2e1a6dbce1"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Fraktur-Bold.woff",
+      "bytes": 13296,
+      "sha256": "9be7ceb88004ab8ad124082246fbfcca4091e36385d4ec6ed1df67375dad50fb"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Fraktur-Bold.woff2",
+      "bytes": 11348,
+      "sha256": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Fraktur-Regular.ttf",
+      "bytes": 19572,
+      "sha256": "1e6f9579e90e2cac37f8f60a597c436e075c114385652b7cbeb0dec0421291b3"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Fraktur-Regular.woff",
+      "bytes": 13208,
+      "sha256": "5e28753be717dac97f559f49bc10be9cf3c124ddcabda6659d11cb68febc6463"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Fraktur-Regular.woff2",
+      "bytes": 11316,
+      "sha256": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Main-Bold.ttf",
+      "bytes": 51336,
+      "sha256": "138ac28d1663b3037e9c5f52371fa5c63d8324f4a38d22cd573e6ea3a3fd0cf8"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Main-Bold.woff",
+      "bytes": 29912,
+      "sha256": "c76c5d696297d51b9cb1639c7da4334f0e7dec81b42b11213b5e25ef671bb822"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Main-Bold.woff2",
+      "bytes": 25324,
+      "sha256": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Main-BoldItalic.ttf",
+      "bytes": 32968,
+      "sha256": "70ee1f64a20f2048c21940ef46d0144fd215baa953ca69afd1e31e98544f708f"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Main-BoldItalic.woff",
+      "bytes": 19412,
+      "sha256": "a6f7ec0d846ac7ad975adb8959c37ed49b94acbc4ae436db9ce9e20287e4a64c"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Main-BoldItalic.woff2",
+      "bytes": 16780,
+      "sha256": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Main-Italic.ttf",
+      "bytes": 33580,
+      "sha256": "0d85ae7cc30f23790a7f1a58c4a112fdca8aae769b6ba11429af1d98b1b6cb3a"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Main-Italic.woff",
+      "bytes": 19676,
+      "sha256": "f1d6ef86f3b11a528bd5185199bd2443ecb2b0dead96d88674b5a2c12be24bdf"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Main-Italic.woff2",
+      "bytes": 16988,
+      "sha256": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Main-Regular.ttf",
+      "bytes": 53580,
+      "sha256": "d0332f52868370fd83ae7fa46470f90c8f2eab2fcf12bc4f88080b340c95a830"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Main-Regular.woff",
+      "bytes": 30772,
+      "sha256": "c6368d87e8a1a3a5d337623d83d8dc4b868f242a9ad476237d6f8d1e0f168cdc"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Main-Regular.woff2",
+      "bytes": 26272,
+      "sha256": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Math-BoldItalic.ttf",
+      "bytes": 31196,
+      "sha256": "f9377ab0271cda59af24bcffbd46a4d0c8a3572ffafdbb38de2ad5ea7b0d5ee5"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Math-BoldItalic.woff",
+      "bytes": 18668,
+      "sha256": "850c0af5c2238497febaf5e461d880bf458c341f42f4f330f1b1ab5698b1998e"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Math-BoldItalic.woff2",
+      "bytes": 16400,
+      "sha256": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Math-Italic.ttf",
+      "bytes": 31308,
+      "sha256": "08ce98e51b04d58945a301e639e02b6998af29fdfd61a7b8afdd07bbfc479d4a"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Math-Italic.woff",
+      "bytes": 18748,
+      "sha256": "8a8d244581371912b8f3f5a23e2437cb2a59cd9bcaebb0346e722c05737a2571"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Math-Italic.woff2",
+      "bytes": 16440,
+      "sha256": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_SansSerif-Bold.ttf",
+      "bytes": 24504,
+      "sha256": "1ece03f79f95277d57dc7f6b435a74e1379b0d46104a8530286b60ff49369ea0"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_SansSerif-Bold.woff",
+      "bytes": 14408,
+      "sha256": "ece03cfd83e22c212cdef66feb8442d25a083beb988db3f1883f3f9738d750ba"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_SansSerif-Bold.woff2",
+      "bytes": 12216,
+      "sha256": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_SansSerif-Italic.ttf",
+      "bytes": 22364,
+      "sha256": "3931dd81faed86ba021bb2bbdc36f5bed9a38d6b4f4077aca59b265aa1b02083"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_SansSerif-Italic.woff",
+      "bytes": 14112,
+      "sha256": "91ee67500cc0129aa0ace3ac5c61ff1692102f0f31d02b69347fba35dcb75bf2"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_SansSerif-Italic.woff2",
+      "bytes": 12028,
+      "sha256": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_SansSerif-Regular.ttf",
+      "bytes": 19436,
+      "sha256": "f36ea897e19f4a2e571d1e900e4e3710e438deb05a842486045ba0a3e616a4ad"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_SansSerif-Regular.woff",
+      "bytes": 12316,
+      "sha256": "11e4dc8a6471ff6d6ee561d53d10fde8f7489e798257ff449c5d37c197435605"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_SansSerif-Regular.woff2",
+      "bytes": 10344,
+      "sha256": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Script-Regular.ttf",
+      "bytes": 16648,
+      "sha256": "1c67f068fea8bb09bf099c088b1cf64bd27516a6e07f4684344873564bb66a67"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Script-Regular.woff",
+      "bytes": 10588,
+      "sha256": "d96cdf2b3bdd4d64a8fd5f74a4c467f123a8a73931cd435889f08ffaf9bf947a"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Script-Regular.woff2",
+      "bytes": 9644,
+      "sha256": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Size1-Regular.ttf",
+      "bytes": 12228,
+      "sha256": "95b6d2f1a50173bfedb8c63e1d1c99b10427d0a4df4201cb44513b226951a22b"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Size1-Regular.woff",
+      "bytes": 6496,
+      "sha256": "c943cc986384f59e86bea5fd7dc50a9c4dfe567a7c05eb40d6790720dead97c9"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Size1-Regular.woff2",
+      "bytes": 5468,
+      "sha256": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Size2-Regular.ttf",
+      "bytes": 11508,
+      "sha256": "a6b2099fb555c60e3a0db3a08842ebf1d732c6eb4e4bf44913613bed4fc4e39b"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Size2-Regular.woff",
+      "bytes": 6188,
+      "sha256": "2014c523c3210bcc166648c4d4cc57f05b747df07a24277bf71c51e67dc79e3d"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Size2-Regular.woff2",
+      "bytes": 5208,
+      "sha256": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Size3-Regular.ttf",
+      "bytes": 7588,
+      "sha256": "500e04d54f0d51666332c9d2089aa803be22aa878eca539e59fa53c6e522b082"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Size3-Regular.woff",
+      "bytes": 4420,
+      "sha256": "6ab6b62e9b62dae2c00dd90f791bd10950be0ecc3490d7d6045f51c2e8fe0949"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Size3-Regular.woff2",
+      "bytes": 3624,
+      "sha256": "73d591271b1604960cb10bb90fee021670af7297017e0e98480b332d11f51995"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Size4-Regular.ttf",
+      "bytes": 10364,
+      "sha256": "c647367d1dd4e162468717d020e1fc0f1dc5c26ebfdffbe55261713bf88c5877"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Size4-Regular.woff",
+      "bytes": 5980,
+      "sha256": "99f9c6750b489c9462bf04900bd3f939df9b829339daaaaa99ef5495cdddea58"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Size4-Regular.woff2",
+      "bytes": 4928,
+      "sha256": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Typewriter-Regular.ttf",
+      "bytes": 27556,
+      "sha256": "f01f3e87d9c6a61c0c081ceb577abd864eb00a612f7ac1620dd6915fad2ef5aa"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Typewriter-Regular.woff",
+      "bytes": 16028,
+      "sha256": "e14fed02b1aba7ce9f5afd5844b5d0321b22351febc720e0de8b8723527609f7"
+    },
+    {
+      "path": "Resources/vendor/fonts/KaTeX_Typewriter-Regular.woff2",
+      "bytes": 13568,
+      "sha256": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b"
+    },
+    {
+      "path": "Resources/vendor/katex.css",
+      "bytes": 24788,
+      "sha256": "b9ce0e8ce93f0c18c4986fe1f1c3c269d921b56a69e6c97f83a507916b38aab5"
+    },
+    {
+      "path": "Resources/vendor/katex.js",
+      "bytes": 272755,
+      "sha256": "155f6c2d673c5912e3b48f45d8830eaad18ae1953915939ceb648ea8b9c3e7e2"
+    },
+    {
+      "path": "Resources/vendor/marked.js",
+      "bytes": 46891,
+      "sha256": "21568877a938d2c4e7d74e27f18e60da96bb73a68809610ca39216e1efebae62"
+    },
+    {
+      "path": "Resources/vendor/purify.js",
+      "bytes": 28885,
+      "sha256": "2c90a9b46d6463f26038a29b686e82bc91de01fdac9d5229e7cfe3b360134ea2"
+    },
+    {
+      "path": "Resources/vendor/versions.json",
+      "bytes": 71,
+      "sha256": "4997c715d1be68b79c42c6ff345a94a14327085de4f51885d12caff4fb90313b"
+    },
+    {
+      "path": "Resources/vscode-extensions.json",
+      "bytes": 186,
+      "sha256": "86df8db87703875858aa529a36bd8894b2a0e59e88d1f265e735198013659d20"
+    },
+    {
+      "path": "Resources/vscode-launch.json",
+      "bytes": 274,
+      "sha256": "04abd9aba4835b033b5d1d0bb52ff0568474426a94dc93506cd1fbdffba0505f"
+    },
+    {
+      "path": "Resources/vscode-settings.json",
+      "bytes": 546,
+      "sha256": "ffd159c709909475a794e2529496a0bf3685c0f8aa2c5032e84aae0f7db09652"
+    },
+    {
+      "path": "Resources/vscode-tasks.json",
+      "bytes": 272,
+      "sha256": "c3e7118e92eb587a4de0b886dd4fedada575eee473ac1bb7be3307ef4efe50fa"
+    },
+    {
+      "path": "SECURITY.md",
+      "bytes": 2029,
+      "sha256": "d4d15d67e797d2847b996024e9529b6187d65665e7bd44fbcf8c42c8d59e48f1"
+    },
+    {
+      "path": "Sources/AnalysisService.swift",
+      "bytes": 12572,
+      "sha256": "8cd532e39e6a1b03540f1915b96cfbf2c94ee493150f19b70b953b31e34ac52e"
+    },
+    {
+      "path": "Sources/LanguageService.swift",
+      "bytes": 7598,
+      "sha256": "aa4c309273eaa61fb65ad49ba1f6361fbffd892e0ca16a42a9330e009fb12154"
+    },
+    {
+      "path": "Sources/Runner.swift",
+      "bytes": 12874,
+      "sha256": "7dc7d679a41ebbf3bfef2e41fcef2eec151e9a0b9b13de6f4410a68be3e6362a"
+    },
+    {
+      "path": "Sources/StudyService.swift",
+      "bytes": 20083,
+      "sha256": "17ad0a3256679338b28d40f804a4dfa8fa79dc7e8d4164f77ed74bfd409f475f"
+    },
+    {
+      "path": "Sources/limit-runner.c",
+      "bytes": 607,
+      "sha256": "195a653e724ba6242c3eb230eb5c90835d8c30d485f41548e83160fb0441802b"
+    },
+    {
+      "path": "Sources/main.swift",
+      "bytes": 18035,
+      "sha256": "b7626c5d3f3b528c90e91826b236418b8a2054d0bca835e1a32bb6860675add5"
+    },
+    {
+      "path": "THIRD_PARTY.md",
+      "bytes": 2490,
+      "sha256": "49b3c3c6348a2137ff097898521c63091699798cc870da5a0587281b3c369359"
+    },
+    {
+      "path": "ThirdParty/DOMPurify-LICENSE.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "ThirdParty/KaTeX-LICENSE.txt",
+      "bytes": 1107,
+      "sha256": "766ccc1f306c885aa45542a9846bbd0a505b27a0374f146778171c2254ce18e3"
+    },
+    {
+      "path": "ThirdParty/Marked-LICENSE.txt",
+      "bytes": 2942,
+      "sha256": "8e3a3f82f59a60958f56ca08f445647c32a4733dc7ca6c2c46f6eb898471ab9c"
+    },
+    {
+      "path": "ThirdParty/Monaco-LICENSE.txt",
+      "bytes": 1098,
+      "sha256": "33e4ff1a06ef62ba21788ea162564ee8165269a24a9ce6ef301837447eab0ac6"
+    },
+    {
+      "path": "ThirdParty/Monaco-ThirdPartyNotices.txt",
+      "bytes": 63064,
+      "sha256": "790537262fc78a764e121e6b92b959bcd3f5c310b47d9d9b9e92e17fe0af5336"
+    },
+    {
+      "path": "Vendor/package-lock.json",
+      "bytes": 2191,
+      "sha256": "b178c043a3157889cdac4bf64330412936ed6fffd8c0b2d5e2be3f801aaf19c6"
+    },
+    {
+      "path": "Vendor/package.json",
+      "bytes": 102,
+      "sha256": "9b7510e5f7b35b01f22e0badbd735f119b08a9217d155fd81b3e07800b7344e7"
+    },
+    {
+      "path": "examples/hello.c",
+      "bytes": 76,
+      "sha256": "3ed9b71c980d3598b3a29f1363d18a4902149fcf56599e8d064b7df059651b90"
+    },
+    {
+      "path": "examples/two-sum.c",
+      "bytes": 156,
+      "sha256": "ca521adc31560904e8ff9441af608b3eb836954c552a96748acb9a32c58822a1"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 127594,
+      "sha256": "256ca04e595973f4c38701921e360b077aa419f093586112c650fc53f9cc514b"
+    },
+    {
+      "path": "package.json",
+      "bytes": 2271,
+      "sha256": "e0c7a57925c93e53d6c2c4db775d108867300894b520dbd7be33df9942112f8d"
+    },
+    {
+      "path": "scripts/build-vendor.mjs",
+      "bytes": 1191,
+      "sha256": "bd5d094ceae47a9968074b9d9c05370305a0d2249a394ff245bc92b807d0b0f4"
+    },
+    {
+      "path": "scripts/build.sh",
+      "bytes": 1836,
+      "sha256": "55ccbd52e06b662fbe44d6df8f056eb8b094e046932ecdafdbd8e6dea550190e"
+    },
+    {
+      "path": "scripts/doctor.cjs",
+      "bytes": 536,
+      "sha256": "f3759904e1f714d1dd8811f935b679e9147885b419bab0e2b7f84d21f8ce7cc0"
+    },
+    {
+      "path": "scripts/install.cjs",
+      "bytes": 2461,
+      "sha256": "67078751181c20d21e59908ff4a2fee3afe9dc5edd18a5707ca13499d6fee1ec"
+    },
+    {
+      "path": "scripts/make_icon.swift",
+      "bytes": 3856,
+      "sha256": "b558970d041ca5e3c00c8fac96644144d405362a47983c05326200f86719f160"
+    },
+    {
+      "path": "scripts/prepare-release.py",
+      "bytes": 1736,
+      "sha256": "79cb8d090d08c66c274ed123b9e4165652c1d7032c6a67acb648ece4a2e1db1d"
+    },
+    {
+      "path": "scripts/test-js.cjs",
+      "bytes": 412,
+      "sha256": "373b002a93c5484c27f699d1f8638456c7f6a72083e8a2ff0cfb5a0ba0922f55"
+    },
+    {
+      "path": "tests/StudyServiceTests.swift",
+      "bytes": 3678,
+      "sha256": "ea35bae47f54ff07b7eef2a535c1143e8b3dff963056dee7a48bffb053e35294"
+    },
+    {
+      "path": "tests/analysis.test.cjs",
+      "bytes": 7068,
+      "sha256": "cc40f4462cd8882a0e43fd0578354483374bb6bb4c6a92c0aea611066f1b4560"
+    },
+    {
+      "path": "tests/annotations.test.cjs",
+      "bytes": 1829,
+      "sha256": "fee591d95396d38ae6f237785a41fd71cf57c13116297312e01ad5af075f7fa2"
+    },
+    {
+      "path": "tests/collections.test.cjs",
+      "bytes": 2041,
+      "sha256": "85c8dd74147491e03d18666331048c02034fde07fe36308f82f1526bce6d0a1c"
+    },
+    {
+      "path": "tests/desktop.test.cjs",
+      "bytes": 4457,
+      "sha256": "864594c66e7e174bc62e7685f69af1ced83574f0617d4d3a70cd1df7cf1f0c36"
+    },
+    {
+      "path": "tests/diagnostics.test.cjs",
+      "bytes": 5391,
+      "sha256": "00c84213dc0551b0a84c4e7ff724051cd2d702c00ae06fc14665525c4de4c1f7"
+    },
+    {
+      "path": "tests/foundations.test.py",
+      "bytes": 1957,
+      "sha256": "97157063e6048d454d0ea738e63f858a78103216cb107f0ad08743d7e733d6bb"
+    },
+    {
+      "path": "tests/learning.test.cjs",
+      "bytes": 3713,
+      "sha256": "f1da41181c352417978c90b59426a3c833545bfccccd69a97f51367c2780690d"
+    },
+    {
+      "path": "tests/review-regressions.cjs",
+      "bytes": 6048,
+      "sha256": "d012a32451312c862bca65bfa701d55dbd9c4d870d4302500029880e2a4fa749"
+    },
+    {
+      "path": "tests/v5-study-ui.cjs",
+      "bytes": 8066,
+      "sha256": "5fdd20b3680d08ed2d1fd9531a4035bed058c24065f619836ad2cee6e875600c"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"version":"0.2.0","configurations":[{"name":"调试当前 C 文件","type":"cppdbg","request":"launch","program":"${fileDirname}/program","args":[],"stopAtEntry":true,"cwd":"${fileDirname}","externalConsole":false,"MIMode":"lldb","preLaunchTask":"编译当前 C 文件"}]}

@@ -1,0 +1,1 @@
+{"version":"2.0.0","tasks":[{"label":"编译当前 C 文件","type":"process","command":"/usr/bin/clang","args":["-std=c17","-Wall","-Wextra","-Wpedantic","-g","${file}","-o","${fileDirname}/program"],"problemMatcher":["$gcc"],"group":{"kind":"build","isDefault":true}}]}

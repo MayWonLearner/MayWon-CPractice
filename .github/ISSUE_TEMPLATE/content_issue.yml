@@ -1,0 +1,29 @@
+name: 教程或题面勘误
+description: 报告不清楚的概念、题意、边界、样例或复杂度说明。
+title: '[内容] '
+body:
+  - type: input
+    id: location
+    attributes:
+      label: 章节 / 知识点 / 题目编号
+    validations:
+      required: true
+  - type: textarea
+    id: quote
+    attributes:
+      label: 有问题的原文
+      description: 只摘录定位问题所需的一小段。
+    validations:
+      required: true
+  - type: textarea
+    id: ambiguity
+    attributes:
+      label: 为什么不清楚或不正确
+      description: 若存在两种解释，请分别列出；算法问题可提供最小反例。
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建议修改及依据
+      description: 如引用外部资料，请给出原始来源链接。没有修改建议也可提交。

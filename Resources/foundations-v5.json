@@ -1,0 +1,4263 @@
+{
+  "version": 5,
+  "notice": "这些基础点补充本章完整课程，每一点先讲具体生活过程，再说明 C17 规则及适用边界。示例均为独立编写，可单独编译；除注明输入外使用固定数据，方便先手算再运行。问答答案默认隐藏。",
+  "sources": [
+    {
+      "id": "c-draft",
+      "title": "WG14 N1570：C11 公开委员会草案（本文仅引用与 C17 一致的基础规则）",
+      "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf",
+      "accessedAt": "2026-09-27",
+      "usage": "核查语言和标准库机制；不是把 C11 草案冒称 C17 正式标准。"
+    },
+    {
+      "id": "beej",
+      "title": "Beej’s Guide to C Programming",
+      "url": "https://beej.us/guide/bgc/html/split/",
+      "accessedAt": "2026-09-27",
+      "usage": "参考从变量、数组、字符串到内存的教学顺序；不转载正文。"
+    },
+    {
+      "id": "cs50-arrays",
+      "title": "Harvard CS50x 2025：Arrays",
+      "url": "https://cs50.harvard.edu/x/2025/notes/2/",
+      "accessedAt": "2026-09-27",
+      "usage": "参考图像化数组和字符串教学；本项目不依赖 cs50.h。"
+    },
+    {
+      "id": "gnu-input",
+      "title": "GNU C Library：Formatted Input Basics",
+      "url": "https://snapshots.sourceware.org/glibc/trunk/latest/manual/html_node/Formatted-Input-Basics.html",
+      "accessedAt": "2026-09-27",
+      "usage": "核查格式输入与空白处理；示例不使用 GNU 专有扩展。"
+    },
+    {
+      "id": "cert-eof",
+      "title": "SEI CERT C FIO34-C：字符输入与 EOF",
+      "url": "https://cmu-sei.github.io/secure-coding-standards/sei-cert-c-coding-standard/rules/input-output-fio/fio34-c/",
+      "accessedAt": "2026-09-27",
+      "usage": "核查 getchar 返回类型和 EOF 判别。"
+    }
+  ],
+  "modules": [
+    {
+      "moduleId": 1,
+      "title": "初识 C 与输入输出",
+      "points": [
+        {
+          "id": "F01-01",
+          "title": "程序的门口、工具声明与输出顺序",
+          "beginner": {
+            "analogy": "把程序想成早餐店：main 是开门营业的位置，头文件是工具使用说明，printf 才是实际贴出的告示。看到说明书并不等于已经营业。",
+            "example": "进入 main，先输出第一行 Open。\n接着输出第二行 Ready。\nreturn 0 把“正常完成”交给启动程序的系统。",
+            "steps": [
+              "进入 main，先输出第一行 Open。",
+              "接着输出第二行 Ready。",
+              "return 0 把“正常完成”交给启动程序的系统。"
+            ]
+          },
+          "professional": {
+            "mechanism": "#include 在预处理阶段引入声明，main 是宿主环境下程序入口。函数体按控制流执行；分号结束表达式语句。printf 的返回值表示写出的字符数，main 的返回值则是退出状态。",
+            "boundaries": "本课讨论普通 macOS 控制台程序；嵌入式环境的入口约定可能不同。return 0 不会自动输出字符 0。",
+            "misconceptions": [
+              "把头文件当成执行语句。",
+              "认为 return 0 会在屏幕上打印 0。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "营业入口",
+              "term": "main 函数",
+              "meaning": "程序执行入口"
+            },
+            {
+              "plain": "使用说明",
+              "term": "函数声明",
+              "meaning": "让编译器知道调用接口"
+            }
+          ],
+          "pitfalls": [
+            "把头文件当成执行语句。",
+            "认为 return 0 会在屏幕上打印 0。"
+          ],
+          "questions": [
+            {
+              "question": "交换两个 puts，输出会怎样？",
+              "answer": "输出行的先后互换，因为这两个调用顺序执行。"
+            },
+            {
+              "question": "删掉 return 0 是否就不会输出？",
+              "answer": "输出与它无关；C99 起到达 main 末尾等价返回 0，教学中仍显式书写。"
+            },
+            {
+              "question": "puts 会自己换行吗？",
+              "answer": "会，所以不要为每行再无意添加一次换行。"
+            }
+          ],
+          "pseudocode": "1. 进入 main，先输出第一行 Open。\n2. 接着输出第二行 Ready。\n3. return 0 把“正常完成”交给启动程序的系统。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    puts(\"Open\"); // 输出开门告示，puts 自动追加换行\n    puts(\"Ready\"); // 第二个调用在上一行之后输出\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "Open\nReady\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F01-02",
+          "title": "printf 的格式占位符不是变量名",
+          "beginner": {
+            "analogy": "小票模板“单价：%d，数量：%d”留了两个空格，后面的参数依次填进去；模板不会自己寻找叫 price 的变量。",
+            "example": "单价 price=8，数量 count=3。\n第一个 %d 填入 8，第二个填入 3。\n最后 \\n 让下一条信息另起一行。",
+            "steps": [
+              "单价 price=8，数量 count=3。",
+              "第一个 %d 填入 8，第二个填入 3。",
+              "最后 \\n 让下一条信息另起一行。"
+            ]
+          },
+          "professional": {
+            "mechanism": "格式字符串描述如何解释后续可变参数。%d 对应 int，%lld 对应 long long，%zu 对应 size_t；%% 输出一个百分号。参数个数、顺序和类型必须匹配。",
+            "boundaries": "错误类型不是“只会显示得不好看”，可能触发未定义行为。精度 %.2f 是显示到两位小数，不会把变量永久改为两位小数。",
+            "misconceptions": [
+              "以为 printf(\"price\") 会输出变量值。",
+              "把 % 当作可直接输出的普通字符。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "小票空格",
+              "term": "转换说明",
+              "meaning": "%d 等格式标记"
+            },
+            {
+              "plain": "依次填数",
+              "term": "参数匹配",
+              "meaning": "格式按顺序消耗参数"
+            }
+          ],
+          "pitfalls": [
+            "以为 printf(\"price\") 会输出变量值。",
+            "把 % 当作可直接输出的普通字符。"
+          ],
+          "questions": [
+            {
+              "question": "printf(\"%d %d\", count, price) 是什么？",
+              "answer": "3 8，匹配依赖参数顺序。"
+            },
+            {
+              "question": "如何输出 50%？",
+              "answer": "printf(\"50%%\\n\");，两个百分号表示一个字面百分号。"
+            },
+            {
+              "question": "long long 能随意用 %d 吗？",
+              "answer": "不能。使用 %lld，并让实参确实是 long long。"
+            }
+          ],
+          "pseudocode": "1. 单价 price=8，数量 count=3。\n2. 第一个 %d 填入 8，第二个填入 3。\n3. 最后 \\n 让下一条信息另起一行。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int price = 8; // 一件商品的单价是8元\n    int count = 3; // 本次购买3件\n    printf(\"price=%d count=%d\\n\", price, count); // 按占位符顺序填入单价与数量\n    printf(\"discount=50%%\\n\"); // 两个百分号输出一个百分号\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "price=8 count=3\ndiscount=50%\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F01-03",
+          "title": "scanf 为什么要写 &，数组元素也一样吗",
+          "beginner": {
+            "analogy": "快递员要把新数字放进柜子，你必须给柜子的地址。n 是柜子里已有的数字，&n 是柜子位置；a[1] 也是一个柜子，所以要给 &a[1]。",
+            "example": "准备两个已初始化的柜子 a[0]=0、a[1]=0。\n把输入 7 12 的第一个数送到 &a[0]，第二个送到 &a[1]。\n读取成功后两个柜子的内容是 7 和 12。",
+            "steps": [
+              "准备两个已初始化的柜子 a[0]=0、a[1]=0。",
+              "把输入 7 12 的第一个数送到 &a[0]，第二个送到 &a[1]。",
+              "读取成功后两个柜子的内容是 7 和 12。"
+            ]
+          },
+          "professional": {
+            "mechanism": "scanf(\"%d\", &a[i]) 的 %d 要求 int *；&a[i] 取得第 i 个 int 元素地址。scanf(\"%d\", a[i]) 传的是整数值，类型不匹配。a 在通常表达式中可转换为首元素地址，但它只代表 a[0] 的位置，不能表达任意 i。",
+            "boundaries": "本例用 sscanf 从已知字符串模拟相同的转换规则，避免需要手工输入。地址类型也要匹配：long long 元素应配 %lld 和 long long *。",
+            "misconceptions": [
+              "看到数组就机械地删除所有 &。",
+              "把 a 与 a[i] 当成同一种表达式。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "柜子里的数字",
+              "term": "对象值",
+              "meaning": "a[i] 当前保存的整数"
+            },
+            {
+              "plain": "柜子的位置",
+              "term": "地址",
+              "meaning": "&a[i] 的类型为 int *"
+            }
+          ],
+          "pitfalls": [
+            "看到数组就机械地删除所有 &。",
+            "把 a 与 a[i] 当成同一种表达式。"
+          ],
+          "questions": [
+            {
+              "question": "读入 a[2] 应怎样写？",
+              "answer": "scanf(\"%d\", &a[2]);，前提是数组至少有3个元素。"
+            },
+            {
+              "question": "读取第一个元素可用 scanf(\"%d\", a) 吗？",
+              "answer": "可以，a 转换为 &a[0]，但为了清晰也可写 &a[0]。"
+            },
+            {
+              "question": "a[1] 初值是0，直接把0传给 %d 安全吗？",
+              "answer": "不安全；%d 需要可写 int 对象的地址，0这个值不提供该对象。"
+            }
+          ],
+          "pseudocode": "1. 准备两个已初始化的柜子 a[0]=0、a[1]=0。\n2. 把输入 7 12 的第一个数送到 &a[0]，第二个送到 &a[1]。\n3. 读取成功后两个柜子的内容是 7 和 12。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int a[2] = {0, 0}; // 两个元素先给确定初值，便于观察变化\n    int count = sscanf(\"7 12\", \"%d %d\", &a[0], &a[1]); // 分别传入两个整数柜子的地址\n    if (count == 2) // 只有两个整数都读到后才使用整组结果\n    { // 成功分支开始\n        printf(\"%d %d\\n\", a[0], a[1]); // 输出写入后的元素内容\n    } // 成功分支结束\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "7 12\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "gnu-input"
+          ]
+        },
+        {
+          "id": "F01-04",
+          "title": "字符串输入为什么通常不写 &name",
+          "beginner": {
+            "analogy": "整数输入是给一个柜子地址；单词输入要给一整排小格子的起点。name 这排字符格子在传参时已指向第一个字符，因此不用再套一个“整排的地址”。",
+            "example": "准备 char name[6]，最多放5个可见字符和结束标记。\n%5s 读入 hello，依次放入下标0到4。\n库函数自动在下标5补 \\0。",
+            "steps": [
+              "准备 char name[6]，最多放5个可见字符和结束标记。",
+              "%5s 读入 hello，依次放入下标0到4。",
+              "库函数自动在下标5补 \\0。"
+            ]
+          },
+          "professional": {
+            "mechanism": "在 scanf 的 %s 转换中，参数应为 char *。char name[6] 的 name 通常转换为 &name[0]；&name 的类型是指向整个数组的 char (*)[6]，不是 %s 所要求的类型。%s 跳过开头空白，遇到下一段空白停止。",
+            "boundaries": "%5s 的5不包括自动补的终止符，因此容量至少6。它读单词，不读含空格的完整姓名；整行用 fgets。",
+            "misconceptions": [
+              "把 %s 的宽度写成整个数组容量。",
+              "使用 &name 只是因为“输入都要加&”。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "一排格子的起点",
+              "term": "数组到指针转换",
+              "meaning": "name 用作实参时通常指向首字符"
+            },
+            {
+              "plain": "结束标记",
+              "term": "空字符",
+              "meaning": "数值为0的字符 \\0"
+            }
+          ],
+          "pitfalls": [
+            "把 %s 的宽度写成整个数组容量。",
+            "使用 &name 只是因为“输入都要加&”。"
+          ],
+          "questions": [
+            {
+              "question": "char s[4] 能用 %4s 吗？",
+              "answer": "不能保证安全，应至多 %3s，为结束符留一个格子。"
+            },
+            {
+              "question": "输入 Li Lei，%s 得到什么？",
+              "answer": "第一次得到 Li，空格和后面的 Lei 未作为同一个单词读入。"
+            },
+            {
+              "question": "name 与 &name 类型一样吗？",
+              "answer": "不一样；一个通常转换为 char *，另一个是指向整个数组的指针。"
+            }
+          ],
+          "pseudocode": "1. 准备 char name[6]，最多放5个可见字符和结束标记。\n2. %5s 读入 hello，依次放入下标0到4。\n3. 库函数自动在下标5补 \\0。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    char name[6] = \"\"; // 6格容量可容纳5字节单词及结尾的零字节\n    if (sscanf(\"hello world\", \"%5s\", name) == 1) // name 已提供首字符地址，宽度限制实际字符数\n    { // 成功读到一个单词\n        puts(name); // 只输出hello，后面的world不在本次字符串里\n    } // 读取成功分支结束\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "hello\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "gnu-input",
+            "cs50-arrays"
+          ]
+        },
+        {
+          "id": "F01-05",
+          "title": "scanf 的返回值是在数成功填写了几格",
+          "beginner": {
+            "analogy": "报名表要填年龄和球衣号码，第一格填好了，第二格遇到字母，不能宣称表格已完成。返回值是在数成功写入了几个目标。",
+            "example": "准备 age=0 和 shirt=0。\n输入 18 x：年龄读成18，号码无法转换。\n返回1，只能确认年龄已填写，不能使用号码作有效输入。",
+            "steps": [
+              "准备 age=0 和 shirt=0。",
+              "输入 18 x：年龄读成18，号码无法转换。",
+              "返回1，只能确认年龄已填写，不能使用号码作有效输入。"
+            ]
+          },
+          "professional": {
+            "mechanism": "scanf 家族返回成功匹配并赋值的输入项数；匹配失败可返回0。首次转换前发生输入失败可返回 EOF。sscanf 中空字符串也可表现为输入失败。返回值与读入数字的大小没有关系。",
+            "boundaries": "被 * 抑制的转换不计入赋值数。真实不受信任的超范围数字更适合 fgets 加 strtol 检查范围，不能仅靠 %d 返回值解决溢出。",
+            "misconceptions": [
+              "把 scanf 返回值当成读入的整数。",
+              "不检查返回值就使用未成功写入的变量。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "填好的格子数",
+              "term": "赋值计数",
+              "meaning": "返回成功写入项目数"
+            },
+            {
+              "plain": "格式对不上",
+              "term": "匹配失败",
+              "meaning": "尚有字符但不能完成所需转换"
+            }
+          ],
+          "pitfalls": [
+            "把 scanf 返回值当成读入的整数。",
+            "不检查返回值就使用未成功写入的变量。"
+          ],
+          "questions": [
+            {
+              "question": "读取两个%d返回1说明什么？",
+              "answer": "只成功赋值了一个输入项，第二项不可当作本次有效数据。"
+            },
+            {
+              "question": "输入x读%d返回多少？",
+              "answer": "通常返回0：有输入字符但不匹配整数。"
+            },
+            {
+              "question": "返回2意味着两个数都等于2吗？",
+              "answer": "不意味着；2是成功赋值数。"
+            }
+          ],
+          "pseudocode": "1. 准备 age=0 和 shirt=0。\n2. 输入 18 x：年龄读成18，号码无法转换。\n3. 返回1，只能确认年龄已填写，不能使用号码作有效输入。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int age = 0; // 先初始化，避免失败后无意读取不确定值\n    int shirt = 0; // 初始化并不能代替检查输入是否成功\n    int readCount = sscanf(\"18 x\", \"%d %d\", &age, &shirt); // 第二个项目无法转换为整数\n    printf(\"read=%d age=%d\\n\", readCount, age); // 只展示已确认写入的年龄\n    if (readCount != 2) // 需要两个输入项，少一个也算输入不完整\n    { // 输入错误处理开始\n        puts(\"incomplete\"); // 本次不能继续计算依赖完整表格的结果\n    } // 输入错误处理结束\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "read=1 age=18\nincomplete\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "gnu-input"
+          ]
+        },
+        {
+          "id": "F01-06",
+          "title": "格式里的空格，不是恰好读一个空格",
+          "beginner": {
+            "analogy": "扫地机器人收到“越过空白”命令，会跨过连续多个空格、制表符、换行；格式字符串里的一个空格就是这条命令，不是“只跳一步”。",
+            "example": "输入文本包含数字7、两个空格、换行、数字9。\n%d 读到7，格式中的空格吸收中间整段空白。\n第二个%d读到9。",
+            "steps": [
+              "输入文本包含数字7、两个空格、换行、数字9。",
+              "%d 读到7，格式中的空格吸收中间整段空白。",
+              "第二个%d读到9。"
+            ]
+          },
+          "professional": {
+            "mechanism": "scanf 格式中的任意空白字符匹配输入中的一段零个或多个空白。多数转换（如%d、%s）自己就会跳过前导空白；%c、%[ 和 %n 是重要例外。",
+            "boundaries": "交互式输入末尾写 scanf(\"%d\\n\", &x) 可能继续等待非空白，表现为按回车后仍未返回。程序题读取整数一般无需在格式末尾添加\\n。",
+            "misconceptions": [
+              "把 scanf 格式里的\\n理解成“读到回车立刻结束”。",
+              "以为%d之间必须有恰好一个空格。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "跨过整段空白",
+              "term": "空白指令",
+              "meaning": "不要求输入恰好一个空格"
+            },
+            {
+              "plain": "格式不匹配的字符",
+              "term": "普通字符匹配",
+              "meaning": "例如逗号必须实际出现"
+            }
+          ],
+          "pitfalls": [
+            "把 scanf 格式里的\\n理解成“读到回车立刻结束”。",
+            "以为%d之间必须有恰好一个空格。"
+          ],
+          "questions": [
+            {
+              "question": "格式\"%d %d\"能读7换行9吗？",
+              "answer": "能，中间换行属于空白。"
+            },
+            {
+              "question": "格式\"%d,%d\"能读7 9吗？",
+              "answer": "不能完整读到两项，逗号是需要匹配的普通字符。"
+            },
+            {
+              "question": "为什么不在交互%d后加\\n？",
+              "answer": "尾部空白指令可能继续等待后续非空白，以确认空白段结束。"
+            }
+          ],
+          "pseudocode": "1. 输入文本包含数字7、两个空格、换行、数字9。\n2. %d 读到7，格式中的空格吸收中间整段空白。\n3. 第二个%d读到9。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int a = 0; // 第一项尚未读入\n    int b = 0; // 第二项尚未读入\n    int count = sscanf(\"7  \\n9\", \"%d %d\", &a, &b); // 一个格式空格接受整段空白\n    printf(\"%d %d %d\\n\", count, a, b); // 两项都读到，返回值为2\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "2 7 9\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "gnu-input"
+          ]
+        },
+        {
+          "id": "F01-07",
+          "title": "读完数字后 %c 为什么拿到换行",
+          "beginner": {
+            "analogy": "取号机先拿走写着23的号牌，却把后面的回车留在传送带上。下一次%c拿走的是传送带第一件东西，它不会自动忽略回车。",
+            "example": "对文本23换行A使用%d%c，整数是23，字符是换行。\n对同样文本使用%d空格%c，空白指令先跨过换行。\n第二种写法才把 A 交给字符变量。",
+            "steps": [
+              "对文本23换行A使用%d%c，整数是23，字符是换行。",
+              "对同样文本使用%d空格%c，空白指令先跨过换行。",
+              "第二种写法才把 A 交给字符变量。"
+            ]
+          },
+          "professional": {
+            "mechanism": "%d 只消费组成整数及其前导空白，末尾不能组成整数的字符留在流中。%c 不跳过空白。格式\" %c\" 在%c前增加空白指令，适合读取一个非空白命令。",
+            "boundaries": "若空格、制表符本身就是待统计字符，不应使用\" %c\"跳过它们。也不要假定一次 getchar 总能清掉整行，应按行读或循环读到\\n/EOF。",
+            "misconceptions": [
+              "认为数字输入会自动吃掉整行。",
+              "在需要统计空格时写\" %c\"。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "传送带剩下的回车",
+              "term": "未消费输入",
+              "meaning": "下一次读取仍会看到它"
+            },
+            {
+              "plain": "跳过再拿一个",
+              "term": "前导空白指令",
+              "meaning": "空格%c与%c含义不同"
+            }
+          ],
+          "pitfalls": [
+            "认为数字输入会自动吃掉整行。",
+            "在需要统计空格时写\" %c\"。"
+          ],
+          "questions": [
+            {
+              "question": "scanf(\"%c\", &c)跳过空格吗？",
+              "answer": "不跳过，空格也是要读取的字符。"
+            },
+            {
+              "question": "菜单指令只允许A/B，用哪个格式？",
+              "answer": "\" %c\"通常合适，它跳过前面的空白。"
+            },
+            {
+              "question": "为什么一次getchar清理不可靠？",
+              "answer": "数字后可能还有多个空格和其他字符，一次只读掉一个。"
+            }
+          ],
+          "pseudocode": "1. 对文本23换行A使用%d%c，整数是23，字符是换行。\n2. 对同样文本使用%d空格%c，空白指令先跨过换行。\n3. 第二种写法才把 A 交给字符变量。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int n = 0; // 接收整数部分\n    char raw = 0; // 接收紧挨整数的原始字符\n    char command = 0; // 接收忽略空白后的命令字符\n    sscanf(\"23\\nA\", \"%d%c\", &n, &raw); // %c直接拿到换行\n    sscanf(\"23\\nA\", \"%d %c\", &n, &command); // 空白指令跳过换行后拿到A\n    printf(\"newline=%d command=%c\\n\", raw == '\\n', command); // 用比较结果显示回车被读到\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "newline=1 command=A\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "gnu-input"
+          ]
+        },
+        {
+          "id": "F01-08",
+          "title": "getchar 用 int，先保留 EOF 再存字符",
+          "beginner": {
+            "analogy": "售票窗口会交给你一张票，也可能举起“没有票了”的牌子。接收盒既要装所有票，也要装这块特殊牌子；只用char的小盒可能把两者混在一起。",
+            "example": "getchar先读一个结果到int ch。\n如果结果是EOF，就停止，不往字符数组写它。\n否则这是一个读到的字节，可以输出或进一步分类。",
+            "steps": [
+              "getchar先读一个结果到int ch。",
+              "如果结果是EOF，就停止，不往字符数组写它。",
+              "否则这是一个读到的字节，可以输出或进一步分类。"
+            ]
+          },
+          "professional": {
+            "mechanism": "getchar 返回 unsigned char 转换为 int 的字节值，或者 EOF。macOS 的 int 能区分所有 unsigned char 值与 EOF。先转为 char 再比较，可能损失这种区分。EOF 是宏常量，表示输入结束或读取失败，不是流中必须存在的一个字符。",
+            "boundaries": "本例一直读到输入结束；应用检查点会关闭输入。终端 Ctrl+D 是终端驱动的结束输入操作，具体效果取决于当前行是否已有数据，不是插入字符EOF。可用 ferror(stdin) 区分读取失败。",
+            "misconceptions": [
+              "char ch=getchar()后才比较EOF。",
+              "把EOF写进字符串当作结束符。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "特殊的结束牌",
+              "term": "EOF",
+              "meaning": "输入函数的返回状态"
+            },
+            {
+              "plain": "装得下票和状态的盒子",
+              "term": "int",
+              "meaning": "保留完整返回值"
+            }
+          ],
+          "pitfalls": [
+            "char ch=getchar()后才比较EOF。",
+            "把EOF写进字符串当作结束符。"
+          ],
+          "questions": [
+            {
+              "question": "EOF与\\0相同吗？",
+              "answer": "不相同。\\0是字符值0，EOF是读函数的特殊返回值。"
+            },
+            {
+              "question": "空输入运行示例输出什么？",
+              "answer": "什么也不输出，第一次读取就得到EOF。"
+            },
+            {
+              "question": "为何用int但仍能putchar(ch)？",
+              "answer": "putchar接收int并输出相应unsigned char字节；已先排除了EOF。"
+            }
+          ],
+          "pseudocode": "1. getchar先读一个结果到int ch。\n2. 如果结果是EOF，就停止，不往字符数组写它。\n3. 否则这是一个读到的字节，可以输出或进一步分类。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int ch; // int同时容纳普通字节值和EOF状态\n    while ((ch = getchar()) != EOF) // 每轮先读取，再决定是否继续处理\n    { // 处理一个实际读到的字节\n        putchar(ch); // 原样回显，换行也是普通读到的字符\n    } // 输入结束后离开循环\n    if (ferror(stdin)) // EOF也可能来自读取错误，需要单独查看错误标志\n    { // 读取失败分支\n        return 1; // 将输入失败报告给启动程序的系统\n    } // 读取失败分支结束\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "Hi\n",
+          "expectedOutput": "Hi\n",
+          "complexity": {
+            "time": "O(n)",
+            "space": "O(1)",
+            "reason": "每个输入字节读取和输出一次；只保存一个int。"
+          },
+          "sources": [
+            "c-draft",
+            "cert-eof"
+          ]
+        },
+        {
+          "id": "F01-09",
+          "title": "一行输入和多个数字：选择合适的读法",
+          "beginner": {
+            "analogy": "快递有按件收和按箱收两种方式。scanf适合按格式收数字，fgets适合先收一整行，再检查这一行里是否多了奇怪的东西。",
+            "example": "先把整行12 4放入line。\nsscanf尝试读取两个整数，并额外检测是否还存在第三个非空白字符。\n恰好读到两个整数时才计算12+4。",
+            "steps": [
+              "先把整行12 4放入line。",
+              "sscanf尝试读取两个整数，并额外检测是否还存在第三个非空白字符。",
+              "恰好读到两个整数时才计算12+4。"
+            ]
+          },
+          "professional": {
+            "mechanism": "fgets按容量读取文本，sscanf在字符串上做格式转换。为严格限制行中项目数，可在预期项目后用空格%c探测额外非空白；返回2代表前两整数成功且没有额外字符。",
+            "boundaries": "本例整数范围很小且固定。通用数值校验要使用strtol、检查endptr/errno/目标类型范围；仅sscanf不能安全处理任意巨大数字。fgets读到的行也可能被容量截断。",
+            "misconceptions": [
+              "混合读法时忘了前一次剩余换行。",
+              "把读到了前两个整数等同于整行格式正确。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "先收整箱",
+              "term": "按行读取",
+              "meaning": "先拿到一段有边界的文本"
+            },
+            {
+              "plain": "再核对每件",
+              "term": "解析",
+              "meaning": "解释文本中的数值结构"
+            }
+          ],
+          "pitfalls": [
+            "混合读法时忘了前一次剩余换行。",
+            "把读到了前两个整数等同于整行格式正确。"
+          ],
+          "questions": [
+            {
+              "question": "输入12 4 x时应该接受吗？",
+              "answer": "本示例不接受，第三次转换能读到x，返回3。"
+            },
+            {
+              "question": "输入12 4后只有空格呢？",
+              "answer": "可以接受，额外%c未拿到非空白字符，返回2。"
+            },
+            {
+              "question": "fgets一定能读下整行吗？",
+              "answer": "不一定，受缓冲区容量限制，后续字符串章节讲截断处理。"
+            }
+          ],
+          "pseudocode": "1. 先把整行12 4放入line。\n2. sscanf尝试读取两个整数，并额外检测是否还存在第三个非空白字符。\n3. 恰好读到两个整数时才计算12+4。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    char line[] = \"12 4\\n\"; // 用固定完整行演示解析，实际可由fgets读取\n    int a = 0; // 第一项数值\n    int b = 0; // 第二项数值\n    char extra = 0; // 用来探测多余的非空白内容\n    int count = sscanf(line, \"%d %d %c\", &a, &b, &extra); // 第三项只用于发现多余字符\n    if (count == 2) // 必须恰好两项成功，不能缺项或多项\n    { // 输入符合本行协议\n        printf(\"%d\\n\", a + b); // 对确认完整的两个整数求和\n    } // 输入符合协议分支结束\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "16\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F01-10",
+          "title": "编译错误、运行错误和答案错误分开看",
+          "beginner": {
+            "analogy": "做菜先过菜谱检查，再实际开火，最后尝味道。语法不合法像菜谱写不通；数组越界像开火时把锅打翻；打印错数字像菜能吃但味道不对。",
+            "example": "int total=2+3能够编译。\n运行后输出5，说明程序实际执行了。\n若题目要求乘积6，仍会被判答案错误。",
+            "steps": [
+              "int total=2+3能够编译。",
+              "运行后输出5，说明程序实际执行了。",
+              "若题目要求乘积6，仍会被判答案错误。"
+            ]
+          },
+          "professional": {
+            "mechanism": "编译器诊断约束/语法等问题；未定义行为可能没有编译诊断；评测比较输出和题意。警告是重要证据，但零警告不证明逻辑正确。调试时先解决第一条真实编译错误，再用最小输入追踪变量。",
+            "boundaries": "不要把每次Wrong Answer都归因于编译器；时间超限需要检查输入循环终止和算法规模，内存问题需检查边界和生命周期。",
+            "misconceptions": [
+              "看到编译成功就认定题解正确。",
+              "只测试样例，不测试等号和最小规模。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "菜谱写不通",
+              "term": "编译错误",
+              "meaning": "尚未得到可执行程序"
+            },
+            {
+              "plain": "成品不符合要求",
+              "term": "答案错误",
+              "meaning": "程序输出与任务目标不一致"
+            }
+          ],
+          "pitfalls": [
+            "看到编译成功就认定题解正确。",
+            "只测试样例，不测试等号和最小规模。"
+          ],
+          "questions": [
+            {
+              "question": "程序输出多一行请输入会怎样？",
+              "answer": "正式标准输入输出题可能因此答案错误；不要加题目未要求的提示。"
+            },
+            {
+              "question": "越界总会崩溃吗？",
+              "answer": "不一定，可能表面正常；这不代表安全。"
+            },
+            {
+              "question": "为什么先看第一条错误？",
+              "answer": "后续诊断可能由最前面缺分号、括号等引发，应先修根因再重新编译。"
+            }
+          ],
+          "pseudocode": "1. int total=2+3能够编译。\n2. 运行后输出5，说明程序实际执行了。\n3. 若题目要求乘积6，仍会被判答案错误。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int a = 2; // 第一件商品数量\n    int b = 3; // 第二件商品数量\n    int total = a + b; // 本例任务是求和，因此使用加法\n    printf(\"%d\\n\", total); // 严格只输出本题需要的总量\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "5\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        }
+      ]
+    },
+    {
+      "moduleId": 2,
+      "title": "类型与表达式",
+      "points": [
+        {
+          "id": "F02-01",
+          "title": "整数除法：小数在赋值之前就丢了",
+          "beginner": {
+            "analogy": "5块饼干平均分给2人，只发整块，每人得到2块；事后把“2”写进小数账本，不会自动补回那半块。",
+            "example": "先算5/2得到整数2。\n把2转成double仍是2.0。\n先把5转成double，再除2，才得到2.5。",
+            "steps": [
+              "先算5/2得到整数2。",
+              "把2转成double仍是2.0。",
+              "先把5转成double，再除2，才得到2.5。"
+            ]
+          },
+          "professional": {
+            "mechanism": "/的运算类型由操作数经通常算术转换后决定，不由接收变量决定。两个整数相除向零截断；除数不得为0。",
+            "boundaries": "负数除法也向零截断，如-5/2=-2。除法之前转换一个操作数即可触发浮点运算，但浮点数仍有表示精度边界。",
+            "misconceptions": [
+              "double avg=5/2误以为得2.5。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "只发整块",
+              "term": "整数除法",
+              "meaning": "商向零截断"
+            },
+            {
+              "plain": "先换小数计量",
+              "term": "类型转换",
+              "meaning": "运算发生前改变类型"
+            }
+          ],
+          "pitfalls": [
+            "double avg=5/2误以为得2.5。"
+          ],
+          "questions": [
+            {
+              "question": "double x=(double)(5/2)是多少？",
+              "answer": "2.0，因为括号内已经完成整数除法。"
+            },
+            {
+              "question": "5/2.0呢？",
+              "answer": "2.5，2.0是double。"
+            },
+            {
+              "question": "-5/2是多少？",
+              "answer": "-2，向零截断而非向负无穷取整。"
+            }
+          ],
+          "pseudocode": "1. 先算5/2得到整数2。\n2. 把2转成double仍是2.0。\n3. 先把5转成double，再除2，才得到2.5。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    double late = 5 / 2; // 先整数除法得到2，再保存为2.0\n    double early = (double)5 / 2; // 除法前转为浮点，保留半块\n    printf(\"%.1f %.1f\\n\", late, early); // 对比转换时机的差异\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "2.0 2.5\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F02-02",
+          "title": "乘法溢出：大盒子也救不了先算坏的结果",
+          "beginner": {
+            "analogy": "两袋各5万粒种子相乘计数，先用小计算器按出错误，再抄到大本子里仍是错的；必须从乘法一开始就用更大范围。",
+            "example": "a与b各为50000。\n先将a转为long long，再与b相乘。\n得到2500000000，用%lld输出。",
+            "steps": [
+              "a与b各为50000。",
+              "先将a转为long long，再与b相乘。",
+              "得到2500000000，用%lld输出。"
+            ]
+          },
+          "professional": {
+            "mechanism": "long long result=1LL*a*b使左侧第一次乘法就在long long中进行。仅把结果赋给long long不会改变前面int乘法的类型。有符号整数溢出是未定义行为。",
+            "boundaries": "long long也有限制。应按最大输入估计乘积和累加值，必要时先做上界检查；本例范围已知。",
+            "misconceptions": [
+              "long long ans=a*b就以为自动安全。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "大范围计算器",
+              "term": "long long",
+              "meaning": "至少64位范围的整数类型"
+            },
+            {
+              "plain": "计算前换设备",
+              "term": "提前提升",
+              "meaning": "让中间表达式有足够范围"
+            }
+          ],
+          "pitfalls": [
+            "long long ans=a*b就以为自动安全。"
+          ],
+          "questions": [
+            {
+              "question": "为什么1LL放左边？",
+              "answer": "乘法左结合，使1LL*a先成为long long，再乘b。"
+            },
+            {
+              "question": "a*b*1LL安全吗？",
+              "answer": "可能不安全，a*b已先按int发生溢出。"
+            },
+            {
+              "question": "无符号溢出和有符号一样吗？",
+              "answer": "不同，无符号按模数回绕，但回绕也通常不符合题目所需数值。"
+            }
+          ],
+          "pseudocode": "1. a与b各为50000。\n2. 先将a转为long long，再与b相乘。\n3. 得到2500000000，用%lld输出。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int a = 50000; // 第一项数量仍能由本机int保存\n    int b = 50000; // 第二项数量也在int范围内\n    long long area = 1LL * a * b; // 从第一次乘法起使用long long\n    printf(\"%lld\\n\", area); // 格式对应long long而不是int\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "2500000000\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F02-03",
+          "title": "赋值左边必须是能存东西的位置",
+          "beginner": {
+            "analogy": "可以把钱放进钱包，不能把钱放进“钱包余额加3”这个计算结果里。x是存储位置，x+3只是算出来的数。",
+            "example": "准备score=7。\n计算score+3得到10。\n把10重新放回score，输出10。",
+            "steps": [
+              "准备score=7。",
+              "计算score+3得到10。",
+              "把10重新放回score，输出10。"
+            ]
+          },
+          "professional": {
+            "mechanism": "赋值运算左操作数必须是可修改左值。变量和合法数组元素可作为此类位置，算术结果通常不可；C中的条件运算符结果也不是可修改左值。expression is not assignable应先检查等号左边表达式。",
+            "boundaries": "const对象、数组整体也不能直接赋值。不要因为出现此报错就推断“覆盖数组旧值”，两者是不同问题。",
+            "misconceptions": [
+              "写score+3=10。",
+              "试图用(condition?a:b)=x给条件结果赋值。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "可以放钱的钱包",
+              "term": "可修改左值",
+              "meaning": "代表可写对象的位置"
+            },
+            {
+              "plain": "余额加3的结果",
+              "term": "计算值",
+              "meaning": "不自动代表存储位置"
+            }
+          ],
+          "pitfalls": [
+            "写score+3=10。",
+            "试图用(condition?a:b)=x给条件结果赋值。"
+          ],
+          "questions": [
+            {
+              "question": "a[i]=3合法吗？",
+              "answer": "若i有效且元素非const，则合法。"
+            },
+            {
+              "question": "(x+1)=2为什么错？",
+              "answer": "x+1是计算结果，不是可以写入的对象。"
+            },
+            {
+              "question": "如何按条件给a或b赋值？",
+              "answer": "写if条件分支，在各分支分别写a=x或b=x。"
+            }
+          ],
+          "pseudocode": "1. 准备score=7。\n2. 计算score+3得到10。\n3. 把10重新放回score，输出10。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int score = 7; // score是能保存分数的变量\n    score = score + 3; // 先算右边10，再写回左边score\n    printf(\"%d\\n\", score); // 读取修改后的分数\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "10\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        }
+      ]
+    },
+    {
+      "moduleId": 3,
+      "title": "条件与分支",
+      "points": [
+        {
+          "id": "F03-01",
+          "title": "等于和赋值：一道符号改变整个问题",
+          "beginner": {
+            "analogy": "门卫问“票号是不是8”与把票号改成8完全不同。==是在核对，=是在改写。",
+            "example": "ticket初值5。\nticket==8是假，所以不进入验票成功分支。\nticket仍为5，比较没有修改它。",
+            "steps": [
+              "ticket初值5。",
+              "ticket==8是假，所以不进入验票成功分支。",
+              "ticket仍为5，比较没有修改它。"
+            ]
+          },
+          "professional": {
+            "mechanism": "==生成0或1的比较结果；=先修改左值，再产生被赋的值。if按标量结果是否为0决定分支，因此if(x=8)会赋值且被当作真。",
+            "boundaries": "用编译警告发现可疑赋值，但某些输入循环有意在条件内赋值，应使用清晰括号并理解顺序。",
+            "misconceptions": [
+              "在if里把==写成=。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "核对是否一样",
+              "term": "相等比较",
+              "meaning": "使用=="
+            },
+            {
+              "plain": "改写票号",
+              "term": "赋值",
+              "meaning": "使用="
+            }
+          ],
+          "pitfalls": [
+            "在if里把==写成=。"
+          ],
+          "questions": [
+            {
+              "question": "if(x=0)进入真分支吗？",
+              "answer": "不进入，但x已被写成0。"
+            },
+            {
+              "question": "比较后ticket会变8吗？",
+              "answer": "不会，==不修改两个操作数。"
+            },
+            {
+              "question": "!=什么意思？",
+              "answer": "判断不相等，结果仍为0或1。"
+            }
+          ],
+          "pseudocode": "1. ticket初值5。\n2. ticket==8是假，所以不进入验票成功分支。\n3. ticket仍为5，比较没有修改它。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int ticket = 5; // 原票号是5\n    if (ticket == 8) // 只比较票号，不改写它\n    { // 票号确实为8时执行\n        puts(\"match\"); // 本例不会执行此行\n    } // 真分支结束\n    printf(\"%d\\n\", ticket); // 票号仍然为5\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "5\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F03-02",
+          "title": "范围判断：数学连写不能直接搬进C",
+          "beginner": {
+            "analogy": "游乐设施要求身高至少120且不超过180。工作人员要做两次检查并要求都合格，不能把第一次检查得到的“是/否”当身高再比较。",
+            "example": "height=110。\nheight>=120为假；height<=180为真。\n两项用&&相连，整体是假。",
+            "steps": [
+              "height=110。",
+              "height>=120为假；height<=180为真。",
+              "两项用&&相连，整体是假。"
+            ]
+          },
+          "professional": {
+            "mechanism": "120<=height<=180在C中按(120<=height)<=180解析，左边先变0或1，通常都小于180。正确表达是height>=120 && height<=180。",
+            "boundaries": "&&是逻辑与，&是按位与，含义与求值规则不同。边界是否含等号必须依据题意。",
+            "misconceptions": [
+              "直接写120<=height<=180。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "两关都合格",
+              "term": "逻辑与",
+              "meaning": "&&要求两条件均为真"
+            },
+            {
+              "plain": "含边界的范围",
+              "term": "闭区间",
+              "meaning": "允许端点值"
+            }
+          ],
+          "pitfalls": [
+            "直接写120<=height<=180。"
+          ],
+          "questions": [
+            {
+              "question": "height=120合格吗？",
+              "answer": "本题允许端点，所以合格。"
+            },
+            {
+              "question": "错误连写在110时为何可能为真？",
+              "answer": "第一次比较为0，之后0<=180为真。"
+            },
+            {
+              "question": "要求低于120或高于180如何写？",
+              "answer": "height<120 || height>180。"
+            }
+          ],
+          "pseudocode": "1. height=110。\n2. height>=120为假；height<=180为真。\n3. 两项用&&相连，整体是假。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int height = 110; // 示例身高低于允许下限\n    int allowed = height >= 120 && height <= 180; // 两个边界分别判断再合并\n    printf(\"%d\\n\", allowed); // 输出0，代表不允许进入\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "0\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F03-03",
+          "title": "短路求值：先确认安全，再去访问",
+          "beginner": {
+            "analogy": "先确认抽屉编号有效，再打开抽屉拿物品。如果第一项检查已经失败，就不应继续执行危险动作。",
+            "example": "数组只有3项，下标i=3越界。\n先判断i>=0且i<3，第二项失败。\n&&右侧a[i]不会被访问。",
+            "steps": [
+              "数组只有3项，下标i=3越界。",
+              "先判断i>=0且i<3，第二项失败。",
+              "&&右侧a[i]不会被访问。"
+            ]
+          },
+          "professional": {
+            "mechanism": "&&从左到右求值，左侧为0时不求右侧；||左侧非0时不求右侧。可用来保护数组边界、空指针或除数，但保护条件必须放在危险表达式之前。",
+            "boundaries": "按位&与|没有这种短路保证。不要让安全性依赖未指定的函数实参求值顺序。",
+            "misconceptions": [
+              "把a[i]判断放在i<n之前。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "先验编号",
+              "term": "前置条件",
+              "meaning": "合法范围先成立"
+            },
+            {
+              "plain": "不再开抽屉",
+              "term": "短路求值",
+              "meaning": "无需计算右侧"
+            }
+          ],
+          "pitfalls": [
+            "把a[i]判断放在i<n之前。"
+          ],
+          "questions": [
+            {
+              "question": "a[i]>0 && i<3安全吗？",
+              "answer": "不安全，a[i]可能先越界。"
+            },
+            {
+              "question": "den!=0 && num/den>2有何用？",
+              "answer": "先排除除数0，再做除法。"
+            },
+            {
+              "question": "&&换成&会怎样？",
+              "answer": "失去短路，右侧危险操作仍可能执行。"
+            }
+          ],
+          "pseudocode": "1. 数组只有3项，下标i=3越界。\n2. 先判断i>=0且i<3，第二项失败。\n3. &&右侧a[i]不会被访问。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int a[3] = {4, 5, 6}; // 只允许下标0到2\n    int i = 3; // 模拟一个越界编号\n    if (i >= 0 && i < 3 && a[i] > 0) // 先验证范围，通过后才读取元素\n    { // 合法正数分支\n        puts(\"positive\"); // 本例不会进入\n    } // 合法分支结束\n    puts(\"safe\"); // 没有访问a[3]，程序正常继续\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "safe\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        }
+      ]
+    },
+    {
+      "moduleId": 4,
+      "title": "循环与数论",
+      "points": [
+        {
+          "id": "F04-01",
+          "title": "while先判断：没读入的内容不能决定要不要读",
+          "beginner": {
+            "analogy": "老师不能先检查一张尚未交上来的作业，再决定是否收作业。读取循环要先取得一个有效输入，才能讨论它是否为停止符。",
+            "example": "读取第一个字符到ch。\n比较它是不是换行或EOF。\n仅处理正常字符，再开始下一轮读取。",
+            "steps": [
+              "读取第一个字符到ch。",
+              "比较它是不是换行或EOF。",
+              "仅处理正常字符，再开始下一轮读取。"
+            ]
+          },
+          "professional": {
+            "mechanism": "while进入循环体前先计算条件。未初始化自动对象不能被当成可靠输入；把读取写进条件或先在循环外读取，才能保证首次判断有有效值。",
+            "boundaries": "给整个数组清零只会让原先错误的while(s[0]!=0)直接退出，并不修复读取顺序。",
+            "misconceptions": [
+              "while(s[i]!=0)中才第一次输入s[i]。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "先收作业",
+              "term": "先读取",
+              "meaning": "获得数据再作决定"
+            },
+            {
+              "plain": "决定是否继续",
+              "term": "循环条件",
+              "meaning": "每轮执行前检查"
+            }
+          ],
+          "pitfalls": [
+            "while(s[i]!=0)中才第一次输入s[i]。"
+          ],
+          "questions": [
+            {
+              "question": "把数组初始化为0就能修复吗？",
+              "answer": "不能，条件立即为假，仍不读取。"
+            },
+            {
+              "question": "输入空行会执行循环体吗？",
+              "answer": "不会，第一次读到换行就退出。"
+            },
+            {
+              "question": "为什么还要判断EOF？",
+              "answer": "文件可能没有末尾换行，读完时必须能停止。"
+            }
+          ],
+          "pseudocode": "1. 读取第一个字符到ch。\n2. 比较它是不是换行或EOF。\n3. 仅处理正常字符，再开始下一轮读取。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int ch; // 保留getchar的完整返回值\n    int count = 0; // 开始尚未处理任何普通字符\n    while ((ch = getchar()) != EOF && ch != '\\n') // 先读入，再判断两种停止条件\n    { // 处理本行一个字符\n        ++count; // 只有成功读到的非换行字符才计数\n    } // 回车或输入结束时退出\n    printf(\"%d\\n\", count); // 输出本行字节数量\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "abc\n",
+          "expectedOutput": "3\n",
+          "complexity": {
+            "time": "O(n)",
+            "space": "O(1)",
+            "reason": "每个字节最多读取一次；常数个计数变量。"
+          },
+          "sources": [
+            "c-draft",
+            "cert-eof"
+          ]
+        },
+        {
+          "id": "F04-02",
+          "title": "for的四步与边界：最后一次更新不等于最后一次访问",
+          "beginner": {
+            "analogy": "跑道编号0到2只有三条跑道。检查编号小于3才进入跑道，离开第三条后编号变3，但此时必须在入口被拦下。",
+            "example": "i先置0，只做一次。\n条件i<3成立才输出i，之后执行++i。\ni到3时条件失败，不再访问数组或输出。",
+            "steps": [
+              "i先置0，只做一次。",
+              "条件i<3成立才输出i，之后执行++i。",
+              "i到3时条件失败，不再访问数组或输出。"
+            ]
+          },
+          "professional": {
+            "mechanism": "for依次执行初始化、条件、循环体、迭代表达式，再回到条件。i<n枚举0至n-1，共n次；i<=n多一次。",
+            "boundaries": "continue在for中会转去迭代表达式，而while的continue直接回条件；把更新藏在while循环末尾时需特别小心。",
+            "misconceptions": [
+              "数组容量n却用i<=n。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "入口检查",
+              "term": "循环条件",
+              "meaning": "决定本轮能否进入"
+            },
+            {
+              "plain": "离场换编号",
+              "term": "迭代表达式",
+              "meaning": "循环体后更新"
+            }
+          ],
+          "pitfalls": [
+            "数组容量n却用i<=n。"
+          ],
+          "questions": [
+            {
+              "question": "n=0时i<n执行几次？",
+              "answer": "0次，第一次条件就失败。"
+            },
+            {
+              "question": "i<=3会输出几项？",
+              "answer": "4项：0、1、2、3。"
+            },
+            {
+              "question": "for里的continue会跳过++i吗？",
+              "answer": "不会，仍执行迭代表达式。"
+            }
+          ],
+          "pseudocode": "1. i先置0，只做一次。\n2. 条件i<3成立才输出i，之后执行++i。\n3. i到3时条件失败，不再访问数组或输出。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    for (int i = 0; i < 3; ++i) // 依次枚举三个有效编号\n    { // 一次循环对应一个编号\n        printf(\"%d\\n\", i); // 输出本轮编号0、1或2\n    } // 更新编号后回到条件检查\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "0\n1\n2\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F04-03",
+          "title": "循环不变量：每一轮都说清当前账本算了谁",
+          "beginner": {
+            "analogy": "统计三场得分2、4、3时，账本sum不是神秘变量；在第i场开始前，它应等于前i场之和。这样可以逐场核对，没有漏记或重复记账。",
+            "example": "第0轮前sum=0，尚未记任何场。\n加入2、4、3后，sum依次变成2、6、9。\n循环结束i=3，总和恰好覆盖3场。",
+            "steps": [
+              "第0轮前sum=0，尚未记任何场。",
+              "加入2、4、3后，sum依次变成2、6、9。",
+              "循环结束i=3，总和恰好覆盖3场。"
+            ]
+          },
+          "professional": {
+            "mechanism": "不变量是在循环关键位置始终成立的断言。验证初始化、一次迭代保持性及终止时推出结论，可帮助证明正确性；不是仅看某次输出碰巧正确。",
+            "boundaries": "累乘器通常从1开始，最小值不能无条件从0开始；不同不变量要求不同初值。",
+            "misconceptions": [
+              "sum放在循环内部每次清零。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "账本已算到哪里",
+              "term": "循环不变量",
+              "meaning": "描述已处理区间的含义"
+            },
+            {
+              "plain": "能最终停下",
+              "term": "终止量",
+              "meaning": "此例剩余场次数递减"
+            }
+          ],
+          "pitfalls": [
+            "sum放在循环内部每次清零。"
+          ],
+          "questions": [
+            {
+              "question": "sum=0为何放循环前？",
+              "answer": "每轮保留此前累计结果，只初始化一次。"
+            },
+            {
+              "question": "第三轮开始前sum是多少？",
+              "answer": "6，即前两项2和4之和。"
+            },
+            {
+              "question": "同一数组求乘积初值是什么？",
+              "answer": "1，乘法单位元；从0开始会永远为0。"
+            }
+          ],
+          "pseudocode": "1. 第0轮前sum=0，尚未记任何场。\n2. 加入2、4、3后，sum依次变成2、6、9。\n3. 循环结束i=3，总和恰好覆盖3场。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int scores[3] = {2, 4, 3}; // 三场得分按比赛顺序存放\n    int sum = 0; // 尚未处理任何比赛，总和为0\n    for (int i = 0; i < 3; ++i) // 第i轮前sum等于前i场得分之和\n    { // 将一场新比赛纳入账本\n        sum += scores[i]; // 旧总和加上当前场，推进已处理区间\n    } // 循环结束后覆盖全部三场\n    printf(\"%d\\n\", sum); // 输出2+4+3的结果\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "9\n",
+          "complexity": {
+            "time": "O(n)",
+            "space": "O(1)",
+            "reason": "推广到n场时遍历n次，累加器占常数额外空间。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        }
+      ]
+    },
+    {
+      "moduleId": 5,
+      "title": "数组与矩阵",
+      "points": [
+        {
+          "id": "F05-01",
+          "title": "下标从0开始：第几项与下标差1",
+          "beginner": {
+            "analogy": "电影院说第1个座位，程序从起点移动0格就到了它，所以它的下标是0。人说第3项，程序写a[2]。",
+            "example": "数组存11、22、33。\n下标0读出11，下标2读出33。\n下标3已在三项之外，不能访问。",
+            "steps": [
+              "数组存11、22、33。",
+              "下标0读出11，下标2读出33。",
+              "下标3已在三项之外，不能访问。"
+            ]
+          },
+          "professional": {
+            "mechanism": "a[i]表示从首元素位置偏移i个元素。长度n有效范围是0到n-1；C不自动检查边界。",
+            "boundaries": "题面可能用1开始编号，读入后需统一映射。不要混用题目编号和存储下标。",
+            "misconceptions": [
+              "把最后一项写成a[n]。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "人说第几项",
+              "term": "序号",
+              "meaning": "常从1计数"
+            },
+            {
+              "plain": "离起点几格",
+              "term": "下标",
+              "meaning": "C数组从0计数"
+            }
+          ],
+          "pitfalls": [
+            "把最后一项写成a[n]。"
+          ],
+          "questions": [
+            {
+              "question": "第5项下标是多少？",
+              "answer": "4，若题目从1编号。"
+            },
+            {
+              "question": "a[0]是没有元素吗？",
+              "answer": "不是，是首元素。"
+            },
+            {
+              "question": "长度1最后一项下标呢？",
+              "answer": "0，首项也是末项。"
+            }
+          ],
+          "pseudocode": "1. 数组存11、22、33。\n2. 下标0读出11，下标2读出33。\n3. 下标3已在三项之外，不能访问。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int a[3] = {11, 22, 33}; // 三个座位号码按顺序存储\n    printf(\"%d %d\\n\", a[0], a[2]); // 读取第一项与第三项\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "11 33\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F05-02",
+          "title": "容量和已使用长度是两回事",
+          "beginner": {
+            "analogy": "书架有10格，目前只放3本书。容量告诉你最多能放几本，长度告诉你已经有几本；不能把空格也当成真实图书统计。",
+            "example": "容量为5，当前n=3。\n只累加前三项4、2、6。\n未使用的两格即使为0也不算数据项。",
+            "steps": [
+              "容量为5，当前n=3。",
+              "只累加前三项4、2、6。",
+              "未使用的两格即使为0也不算数据项。"
+            ]
+          },
+          "professional": {
+            "mechanism": "固定数组大小是存储容量；逻辑长度通常另存n。所有读写前应保证0<=n<=capacity。",
+            "boundaries": "sizeof只能帮助计算真实数组容量，不能猜出哪些元素已经被业务使用。",
+            "misconceptions": [
+              "把capacity当n输出多余数据。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "书架格数",
+              "term": "容量",
+              "meaning": "已分配元素数量"
+            },
+            {
+              "plain": "实际书本数",
+              "term": "逻辑长度",
+              "meaning": "本次有效数据数量"
+            }
+          ],
+          "pitfalls": [
+            "把capacity当n输出多余数据。"
+          ],
+          "questions": [
+            {
+              "question": "容量5、n3最多还能追加几项？",
+              "answer": "2项，写入下标3和4。"
+            },
+            {
+              "question": "删除一项会自动缩小数组吗？",
+              "answer": "不会，通常只移动数据并减少n。"
+            },
+            {
+              "question": "a[4]=0代表空位吗？",
+              "answer": "仅当业务协议如此约定；0也可能是合法数据。"
+            }
+          ],
+          "pseudocode": "1. 容量为5，当前n=3。\n2. 只累加前三项4、2、6。\n3. 未使用的两格即使为0也不算数据项。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int a[5] = {4, 2, 6}; // 容量5，剩余初始化元素为0\n    int n = 3; // 只有前三格属于本次有效数据\n    int sum = 0; // 尚未计入任何有效元素\n    for (int i = 0; i < n; ++i) // 上界使用有效长度\n    { // 处理一个真实数据项\n        sum += a[i]; // 累加4、2、6而不凭容量判断业务长度\n    } // 有效元素遍历结束\n    printf(\"%d\\n\", sum); // 输出12\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "12\n",
+          "complexity": {
+            "time": "O(n)",
+            "space": "O(1)",
+            "reason": "访问n项；求和只额外保存sum和i。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F05-03",
+          "title": "初始化：没有填过的格子不要读取",
+          "beginner": {
+            "analogy": "新买的草稿纸并不等于每格写了数字0。局部数组没有初始化时，不能把里面的内容当作可靠成绩。",
+            "example": "写int a[4]={0}，全部四项为0。\n写int b[4]={7}，只有第一项为7，其余是0。\n输出两组数据，观察部分初始化规则。",
+            "steps": [
+              "写int a[4]={0}，全部四项为0。",
+              "写int b[4]={7}，只有第一项为7，其余是0。",
+              "输出两组数据，观察部分初始化规则。"
+            ]
+          },
+          "professional": {
+            "mechanism": "带初始化列表的数组中，未显式提供的元素按零初始化；没有初始化的自动存储期对象值不确定。读取前必须先成功写入。",
+            "boundaries": "全局或static对象有零初始化规则，但不要由此推断所有局部变量都会清零。",
+            "misconceptions": [
+              "以为int a[4];等于{0}。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "明确填上初值",
+              "term": "初始化",
+              "meaning": "对象创建时提供值"
+            },
+            {
+              "plain": "剩余格补零",
+              "term": "部分初始化",
+              "meaning": "不足项按规则补零"
+            }
+          ],
+          "pitfalls": [
+            "以为int a[4];等于{0}。"
+          ],
+          "questions": [
+            {
+              "question": "int a[4]={1}是否四个1？",
+              "answer": "不是，1、0、0、0。"
+            },
+            {
+              "question": "要四个1怎么办？",
+              "answer": "显式写四项或循环逐一赋1。"
+            },
+            {
+              "question": "没初始化但第一次运行恰好0可靠吗？",
+              "answer": "不可靠，偶然观察不是语言保证。"
+            }
+          ],
+          "pseudocode": "1. 写int a[4]={0}，全部四项为0。\n2. 写int b[4]={7}，只有第一项为7，其余是0。\n3. 输出两组数据，观察部分初始化规则。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int a[4] = {0}; // 明确让四个元素都从0开始\n    int b[4] = {7}; // 仅第一项为7，其余按初始化规则为0\n    printf(\"%d %d %d\\n\", a[3], b[0], b[3]); // 对比末项与首项的初值\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "0 7 0\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F05-04",
+          "title": "读一个数组：每轮给当前元素的地址",
+          "beginner": {
+            "analogy": "体育老师按名单逐个登记成绩：第0轮填第0格，第1轮填第1格；不能每轮都往第一格写。",
+            "example": "从标准输入读取3个整数。\ni=0、1、2时分别传&a[i]。\n每轮都检查是否成功读到一个数。",
+            "steps": [
+              "从标准输入读取3个整数。",
+              "i=0、1、2时分别传&a[i]。",
+              "每轮都检查是否成功读到一个数。"
+            ]
+          },
+          "professional": {
+            "mechanism": "scanf每次调用中的%d需要int*，循环下标决定本轮目标。读取失败立即退出，避免后续使用未获得的数据。",
+            "boundaries": "真实题目先验证n不超过容量。数组元素类型改变时格式说明也需同步改变。",
+            "misconceptions": [
+              "每轮都写scanf(\"%d\", a)。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "本轮登记格",
+              "term": "&a[i]",
+              "meaning": "当前元素地址"
+            },
+            {
+              "plain": "逐份确认",
+              "term": "输入返回值",
+              "meaning": "确认本轮赋值成功"
+            }
+          ],
+          "pitfalls": [
+            "每轮都写scanf(\"%d\", a)。"
+          ],
+          "questions": [
+            {
+              "question": "三次传a会怎样？",
+              "answer": "不断覆盖a[0]，后两格未读入。"
+            },
+            {
+              "question": "i=3还能读入吗？",
+              "answer": "本例容量3，不能。"
+            },
+            {
+              "question": "第三项读失败还能输出整组吗？",
+              "answer": "不能把整组当有效输入，应报告失败或停止。"
+            }
+          ],
+          "pseudocode": "1. 从标准输入读取3个整数。\n2. i=0、1、2时分别传&a[i]。\n3. 每轮都检查是否成功读到一个数。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int a[3] = {0}; // 三个登记位置均初始化\n    for (int i = 0; i < 3; ++i) // 依次选择下标0、1、2\n    { // 读取本轮元素\n        if (scanf(\"%d\", &a[i]) != 1) // 传入本轮元素地址并确认成功\n        { // 输入不完整\n            return 1; // 停止，不使用缺失成绩\n        } // 输入检查结束\n    } // 三个成绩读取结束\n    printf(\"%d %d %d\\n\", a[0], a[1], a[2]); // 按输入顺序展示\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "2 8 5\n",
+          "expectedOutput": "2 8 5\n",
+          "complexity": {
+            "time": "O(n)",
+            "space": "O(1)",
+            "reason": "每项读取一次；数组存储O(n)，除输入数组外辅助空间O(1)。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F05-05",
+          "title": "sizeof数组与sizeof指针不能混用",
+          "beginner": {
+            "analogy": "整盒鸡蛋的重量除以一个鸡蛋的重量能算格数；只拿着“盒子在哪里”的纸条，纸条重量不能告诉你有多少鸡蛋。",
+            "example": "main中a是真实数组，sizeof a取得整个数组字节数。\n除以sizeof a[0]得3。\n输出容量3；若将a交给另一个函数，实际长度应另行传入。",
+            "steps": [
+              "main中a是真实数组，sizeof a取得整个数组字节数。",
+              "除以sizeof a[0]得3。",
+              "输出容量3；若将a交给另一个函数，实际长度应另行传入。"
+            ]
+          },
+          "professional": {
+            "mechanism": "数组在sizeof操作数中不发生首元素指针转换；但函数参数写int a[]会调整为int*，在函数内sizeof a得到指针大小。",
+            "boundaries": "不要硬编码指针是8字节。size_t对应%zu，元素个数要另传，或用明确接口约定。",
+            "misconceptions": [
+              "在数组参数函数内sizeof a/sizeof a[0]。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "整盒",
+              "term": "数组对象",
+              "meaning": "有编译器已知容量"
+            },
+            {
+              "plain": "地址纸条",
+              "term": "指针",
+              "meaning": "不携带一般意义上的数组长度"
+            }
+          ],
+          "pitfalls": [
+            "在数组参数函数内sizeof a/sizeof a[0]。"
+          ],
+          "questions": [
+            {
+              "question": "函数参数int a[100]保证传100项吗？",
+              "answer": "通常不保证，它仍调整为指针参数。"
+            },
+            {
+              "question": "main内本例能算出什么？",
+              "answer": "容量3，不是业务上自动推断的有效长度。"
+            },
+            {
+              "question": "输出sizeof值用什么格式？",
+              "answer": "%zu，sizeof结果类型为size_t。"
+            }
+          ],
+          "pseudocode": "1. main中a是真实数组，sizeof a取得整个数组字节数。\n2. 除以sizeof a[0]得3。\n3. 输出容量3；若将a交给另一个函数，实际长度应另行传入。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int a[] = {6, 7, 8}; // 编译器由初始化列表确定容量3\n    size_t n = sizeof a / sizeof a[0]; // 此处a是数组，字节总量除以元素大小\n    printf(\"%zu\\n\", n); // 输出容量，格式对应size_t\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "3\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F05-06",
+          "title": "二维数组：先选行，再选列",
+          "beginner": {
+            "analogy": "比赛记分表有2行3列，a[1][2]先去第2行，再选这行第3列，不是“第12格”。",
+            "example": "表格第一行1、2、3，第二行4、5、6。\na[1][2]取到6。\n输出第二行第三列的值6；若要输出全部六项，另需行列两层遍历。",
+            "steps": [
+              "表格第一行1、2、3，第二行4、5、6。",
+              "a[1][2]取到6。",
+              "输出第二行第三列的值6；若要输出全部六项，另需行列两层遍历。"
+            ]
+          },
+          "professional": {
+            "mechanism": "T a[R][C]是R个长度为C的数组组成的数组。两维都必须在范围内。二维数组在传参时通常转换为指向一行的指针，列数决定步长。",
+            "boundaries": "不能用某一行越界下标“借道”访问下一行；即使地址看似连续，表达式边界仍须遵守。",
+            "misconceptions": [
+              "行数列数上界颠倒。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "选择表格行",
+              "term": "第一维下标",
+              "meaning": "先定位子数组"
+            },
+            {
+              "plain": "该行第几格",
+              "term": "第二维下标",
+              "meaning": "再定位元素"
+            }
+          ],
+          "pitfalls": [
+            "行数列数上界颠倒。"
+          ],
+          "questions": [
+            {
+              "question": "2×3表a[2][0]合法吗？",
+              "answer": "不合法，行下标只到1。"
+            },
+            {
+              "question": "a[0][3]可当a[1][0]吗？",
+              "answer": "不可越过该行数组边界访问。"
+            },
+            {
+              "question": "一共多少个元素？",
+              "answer": "2×3=6。"
+            }
+          ],
+          "pseudocode": "1. 表格第一行1、2、3，第二行4、5、6。\n2. a[1][2]取到6。\n3. 输出第二行第三列的值6；若要输出全部六项，另需行列两层遍历。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int a[2][3] = {{1, 2, 3}, {4, 5, 6}}; // 两行三列分别初始化\n    printf(\"%d\\n\", a[1][2]); // 第二行第三列是6\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "6\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F05-07",
+          "title": "交换元素时为什么要暂存旧值",
+          "beginner": {
+            "analogy": "两杯不同饮料要互换杯子，需要第三个空杯。先把B倒进A会倒掉A原有内容，之后再也拿不回来。",
+            "example": "a[0]=4，a[1]=9。\n先把4存到temp，再把9写进a[0]。\n最后将temp里的4写进a[1]。",
+            "steps": [
+              "a[0]=4，a[1]=9。",
+              "先把4存到temp，再把9写进a[0]。",
+              "最后将temp里的4写进a[1]。"
+            ]
+          },
+          "professional": {
+            "mechanism": "赋值覆盖目标原值，不会保存历史。交换三个顺序步骤维护两个原始值；它与expression is not assignable不是同类错误。",
+            "boundaries": "只有后续仍需使用旧值时才需要暂存，不要对所有赋值机械提示“覆盖错误”。",
+            "misconceptions": [
+              "a[0]=a[1];a[1]=a[0]使两项一样。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "备用空杯",
+              "term": "临时变量",
+              "meaning": "暂存之后还需要的旧值"
+            },
+            {
+              "plain": "倒入替换",
+              "term": "赋值",
+              "meaning": "目标的旧值被覆盖"
+            }
+          ],
+          "pitfalls": [
+            "a[0]=a[1];a[1]=a[0]使两项一样。"
+          ],
+          "questions": [
+            {
+              "question": "错误两步后数组是什么？",
+              "answer": "9、9，原4已经丢失。"
+            },
+            {
+              "question": "temp一定要叫temp吗？",
+              "answer": "不用，名称可改，类型须能保存元素值。"
+            },
+            {
+              "question": "只想把首项改成9还要暂存吗？",
+              "answer": "不需要；只有算法后续需要原4才保存。"
+            }
+          ],
+          "pseudocode": "1. a[0]=4，a[1]=9。\n2. 先把4存到temp，再把9写进a[0]。\n3. 最后将temp里的4写进a[1]。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int a[2] = {4, 9}; // 两个不同元素等待交换\n    int temp = a[0]; // 先保存之后仍要使用的旧首项4\n    a[0] = a[1]; // 将9放到首项，原4已在temp中保留\n    a[1] = temp; // 将原4放到第二项完成交换\n    printf(\"%d %d\\n\", a[0], a[1]); // 验证两个旧值都还存在\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "9 4\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F05-08",
+          "title": "原地插入为什么从右往左搬",
+          "beginner": {
+            "analogy": "一排座位要在中间塞进新椅子，先搬最右侧，才能为前面的椅子留空。若先往右写第一个，会覆盖下一张还没搬走的椅子。",
+            "example": "有效数据是2、5、8，容量4，在下标1插入3。\n先a[3]=a[2]，再a[2]=a[1]。\n把3写进a[1]，长度增为4。",
+            "steps": [
+              "有效数据是2、5、8，容量4，在下标1插入3。",
+              "先a[3]=a[2]，再a[2]=a[1]。",
+              "把3写进a[1]，长度增为4。"
+            ]
+          },
+          "professional": {
+            "mechanism": "重叠区间右移时从后往前复制，确保未读取的源值不被覆盖。插入前保证n<capacity，位置范围0至n。",
+            "boundaries": "删除后左移则通常从前往后；memmove支持重叠，memcpy不支持。",
+            "misconceptions": [
+              "从小下标开始右移导致重复值。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "搬座位方向",
+              "term": "复制顺序",
+              "meaning": "由源目标重叠关系决定"
+            },
+            {
+              "plain": "新空位",
+              "term": "插入位置",
+              "meaning": "原位置及其后元素右移"
+            }
+          ],
+          "pitfalls": [
+            "从小下标开始右移导致重复值。"
+          ],
+          "questions": [
+            {
+              "question": "为何从j=n开始？",
+              "answer": "a[n]是预留新格，先把末尾元素移过去。"
+            },
+            {
+              "question": "在末尾插入需要搬吗？",
+              "answer": "不需要，直接写a[n]并增n。"
+            },
+            {
+              "question": "容量已满怎么办？",
+              "answer": "不能继续写，要拒绝、扩容或换存储策略。"
+            }
+          ],
+          "pseudocode": "1. 有效数据是2、5、8，容量4，在下标1插入3。\n2. 先a[3]=a[2]，再a[2]=a[1]。\n3. 把3写进a[1]，长度增为4。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int a[4] = {2, 5, 8}; // 预留一格供插入\n    int n = 3; // 当前有效元素是前三项\n    int pos = 1; // 新元素放在下标1\n    for (int j = n; j > pos; --j) // 从末端向左搬，保护尚未复制的旧值\n    { // 右移一个元素\n        a[j] = a[j - 1]; // 为新位置腾出一格\n    } // 重叠区域移动结束\n    a[pos] = 3; // 把新元素写入空位\n    ++n; // 有效长度随插入增加1\n    printf(\"%d %d %d %d\\n\", a[0], a[1], a[2], a[3]); // 检查顺序仍正确\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "2 3 5 8\n",
+          "complexity": {
+            "time": "O(n)",
+            "space": "O(1)",
+            "reason": "最坏移动n项，只额外使用下标和长度。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F05-09",
+          "title": "前缀和：多一天总账减少一天总账",
+          "beginner": {
+            "analogy": "每日营业额2、5、3、4，想查第2至3天，不必重新一笔笔加。前三天总账10减第一天总账2，得到8。",
+            "example": "令prefix[0]=0表示尚未营业。\nprefix依次得到0、2、7、10、14。\n下标区间[1,3)总和是prefix[3]-prefix[1]=8。",
+            "steps": [
+              "令prefix[0]=0表示尚未营业。",
+              "prefix依次得到0、2、7、10、14。",
+              "下标区间[1,3)总和是prefix[3]-prefix[1]=8。"
+            ]
+          },
+          "professional": {
+            "mechanism": "prefix[i]定义为前i个元素和，半开区间[l,r)的和为prefix[r]-prefix[l]。建立O(n)，每次查询O(1)。",
+            "boundaries": "数组需n+1容量；总和可能超int。本规则针对可相减的和，不可直接用于区间最小值。",
+            "misconceptions": [
+              "prefix[r]-prefix[l]却把区间写成闭区间[l,r]。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "此前总账",
+              "term": "前缀和",
+              "meaning": "前i项累计值"
+            },
+            {
+              "plain": "右端不含",
+              "term": "半开区间",
+              "meaning": "[l,r)包含l而不含r"
+            }
+          ],
+          "pitfalls": [
+            "prefix[r]-prefix[l]却把区间写成闭区间[l,r]。"
+          ],
+          "questions": [
+            {
+              "question": "单项a[2]怎么求？",
+              "answer": "prefix[3]-prefix[2]。"
+            },
+            {
+              "question": "空区间[2,2)呢？",
+              "answer": "差为0。"
+            },
+            {
+              "question": "n个元素为何建n+1项？",
+              "answer": "多出的prefix[0]表示空前缀，统一边界。"
+            }
+          ],
+          "pseudocode": "1. 令prefix[0]=0表示尚未营业。\n2. prefix依次得到0、2、7、10、14。\n3. 下标区间[1,3)总和是prefix[3]-prefix[1]=8。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int a[4] = {2, 5, 3, 4}; // 四天营业额\n    long long prefix[5] = {0}; // 额外一项保存空前缀0\n    for (int i = 0; i < 4; ++i) // 每天把收入接到此前总账\n    { // 构建下一个前缀\n        prefix[i + 1] = prefix[i] + a[i]; // 第i+1项表示前i+1天总额\n    } // 前缀表完成\n    printf(\"%lld\\n\", prefix[3] - prefix[1]); // 查询下标1和2两天，总和8\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "8\n",
+          "complexity": {
+            "time": "预处理O(n)，单次查询O(1)",
+            "space": "O(n)",
+            "reason": "额外保存n+1个前缀和，查询只做一次减法。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F05-10",
+          "title": "数组传给函数：元素能改，长度要另说",
+          "beginner": {
+            "analogy": "把书架位置告诉助手，助手能在原书架改标签；但纸条本身没有写书架多少格，所以还得告诉他数量。",
+            "example": "主函数数组是3、5。\n函数接收首元素地址与长度2。\n函数逐项加1，返回后主数组成为4、6。",
+            "steps": [
+              "主函数数组是3、5。",
+              "函数接收首元素地址与长度2。",
+              "函数逐项加1，返回后主数组成为4、6。"
+            ]
+          },
+          "professional": {
+            "mechanism": "数组实参通常转成首元素指针；指针参数仍按值传递，但通过它访问的是原数组元素。函数不会自动复制整个数组。",
+            "boundaries": "函数不知道容量，调用者必须保证n合法。只读函数用const int*表达不修改元素的意图。",
+            "misconceptions": [
+              "以为传数组会复制所有元素。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "地址复印件",
+              "term": "指针按值传递",
+              "meaning": "复制地址而非复制数组"
+            },
+            {
+              "plain": "改原书架",
+              "term": "间接访问",
+              "meaning": "修改指针指向的元素"
+            }
+          ],
+          "pitfalls": [
+            "以为传数组会复制所有元素。"
+          ],
+          "questions": [
+            {
+              "question": "函数里a[0]++影响原数组吗？",
+              "answer": "影响，指针指向原元素。"
+            },
+            {
+              "question": "函数里n=0改变调用者n吗？",
+              "answer": "不改变，普通int参数按值复制。"
+            },
+            {
+              "question": "只读数组参数怎么写？",
+              "answer": "const int *a，并另传长度。"
+            }
+          ],
+          "pseudocode": "1. 主函数数组是3、5。\n2. 函数接收首元素地址与长度2。\n3. 函数逐项加1，返回后主数组成为4、6。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nvoid increase(int *a, int n) // 接收数组起点和本次要处理的长度\n{ // 函数开始\n    for (int i = 0; i < n; ++i) // 仅访问调用者保证存在的n项\n    { // 更新一个元素\n        a[i] += 1; // 通过地址修改原数组中的数值\n    } // 元素遍历结束\n} // increase结束\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int values[2] = {3, 5}; // 原数组由main持有\n    increase(values, 2); // 传首元素地址和实际元素数\n    printf(\"%d %d\\n\", values[0], values[1]); // 观察原数组被更新\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "4 6\n",
+          "complexity": {
+            "time": "O(n)",
+            "space": "O(1)",
+            "reason": "每个元素修改一次，辅助存储为常数。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        }
+      ]
+    },
+    {
+      "moduleId": 6,
+      "title": "字符与字符串",
+      "points": [
+        {
+          "id": "F06-01",
+          "title": "字符、字符串、数字：三个7不是同一个对象",
+          "beginner": {
+            "analogy": "门牌字符7是一枚印着7的符号，整数7是能做数量计算的值，字符串\"7\"是一小排以结束标记收尾的字符。",
+            "example": "整数7加1得8。\n字符'7'减字符'0'也得到数值7。\n字符串\"7\"至少占两字节：字符7与\\0。",
+            "steps": [
+              "整数7加1得8。",
+              "字符'7'减字符'0'也得到数值7。",
+              "字符串\"7\"至少占两字节：字符7与\\0。"
+            ]
+          },
+          "professional": {
+            "mechanism": "普通字符常量如'7'在C中类型为int；字符串字面量\"7\"是含终止符的字符数组。数字字符在执行字符集中连续，因此c-'0'可把已确认的十进制数字字符转为0..9。",
+            "boundaries": "先检查c在'0'到'9'之间；不能对任意字符直接减'0'便称为合法数字。",
+            "misconceptions": [
+              "用\"7\"与整数7直接比较。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "印着7的符号",
+              "term": "字符编码",
+              "meaning": "字符对应一个数值编码"
+            },
+            {
+              "plain": "可计算的七",
+              "term": "整数值",
+              "meaning": "数量而非字形"
+            }
+          ],
+          "pitfalls": [
+            "用\"7\"与整数7直接比较。"
+          ],
+          "questions": [
+            {
+              "question": "sizeof \"7\"是多少？",
+              "answer": "2，一个字符和一个空字符。"
+            },
+            {
+              "question": "char c='7'后c+1是整数8吗？",
+              "answer": "不是，是下一个编码值；c-'0'+1才是数值8。"
+            },
+            {
+              "question": "空字符串占0字节吗？",
+              "answer": "不，占1字节的终止符。"
+            }
+          ],
+          "pseudocode": "1. 整数7加1得8。\n2. 字符'7'减字符'0'也得到数值7。\n3. 字符串\"7\"至少占两字节：字符7与\\0。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    char c = '7'; // 保存数字字符的编码\n    int value = c - '0'; // 已知c是数字字符，将编码差转成数值7\n    printf(\"%d %zu\\n\", value, sizeof \"7\"); // 展示数值7与字符串所占2字节\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "7 2\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F06-02",
+          "title": "\\n、\\0、EOF：换行、字串终点、输入状态",
+          "beginner": {
+            "analogy": "一段留言中，\\n像换到下一行，\\0像贴在存储盒末尾的“到此为止”，EOF像邮差说今天没有更多信。三者工作位置不同。",
+            "example": "读取abc后按Enter通常得到abc和换行。\n保存成字符串时可去掉换行，再补\\0。\n如果输入文件没有换行，读取仍须在EOF停下。",
+            "steps": [
+              "读取abc后按Enter通常得到abc和换行。",
+              "保存成字符串时可去掉换行，再补\\0。",
+              "如果输入文件没有换行，读取仍须在EOF停下。"
+            ]
+          },
+          "professional": {
+            "mechanism": "\\n是换行字符；\\0是值为0的空字符，用于C字符串终止；EOF是输入函数特殊返回值。按Enter不会自动给数组补\\0，scanf %s和fgets成功时会补。",
+            "boundaries": "流中可以包含值为0的字节，但那不是EOF；字符串函数遇到首个空字符就停止。",
+            "misconceptions": [
+              "用getchar()!='\\0'等待回车。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "换下一行",
+              "term": "换行字符",
+              "meaning": "\\n属于文本内容"
+            },
+            {
+              "plain": "存储中到此结束",
+              "term": "空字符",
+              "meaning": "\\0终止C字符串"
+            },
+            {
+              "plain": "再无输入",
+              "term": "EOF状态",
+              "meaning": "需由读取函数返回值判断"
+            }
+          ],
+          "pitfalls": [
+            "用getchar()!='\\0'等待回车。"
+          ],
+          "questions": [
+            {
+              "question": "按Enter通常读到什么？",
+              "answer": "终端文本输入通常是\\n，不是\\0。"
+            },
+            {
+              "question": "字符串\"a\\nb\"长度是多少？",
+              "answer": "3，a、换行、b；最后还有不计入长度的\\0。"
+            },
+            {
+              "question": "EOF要写进数组吗？",
+              "answer": "不要。先判断状态，只存实际字节。"
+            }
+          ],
+          "pseudocode": "1. 读取abc后按Enter通常得到abc和换行。\n2. 保存成字符串时可去掉换行，再补\\0。\n3. 如果输入文件没有换行，读取仍须在EOF停下。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n#include <string.h> // 引入string.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    char text[] = \"a\\nb\"; // a、换行、b、终止符共四字节\n    printf(\"length=%zu newline=%d end=%d\\n\", strlen(text), text[1] == '\\n', text[3] == '\\0'); // 区分文本中的换行与末尾终止符\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "length=3 newline=1 end=1\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "cert-eof"
+          ]
+        },
+        {
+          "id": "F06-03",
+          "title": "字符数组不一定是字符串：末尾必须留一格",
+          "beginner": {
+            "analogy": "三张写着c、a、t的卡片能拼出猫这个词，但递给只认“结束牌”的机器时，还要第四张结束牌，否则它会继续往后找。",
+            "example": "char word[4]保存c、a、t、\\0。\nstrlen数到第一张结束牌之前，得到3。\nsizeof看到整个存储盒，得到4。",
+            "steps": [
+              "char word[4]保存c、a、t、\\0。",
+              "strlen数到第一张结束牌之前，得到3。",
+              "sizeof看到整个存储盒，得到4。"
+            ]
+          },
+          "professional": {
+            "mechanism": "C字符串是以首个空字符结尾的字符序列。char s[3]={'c','a','t'}是合法数组，但不是字符串，不能直接用于%s或strlen。",
+            "boundaries": "缓冲区容量包括结束符，字符串长度不包括结束符。检查容量按字节而非视觉字符数计算。",
+            "misconceptions": [
+              "恰好开文本长度大小却忘了结尾。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "卡片数量",
+              "term": "字符串长度",
+              "meaning": "终止符前字节数"
+            },
+            {
+              "plain": "所有格子",
+              "term": "缓冲容量",
+              "meaning": "包括存放终止符的空间"
+            }
+          ],
+          "pitfalls": [
+            "恰好开文本长度大小却忘了结尾。"
+          ],
+          "questions": [
+            {
+              "question": "存hello至少几格char？",
+              "answer": "6格。"
+            },
+            {
+              "question": "strlen包含\\0吗？",
+              "answer": "不包含。"
+            },
+            {
+              "question": "无终止符用%s为何危险？",
+              "answer": "库函数会继续寻找终止符，可能越界读取。"
+            }
+          ],
+          "pseudocode": "1. char word[4]保存c、a、t、\\0。\n2. strlen数到第一张结束牌之前，得到3。\n3. sizeof看到整个存储盒，得到4。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n#include <string.h> // 引入string.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    char word[4] = {'c', 'a', 't', '\\0'}; // 第四格是必需的字符串终止符\n    printf(\"%s %zu %zu\\n\", word, strlen(word), sizeof word); // 内容cat、长度3、容量4\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "cat 3 4\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F06-04",
+          "title": "安全读取一行：容量、EOF、终止符同时处理",
+          "beginner": {
+            "analogy": "留言盒只有6格，最多放5个正文字符，最后一格贴结束牌。即使访客输入很长，也不能挤坏旁边盒子。",
+            "example": "n从0开始，ch用int保存读取结果。\n仅在n<5且读到非换行、非EOF字符时存入。\n循环结束在line[n]写\\0，再输出。",
+            "steps": [
+              "n从0开始，ch用int保存读取结果。",
+              "仅在n<5且读到非换行、非EOF字符时存入。",
+              "循环结束在line[n]写\\0，再输出。"
+            ]
+          },
+          "professional": {
+            "mechanism": "边界判断应在写入前发生。先用int接收getchar，排除EOF后再转换并保存为char。末尾不论因为换行、EOF或容量停止，都明确补终止符。",
+            "boundaries": "本例只保留前5字节；容量满时会留有未读输入，若之后还读下一行，必须丢弃或继续收集当前行剩余部分。下一点介绍fgets截断处理。",
+            "misconceptions": [
+              "把getchar直接存char再判断EOF。",
+              "i<capacity而非i<capacity-1。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "留言已占格数",
+              "term": "长度计数",
+              "meaning": "n始终不超过容量减一"
+            },
+            {
+              "plain": "最后的结束牌",
+              "term": "终止符",
+              "meaning": "line[n]=0"
+            }
+          ],
+          "pitfalls": [
+            "把getchar直接存char再判断EOF。",
+            "i<capacity而非i<capacity-1。"
+          ],
+          "questions": [
+            {
+              "question": "空行如何保存？",
+              "answer": "n=0，line[0]=\\0，是合法空字符串。"
+            },
+            {
+              "question": "输入abcdef会全保存吗？",
+              "answer": "不会，本例只保留abcde，剩余字符还在输入流。"
+            },
+            {
+              "question": "为何先检查n<5？",
+              "answer": "保证读取并存入时始终为终止符预留空间。"
+            }
+          ],
+          "pseudocode": "1. n从0开始，ch用int保存读取结果。\n2. 仅在n<5且读到非换行、非EOF字符时存入。\n3. 循环结束在line[n]写\\0，再输出。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    char line[6]; // 容量6，最多保存5字节正文\n    size_t n = 0; // 尚未保存任何字符\n    int ch; // 先保留EOF和普通字节的区分\n    while (n < sizeof line - 1 && (ch = getchar()) != EOF && ch != '\\n') // 先确认空间，再读取与判断\n    { // 保存一个实际读到的正文字符\n        line[n++] = (char)ch; // 先写当前格，再推进已保存长度\n    } // 可能因换行、EOF或容量到限而停止\n    line[n] = '\\0'; // 所有停止路径都为字符串补结束符\n    puts(line); // 输出已保存的正文\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "abc\n",
+          "expectedOutput": "abc\n",
+          "complexity": {
+            "time": "O(min(n,capacity))",
+            "space": "O(capacity)",
+            "reason": "至多保存capacity-1字节；代码示例容量固定为6。"
+          },
+          "sources": [
+            "c-draft",
+            "cert-eof"
+          ]
+        },
+        {
+          "id": "F06-05",
+          "title": "fgets会保留换行：先看成功，再去换行",
+          "beginner": {
+            "analogy": "fgets像把整张便条装进盒子：如果装得下，回车标记也跟着装进来。不要还没收到便条就拆内容。",
+            "example": "fgets返回非NULL时，line才是本次有效字符串。\n寻找\\n首次出现的位置。\n找到就把它改成\\0，未找到则保留原内容。",
+            "steps": [
+              "fgets返回非NULL时，line才是本次有效字符串。",
+              "寻找\\n首次出现的位置。",
+              "找到就把它改成\\0，未找到则保留原内容。"
+            ]
+          },
+          "professional": {
+            "mechanism": "fgets最多读取size-1个字符，若读到换行会保存它，成功后补空字符。输入结束且未读到字符时返回NULL。strcspn(line,\"\\n\")返回首个换行下标，或当前字符串长度。",
+            "boundaries": "没有换行不必然是错误：可能是文件末行没有换行，也可能是缓冲区满导致截断。嵌入空字节输入不属于本节普通文本协议。",
+            "misconceptions": [
+              "无条件对失败后的line调用strlen。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "装进来的回车",
+              "term": "保留换行",
+              "meaning": "属于fgets读取结果"
+            },
+            {
+              "plain": "收件是否成功",
+              "term": "返回值检查",
+              "meaning": "先确认非NULL再读缓冲"
+            }
+          ],
+          "pitfalls": [
+            "无条件对失败后的line调用strlen。"
+          ],
+          "questions": [
+            {
+              "question": "输入abc回车，去换行前strlen是多少？",
+              "answer": "4，abc加换行。"
+            },
+            {
+              "question": "strcspn没找到换行会越界写吗？",
+              "answer": "不会，它返回现有终止符位置，重新写0仍在有效字符串内。"
+            },
+            {
+              "question": "读空文件可直接puts(line)吗？",
+              "answer": "不可，先检查fgets是否成功。"
+            }
+          ],
+          "pseudocode": "1. fgets返回非NULL时，line才是本次有效字符串。\n2. 寻找\\n首次出现的位置。\n3. 找到就把它改成\\0，未找到则保留原内容。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n#include <string.h> // 引入string.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    char line[20]; // 容量包含最后的终止符\n    if (fgets(line, sizeof line, stdin) != NULL) // 确认本次确实读到了文本\n    { // 有效文本处理开始\n        line[strcspn(line, \"\\n\")] = '\\0'; // 有换行就替换，无换行则仍写原结束位置\n        printf(\"[%s]\\n\", line); // 方括号帮助观察正文不再含回车\n    } // 有效文本处理结束\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "hello world\n",
+          "expectedOutput": "[hello world]\n",
+          "complexity": {
+            "time": "O(n)",
+            "space": "O(capacity)",
+            "reason": "读取与查找都至多扫描缓冲长度；示例固定容量20。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F06-06",
+          "title": "fgets装不下整行：别把下一截当下一行",
+          "beginner": {
+            "analogy": "信封最多放4个字，第一封装了abcd，并不代表对方只写了四字；第五个字仍在桌上，下一次读取会继续拿它。",
+            "example": "用5格缓冲读取abcdef换行，先得到abcd。\n若缓冲没有换行，则继续读到换行或EOF，把剩余部分丢弃。\n这表示本程序选择保留前缀，不宣称已保留完整原行。",
+            "steps": [
+              "用5格缓冲读取abcdef换行，先得到abcd。",
+              "若缓冲没有换行，则继续读到换行或EOF，把剩余部分丢弃。",
+              "这表示本程序选择保留前缀，不宣称已保留完整原行。"
+            ]
+          },
+          "professional": {
+            "mechanism": "fgets成功不代表整行已读完。未包含换行时可选择继续拼接、拒绝过长行，或明确截断并消费剩余输入。本例展示最后一种策略。",
+            "boundaries": "最后一行刚好没有换行也走此分支，进一步读取会遇到EOF。若需要区分“恰好放满”与“确实超长”，必须查看下一字符并制定策略。",
+            "misconceptions": [
+              "把第二次fgets的余段当作另一条用户记录。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "只装下前半张",
+              "term": "截断",
+              "meaning": "缓冲容量不足"
+            },
+            {
+              "plain": "清掉剩余便条",
+              "term": "消费余行",
+              "meaning": "使下次从新行开始"
+            }
+          ],
+          "pitfalls": [
+            "把第二次fgets的余段当作另一条用户记录。"
+          ],
+          "questions": [
+            {
+              "question": "为什么不能只读一个字符清理？",
+              "answer": "余下可能有很多字符，应循环到行末或EOF。"
+            },
+            {
+              "question": "截断后还能说保留原文吗？",
+              "answer": "不能，应提示截断或选择拼接。"
+            },
+            {
+              "question": "若必须完整保存怎么办？",
+              "answer": "动态扩容分段追加，或限制长度后检测超长并拒绝。"
+            }
+          ],
+          "pseudocode": "1. 用5格缓冲读取abcdef换行，先得到abcd。\n2. 若缓冲没有换行，则继续读到换行或EOF，把剩余部分丢弃。\n3. 这表示本程序选择保留前缀，不宣称已保留完整原行。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n#include <string.h> // 引入string.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    char line[5]; // 最多保存4字节正文和一个终止符\n    if (fgets(line, sizeof line, stdin) == NULL) // 没读到任何字符则立即结束\n    { // 无有效输入\n        return 0; // 不访问未获得的文本\n    } // 初次读取检查结束\n    if (strchr(line, '\\n') == NULL) // 本段没有换行，可能还有当前行的剩余部分\n    { // 采用明确的截断并消费余行策略\n        int ch; // int保留EOF状态\n        while ((ch = getchar()) != EOF && ch != '\\n') // 不断读取到当前行真正结束\n        { // 本程序选择丢弃超出容量的正文\n        } // 余行已消费或输入结束\n    } // 截断处理结束\n    line[strcspn(line, \"\\n\")] = '\\0'; // 若首段含换行则去掉它\n    puts(line); // 只展示明确保留的前缀\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "abcdef\n",
+          "expectedOutput": "abcd\n",
+          "complexity": {
+            "time": "O(n)",
+            "space": "O(capacity)",
+            "reason": "即使只保留前缀，仍消费整行n字节；额外缓冲容量固定。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F06-07",
+          "title": "isdigit的真不保证是1，字符参数也有范围",
+          "beginner": {
+            "analogy": "验票员给出的“通过”可能盖不同编号的章；只要章号非0就是通过，不能只认编号1。传过去的还必须是合法字符编码。",
+            "example": "字符c是'8'。\n先转unsigned char，再交给isdigit。\n判断返回值是否非0，计数增加1。",
+            "steps": [
+              "字符c是'8'。",
+              "先转unsigned char，再交给isdigit。",
+              "判断返回值是否非0，计数增加1。"
+            ]
+          },
+          "professional": {
+            "mechanism": "ctype函数返回0表示假、非0表示真，不保证真等于1。参数必须为EOF或能表示为unsigned char的值。普通char可能为负，处理字符串字节时需先转(unsigned char)。",
+            "boundaries": "如果ch直接来自getchar且尚未窄化，在本机已满足字节/EOF范围；不要在保留EOF之前先转unsigned char。ctype通常不理解UTF-8多字节汉字。",
+            "misconceptions": [
+              "isdigit(c)==1。",
+              "把可能为负的char直接传入ctype。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "任意通过章",
+              "term": "非零真",
+              "meaning": "if接受所有非0值"
+            },
+            {
+              "plain": "合法字节编号",
+              "term": "unsigned char范围",
+              "meaning": "避免负char非法参数"
+            }
+          ],
+          "pitfalls": [
+            "isdigit(c)==1。",
+            "把可能为负的char直接传入ctype。"
+          ],
+          "questions": [
+            {
+              "question": "isdigit返回2048是真吗？",
+              "answer": "是，只要非0。"
+            },
+            {
+              "question": "对字符串s[i]推荐写法？",
+              "answer": "if(isdigit((unsigned char)s[i]))。"
+            },
+            {
+              "question": "能用isalpha逐字节判断中文吗？",
+              "answer": "不能据此正确识别UTF-8汉字；本节针对单字节字符分类。"
+            }
+          ],
+          "pseudocode": "1. 字符c是'8'。\n2. 先转unsigned char，再交给isdigit。\n3. 判断返回值是否非0，计数增加1。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n#include <ctype.h> // 引入ctype.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    char c = '8'; // 一个待检查的数字字符\n    int count = 0; // 尚未发现数字\n    if (isdigit((unsigned char)c)) // 参数先归入字节范围，返回非0就视为真\n    { // 确认是十进制数字字符\n        ++count; // 统计一个数字\n    } // 字符分类完成\n    printf(\"%d\\n\", count); // 输出1，未依赖isdigit具体的真值编码\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "1\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F06-08",
+          "title": "统计字母数字其他：分支必须互斥且完整",
+          "beginner": {
+            "analogy": "把便条上的字符分进三个盒子：字母盒、数字盒、其他盒。若第二次仍问“是不是数字”，字母就永远进不了自己的盒子。",
+            "example": "遍历A7!的三个字节。\nA命中isalpha，7命中isdigit，!进入else。\n最终字母1、数字1、其他1。",
+            "steps": [
+              "遍历A7!的三个字节。",
+              "A命中isalpha，7命中isdigit，!进入else。",
+              "最终字母1、数字1、其他1。"
+            ]
+          },
+          "professional": {
+            "mechanism": "if/else if链按顺序选择第一个成立的分支；每个字符只计入一个类别。ctype测试传unsigned char，字符串循环在\\0处结束。",
+            "boundaries": "如果任务要求统计空格，需要保留它们，用fgets或getchar按协议读取；%s会在空白处分词。",
+            "misconceptions": [
+              "Letter分支重复判断数字范围。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "三个分类盒",
+              "term": "互斥分类",
+              "meaning": "一项只进入一个分支"
+            },
+            {
+              "plain": "兜底盒",
+              "term": "else分支",
+              "meaning": "覆盖前面都不符合的情况"
+            }
+          ],
+          "pitfalls": [
+            "Letter分支重复判断数字范围。"
+          ],
+          "questions": [
+            {
+              "question": "输入空格应放哪里？",
+              "answer": "在本题三分类中放Other，但要保证读取方法保留空格。"
+            },
+            {
+              "question": "为什么不能分别写两个独立if加一个else？",
+              "answer": "else只绑定最近if，可能出现重复或错误计数，明确互斥时用else if。"
+            },
+            {
+              "question": "\\0算Other吗？",
+              "answer": "不算，它是遍历停止标记，不是本字符串正文。"
+            }
+          ],
+          "pseudocode": "1. 遍历A7!的三个字节。\n2. A命中isalpha，7命中isdigit，!进入else。\n3. 最终字母1、数字1、其他1。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n#include <ctype.h> // 引入ctype.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    char text[] = \"A7!\"; // 三个不同类别的正文字符\n    int letters = 0, digits = 0, others = 0; // 三类计数均从0开始\n    for (size_t i = 0; text[i] != '\\0'; ++i) // 只遍历终止符之前的正文\n    { // 为当前字符选择唯一类别\n        unsigned char c = (unsigned char)text[i]; // 满足ctype参数取值要求\n        if (isalpha(c)) // 先判断字母\n        { // 字母类别\n            ++letters; // 字母数量增加1\n        } // 字母分支结束\n        else if (isdigit(c)) // 非字母再判断数字，避免重复条件\n        { // 数字类别\n            ++digits; // 数字数量增加1\n        } // 数字分支结束\n        else // 其余字符统一计入其他\n        { // 其他类别\n            ++others; // 其他数量增加1\n        } // 分类分支结束\n    } // 正文遍历完成\n    printf(\"%d %d %d\\n\", letters, digits, others); // 输出三类数量\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "1 1 1\n",
+          "complexity": {
+            "time": "O(n)",
+            "space": "O(1)",
+            "reason": "每个正文字节检查一次，三个计数器占常数空间。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F06-09",
+          "title": "strcmp比内容，==比的是不是同一位置",
+          "beginner": {
+            "analogy": "两张便条都写cat，内容相同，但它们不是同一张纸。字符串内容比较需要逐字看，而不能只看纸放在哪里。",
+            "example": "a与b是两个独立数组，都写cat。\nstrcmp逐字比较，结果是0。\n用strcmp(a,b)==0判断内容相等。",
+            "steps": [
+              "a与b是两个独立数组，都写cat。",
+              "strcmp逐字比较，结果是0。",
+              "用strcmp(a,b)==0判断内容相等。"
+            ]
+          },
+          "professional": {
+            "mechanism": "数组在比较表达式中通常转换成指针；==比较地址，不比较字符串内容。strcmp返回负、零、正表示字典序关系，不承诺精确为-1或1。",
+            "boundaries": "两边必须都是合法以空字符终止的字符串。strcmp比较字节序列，不是自然语言排序规则。",
+            "misconceptions": [
+              "if(strcmp(a,b))误以为内容相等。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "纸上文字相同",
+              "term": "内容相等",
+              "meaning": "strcmp结果为0"
+            },
+            {
+              "plain": "同一张纸的位置",
+              "term": "地址相等",
+              "meaning": "指针=="
+            }
+          ],
+          "pitfalls": [
+            "if(strcmp(a,b))误以为内容相等。"
+          ],
+          "questions": [
+            {
+              "question": "strcmp等于0时代表什么？",
+              "answer": "所有字节内容相等。"
+            },
+            {
+              "question": "能要求strcmp返回恰好1吗？",
+              "answer": "不能，只能判断>0、==0或<0。"
+            },
+            {
+              "question": "字符串字面量地址偶尔相等可依赖吗？",
+              "answer": "不能据此做内容比较，编译器可能合并也可能不合并。"
+            }
+          ],
+          "pseudocode": "1. a与b是两个独立数组，都写cat。\n2. strcmp逐字比较，结果是0。\n3. 用strcmp(a,b)==0判断内容相等。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n#include <string.h> // 引入string.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    char a[] = \"cat\"; // 第一份字符数组\n    char b[] = \"cat\"; // 第二份独立的字符数组\n    printf(\"%d\\n\", strcmp(a, b) == 0); // 比较内容，结果1表示相同\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "1\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F06-10",
+          "title": "UTF-8汉字不是一个char：字节数与文字数分开",
+          "beginner": {
+            "analogy": "英文A通常占一格，汉字在UTF-8里像由几块拼图组成。逐块计数得到的是拼图片数，不能直接说是汉字数量。",
+            "example": "UTF-8的“中”由三个字节组成。\nstrlen统计终止符前的字节数，得到3。\n显示上看到一个汉字，不改变底层需要三个字节的事实。",
+            "steps": [
+              "UTF-8的“中”由三个字节组成。",
+              "strlen统计终止符前的字节数，得到3。",
+              "显示上看到一个汉字，不改变底层需要三个字节的事实。"
+            ]
+          },
+          "professional": {
+            "mechanism": "char保存一个C字节；本应用macOS使用8位字节，UTF-8中文常见汉字编码为3字节。strlen计算字节长度，不计算Unicode码点，更不计算视觉字素簇。",
+            "boundaries": "并非所有Unicode字符都是3字节，emoji可能更长或由多个码点组成。处理任意人类文字应选用Unicode解码与字素规则，而非逐char大小写转换。",
+            "misconceptions": [
+              "认为char s[2]足够存一个汉字和结束符。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "拼图块数",
+              "term": "字节长度",
+              "meaning": "strlen计算的数量"
+            },
+            {
+              "plain": "人看到的文字",
+              "term": "字素簇",
+              "meaning": "可能由多个码点构成"
+            }
+          ],
+          "pitfalls": [
+            "认为char s[2]足够存一个汉字和结束符。"
+          ],
+          "questions": [
+            {
+              "question": "UTF-8“中”加终止符至少多少字节？",
+              "answer": "4字节。"
+            },
+            {
+              "question": "strlen(\"ABC\")为何是3？",
+              "answer": "三个ASCII字符各占一个字节。"
+            },
+            {
+              "question": "截取前三字节总能取一字吗？",
+              "answer": "不能，必须识别编码边界，避免切断多字节序列。"
+            }
+          ],
+          "pseudocode": "1. UTF-8的“中”由三个字节组成。\n2. strlen统计终止符前的字节数，得到3。\n3. 显示上看到一个汉字，不改变底层需要三个字节的事实。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n#include <string.h> // 引入string.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    char text[] = \"中\"; // 本项目源文件采用UTF-8，一个汉字占三字节\n    printf(\"%zu\\n\", strlen(text)); // 输出字节数3，而不是视觉字符数1\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "3\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "cs50-arrays"
+          ]
+        }
+      ]
+    },
+    {
+      "moduleId": 7,
+      "title": "函数与递归",
+      "points": [
+        {
+          "id": "F07-01",
+          "title": "参数按值传递：函数拿到的是复印件",
+          "beginner": {
+            "analogy": "把余额抄给朋友，朋友划掉纸上的10改20，不会改银行账本。普通参数就是这一份副本。",
+            "example": "main中的money为10。\n函数把形参x增加10，返回20。\nmoney仍10，只有显式接收返回值的updated是20。",
+            "steps": [
+              "main中的money为10。",
+              "函数把形参x增加10，返回20。",
+              "money仍10，只有显式接收返回值的updated是20。"
+            ]
+          },
+          "professional": {
+            "mechanism": "函数调用会为形参建立局部对象，实参的值用于初始化它们。修改普通形参不修改调用方对象；返回值是把结果交回的一条通道。",
+            "boundaries": "传入指针时复制的是地址，借此可修改地址指向的对象；这仍是按值传递，不是C突然改成按引用传递。",
+            "misconceptions": [
+              "void函数改形参后期待外部变量一起变。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "账本复印件",
+              "term": "形参",
+              "meaning": "函数内独立的局部对象"
+            },
+            {
+              "plain": "交回新数字",
+              "term": "返回值",
+              "meaning": "调用表达式产生的结果"
+            }
+          ],
+          "pitfalls": [
+            "void函数改形参后期待外部变量一起变。"
+          ],
+          "questions": [
+            {
+              "question": "不给返回值找变量会怎样？",
+              "answer": "返回值可被丢弃，原变量不自动更新。"
+            },
+            {
+              "question": "怎么更新money？",
+              "answer": "money=add_bonus(money);。"
+            },
+            {
+              "question": "函数里的x能在main直接用吗？",
+              "answer": "不能，它有自己的作用域。"
+            }
+          ],
+          "pseudocode": "1. main中的money为10。\n2. 函数把形参x增加10，返回20。\n3. money仍10，只有显式接收返回值的updated是20。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint add_bonus(int x) // x接收余额数值的副本\n{ // 计算新余额\n    x += 10; // 只改本函数的局部副本\n    return x; // 把新余额交给调用方\n} // 函数结束\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int money = 10; // 调用方保留原余额\n    int updated = add_bonus(money); // 用返回值接收加奖后的新余额\n    printf(\"%d %d\\n\", money, updated); // 原值10与结果20不同\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "10 20\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F07-02",
+          "title": "函数契约：输入保证、输出承诺写清楚",
+          "beginner": {
+            "analogy": "自动售货机要先说明接受哪些硬币、会交出什么。函数也要说明参数是否合法，以及返回值代表什么，不能让调用者猜。",
+            "example": "函数接收非负整数a和正整数b。\n计算a/b，返回装满的盒子数。\n示例11件商品每盒3件，完整盒子数3。",
+            "steps": [
+              "函数接收非负整数a和正整数b。",
+              "计算a/b，返回装满的盒子数。",
+              "示例11件商品每盒3件，完整盒子数3。"
+            ]
+          },
+          "professional": {
+            "mechanism": "函数契约包含前置条件与后置条件。C类型系统不能表达所有业务约束，例如int b不意味着b必定非0。调用方验证前提，函数按明确规则返回。",
+            "boundaries": "教学示例采用已知小值；通用库应约定错误返回或状态码。不要把“每盒数量”允许0却仍执行除法。",
+            "misconceptions": [
+              "参数类型正确就忽略值域。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "机器接受范围",
+              "term": "前置条件",
+              "meaning": "调用前必须成立"
+            },
+            {
+              "plain": "机器交付承诺",
+              "term": "后置条件",
+              "meaning": "返回值满足的关系"
+            }
+          ],
+          "pitfalls": [
+            "参数类型正确就忽略值域。"
+          ],
+          "questions": [
+            {
+              "question": "b=0属于合法输入吗？",
+              "answer": "不属于本契约，不能调用除法。"
+            },
+            {
+              "question": "结果3是否包括剩余2件？",
+              "answer": "不包括，它表示完整装满盒子的数量。"
+            },
+            {
+              "question": "名字filled_boxes有何帮助？",
+              "answer": "直接表达返回值含义，减少误用。"
+            }
+          ],
+          "pseudocode": "1. 函数接收非负整数a和正整数b。\n2. 计算a/b，返回装满的盒子数。\n3. 示例11件商品每盒3件，完整盒子数3。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint filled_boxes(int items, int perBox) // 前提：items>=0且perBox>0\n{ // 按完整盒子定义计算\n    return items / perBox; // 丢弃不足一盒的余数部分\n} // 返回盒数\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int items = 11; // 待装商品数量\n    int perBox = 3; // 每盒容量为正，满足函数前提\n    printf(\"%d\\n\", filled_boxes(items, perBox)); // 输出完整装满的盒数\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "3\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F07-03",
+          "title": "递归：终点、缩小规模、返回过程缺一不可",
+          "beginner": {
+            "analogy": "排队的人问前面还有几人，最后一个先说0，再逐个加1往回传。没有最后那个人，问题会一直问下去。",
+            "example": "sum_to(3)等待3+sum_to(2)。\nsum_to(2)等待2+sum_to(1)，再到sum_to(0)=0。\n返回过程得到1、3、6。",
+            "steps": [
+              "sum_to(3)等待3+sum_to(2)。",
+              "sum_to(2)等待2+sum_to(1)，再到sum_to(0)=0。",
+              "返回过程得到1、3、6。"
+            ]
+          },
+          "professional": {
+            "mechanism": "递归函数调用自身，每次调用有独立参数与局部状态。必须存在可达的基例，并使递归参数向基例推进。时间包括全部调用，空间包括同时活跃的调用栈。",
+            "boundaries": "本例只允许0<=n<=1000，防止数值范围与深度过大；递归可改循环获得O(1)辅助空间。",
+            "misconceptions": [
+              "仅写n+sum_to(n)没有缩小参数。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "不再往前问",
+              "term": "基例",
+              "meaning": "直接给答案的最小问题"
+            },
+            {
+              "plain": "等别人回答",
+              "term": "调用栈",
+              "meaning": "保存尚未完成的调用"
+            }
+          ],
+          "pitfalls": [
+            "仅写n+sum_to(n)没有缩小参数。"
+          ],
+          "questions": [
+            {
+              "question": "为何sum_to(0)=0？",
+              "answer": "空和为0，并让递归停止。"
+            },
+            {
+              "question": "深度n，时间也是指数吗？",
+              "answer": "本例每次仅一次递归，共n+1次，时间O(n)。"
+            },
+            {
+              "question": "空间为何不是O(1)？",
+              "answer": "有n层尚未返回的调用同时存活。"
+            }
+          ],
+          "pseudocode": "1. sum_to(3)等待3+sum_to(2)。\n2. sum_to(2)等待2+sum_to(1)，再到sum_to(0)=0。\n3. 返回过程得到1、3、6。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint sum_to(int n) // 前提：0<=n<=1000\n{ // 计算1到n之和\n    if (n == 0) // 到达空和这个基例\n    { // 直接返回，无需再调用\n        return 0; // 空和为0\n    } // 基例分支结束\n    return n + sum_to(n - 1); // 规模减少1，并等待子问题结果\n} // 本层递归结束\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    printf(\"%d\\n\", sum_to(3)); // 展开后相当于3+2+1+0\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "6\n",
+          "complexity": {
+            "time": "O(n)",
+            "space": "O(n)",
+            "reason": "n+1次调用，最大n+1层调用栈；每层固定工作。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        }
+      ]
+    },
+    {
+      "moduleId": 8,
+      "title": "指针与内存访问",
+      "points": [
+        {
+          "id": "F08-01",
+          "title": "&取地址，*沿地址访问",
+          "beginner": {
+            "analogy": "酒店房间里的温度是x，房间号是&x，拿着房间号去调温就是*p。房间号与房里温度不能混为一个数。",
+            "example": "x=20。\np=&x记录x的位置。\n*p=24通过该位置写入，x变24。",
+            "steps": [
+              "x=20。",
+              "p=&x记录x的位置。",
+              "*p=24通过该位置写入，x变24。"
+            ]
+          },
+          "professional": {
+            "mechanism": "&对对象取地址；一元*对有效指针解引用，得到其指向对象的左值。声明int *p中的*标明p为指针，和乘法*语境不同。",
+            "boundaries": "只有指向存活对象且满足访问类型的指针可解引用。NULL、未初始化、越界或已释放地址不能如此使用。",
+            "misconceptions": [
+              "将整数温度当指针地址。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "房间号",
+              "term": "地址",
+              "meaning": "对象在存储中的位置"
+            },
+            {
+              "plain": "去房间操作",
+              "term": "解引用",
+              "meaning": "访问地址对应对象"
+            }
+          ],
+          "pitfalls": [
+            "将整数温度当指针地址。"
+          ],
+          "questions": [
+            {
+              "question": "*p=24会改变p地址吗？",
+              "answer": "不会，它改指向的x。"
+            },
+            {
+              "question": "p=&y改了什么？",
+              "answer": "改p保存的地址，使其指向y。"
+            },
+            {
+              "question": "int *p;可直接*p=3吗？",
+              "answer": "不可，尚未初始化有效地址。"
+            }
+          ],
+          "pseudocode": "1. x=20。\n2. p=&x记录x的位置。\n3. *p=24通过该位置写入，x变24。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int x = 20; // 一个真实存活的温度对象\n    int *p = &x; // 指针保存温度对象的位置\n    *p = 24; // 沿着地址修改原对象\n    printf(\"%d\\n\", x); // x已变成24\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "24\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F08-02",
+          "title": "尾后一位可以表示边界，不能当元素读取",
+          "beginner": {
+            "analogy": "走廊末尾的出口牌可以当停止位置，但出口牌后没有你的座位。数组末尾后一个位置可比较，不可取出所谓元素。",
+            "example": "p从a起点开始，end=a+3。\np!=end时读取当前元素并向后一格。\np到end就停止，不读取*end。",
+            "steps": [
+              "p从a起点开始，end=a+3。",
+              "p!=end时读取当前元素并向后一格。",
+              "p到end就停止，不读取*end。"
+            ]
+          },
+          "professional": {
+            "mechanism": "同一数组内可进行合法指针加减并形成尾后一位指针；尾后指针不可解引用。步长按元素类型计算，int*加1并非只移动1字节。",
+            "boundaries": "不同无关对象指针的排序/相减不可随意套用同一数组规则。",
+            "misconceptions": [
+              "把end也包含在遍历访问里。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "出口停止牌",
+              "term": "尾后指针",
+              "meaning": "指向最后元素之后一位"
+            },
+            {
+              "plain": "走到下一座位",
+              "term": "指针算术",
+              "meaning": "按所指元素大小前进"
+            }
+          ],
+          "pitfalls": [
+            "把end也包含在遍历访问里。"
+          ],
+          "questions": [
+            {
+              "question": "a+3能读取吗？",
+              "answer": "不能，本例它只用作终止边界。"
+            },
+            {
+              "question": "int*p加1移动几字节？",
+              "answer": "sizeof(int)字节，取决于实现。"
+            },
+            {
+              "question": "p<=end循环安全吗？",
+              "answer": "若循环体解引用p，则不安全，会读尾后位置。"
+            }
+          ],
+          "pseudocode": "1. p从a起点开始，end=a+3。\n2. p!=end时读取当前元素并向后一格。\n3. p到end就停止，不读取*end。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int a[3] = {2, 4, 6}; // 三个连续int元素\n    int *end = a + 3; // 合法形成尾后停止位置\n    int sum = 0; // 还没有读取元素\n    for (int *p = a; p != end; ++p) // 在到达尾后前停止访问\n    { // p此时指向真实元素\n        sum += *p; // 解引用并累加当前项\n    } // 不曾解引用end\n    printf(\"%d\\n\", sum); // 输出12\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "12\n",
+          "complexity": {
+            "time": "O(n)",
+            "space": "O(1)",
+            "reason": "每个元素读取一次，指针与总和占常数空间。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F08-03",
+          "title": "生命周期：房间拆了，旧门牌不能继续用",
+          "beginner": {
+            "analogy": "函数里的临时房间在函数结束时拆掉。即使你记得门牌号，也不能下次继续往里面放东西。",
+            "example": "由main提供仍存活的结果变量。\n函数接收它的地址，把结果21写入。\n函数结束后main仍能读取自己拥有的对象。",
+            "steps": [
+              "由main提供仍存活的结果变量。",
+              "函数接收它的地址，把结果21写入。",
+              "函数结束后main仍能读取自己拥有的对象。"
+            ]
+          },
+          "professional": {
+            "mechanism": "自动局部对象通常在所在块结束时生命周期终止，返回其地址会产生悬空指针。可返回值，或让调用者提供对象，或明确转移动态分配内存所有权。",
+            "boundaries": "static局部对象有更长生命周期但共享同一对象，不是万能替代。例子用调用方存储保持职责清晰。",
+            "misconceptions": [
+              "return &local返回局部变量地址。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "已拆房间的门牌",
+              "term": "悬空指针",
+              "meaning": "对象已不存在的地址"
+            },
+            {
+              "plain": "使用者自备房间",
+              "term": "调用方存储",
+              "meaning": "对象寿命覆盖整个调用"
+            }
+          ],
+          "pitfalls": [
+            "return &local返回局部变量地址。"
+          ],
+          "questions": [
+            {
+              "question": "返回局部int的值安全吗？",
+              "answer": "安全，值被复制；危险的是返回其地址。"
+            },
+            {
+              "question": "为什么本例result还能用？",
+              "answer": "它属于main，main尚未结束。"
+            },
+            {
+              "question": "malloc返回内存也随函数结束释放吗？",
+              "answer": "不会自动释放，所有者须明确free。"
+            }
+          ],
+          "pseudocode": "1. 由main提供仍存活的结果变量。\n2. 函数接收它的地址，把结果21写入。\n3. 函数结束后main仍能读取自己拥有的对象。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nvoid triple(int value, int *out) // 契约：out指向有效int对象，乘法不溢出\n{ // 写入调用方提供的存储\n    *out = value * 3; // 通过地址返回计算结果\n} // 不返回本函数局部对象的地址\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int result = 0; // 调用方拥有结果对象，寿命覆盖本次调用\n    triple(7, &result); // 提供一个有效可写地址\n    printf(\"%d\\n\", result); // 函数结束后对象仍然存活\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "21\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        }
+      ]
+    },
+    {
+      "moduleId": 9,
+      "title": "结构体与枚举",
+      "points": [
+        {
+          "id": "F09-01",
+          "title": "结构体把一条记录放在一起",
+          "beginner": {
+            "analogy": "球员有号码和得分，这两个字段属于同一个人。结构体像把同一人的卡片装进一个文件夹，避免两张表对错位置。",
+            "example": "创建号码7、得分18的Player。\n通过p.points增加2。\n同一个记录变成号码7、得分20。",
+            "steps": [
+              "创建号码7、得分18的Player。",
+              "通过p.points增加2。",
+              "同一个记录变成号码7、得分20。"
+            ]
+          },
+          "professional": {
+            "mechanism": "struct定义由不同成员组成的聚合类型；对象用.访问成员，指针用->。结构体大小可能因对齐包含填充，不应简单相加猜测。",
+            "boundaries": "数组成员可保存在结构体中，字符串仍需要容量和终止符。不要直接用原始内存比较推断所有字段相等。",
+            "misconceptions": [
+              "指针变量仍写p.points而不是p->points。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "个人文件夹",
+              "term": "结构体",
+              "meaning": "把关联字段组织成一种类型"
+            },
+            {
+              "plain": "文件夹条目",
+              "term": "成员",
+              "meaning": "结构体中的命名字段"
+            }
+          ],
+          "pitfalls": [
+            "指针变量仍写p.points而不是p->points。"
+          ],
+          "questions": [
+            {
+              "question": "Player*p访问得分怎么写？",
+              "answer": "p->points，等价(*p).points。"
+            },
+            {
+              "question": "结构体字段相邻就无填充吗？",
+              "answer": "不能保证，编译器按对齐规则布局。"
+            },
+            {
+              "question": "号码与分数都int会混吗？",
+              "answer": "用命名字段表达意义，访问时区分number和points。"
+            }
+          ],
+          "pseudocode": "1. 创建号码7、得分18的Player。\n2. 通过p.points增加2。\n3. 同一个记录变成号码7、得分20。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\ntypedef struct // 定义球员记录类型\n{ // 成员列表开始\n    int number; // 球衣号码\n    int points; // 本场得分\n} Player; // 类型别名为Player\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    Player p = {7, 18}; // 初始化球员号码与本场得分\n    p.points += 2; // 只增加得分，号码保持不变\n    printf(\"%d %d\\n\", p.number, p.points); // 输出同一球员的记录\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "7 20\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F09-02",
+          "title": "结构体复制中的指针只复制地址",
+          "beginner": {
+            "analogy": "复印文件夹时，纸上写的仓库地址也被复印了，并没有自动再建一个仓库。两份文件夹仍指向同一堆货。",
+            "example": "原结构a里指针指向stock=5。\nb=a复制记录。\n通过b.p写9，stock与a.p观察到的值都变9。",
+            "steps": [
+              "原结构a里指针指向stock=5。",
+              "b=a复制记录。",
+              "通过b.p写9，stock与a.p观察到的值都变9。"
+            ]
+          },
+          "professional": {
+            "mechanism": "结构体赋值逐成员复制值；指针成员复制地址，称为浅复制。含数组成员时数组内容会随结构体赋值复制，但指针指向的外部对象不会自动深拷贝。",
+            "boundaries": "若两份结构都free同一指针会造成双重释放，需明确所有权或实现深复制。",
+            "misconceptions": [
+              "以为结构体赋值会复制指针指向的全部内存。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "地址被复印",
+              "term": "浅复制",
+              "meaning": "多个记录共享指向对象"
+            },
+            {
+              "plain": "另建仓库复制货",
+              "term": "深复制",
+              "meaning": "分配新对象并复制内容"
+            }
+          ],
+          "pitfalls": [
+            "以为结构体赋值会复制指针指向的全部内存。"
+          ],
+          "questions": [
+            {
+              "question": "b.p与a.p指向哪里？",
+              "answer": "同一个stock。"
+            },
+            {
+              "question": "b.p=NULL会让a.p为NULL吗？",
+              "answer": "不会，两个指针成员是独立副本。"
+            },
+            {
+              "question": "两者都能free stock吗？",
+              "answer": "不能，stock是局部对象，而且任何动态块也只能按所有权释放一次。"
+            }
+          ],
+          "pseudocode": "1. 原结构a里指针指向stock=5。\n2. b=a复制记录。\n3. 通过b.p写9，stock与a.p观察到的值都变9。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\ntypedef struct // 保存库存位置的记录\n{ // 字段列表\n    int *p; // 指向外部库存，不自动拥有它\n} Box; // 完成类型定义\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int stock = 5; // 两个记录共享的真实库存对象\n    Box a = {&stock}; // 原记录指向库存\n    Box b = a; // 仅复制保存的地址\n    *b.p = 9; // 通过副本访问同一个库存\n    printf(\"%d %d\\n\", stock, *a.p); // 两处都观察到9\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "9 9\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F09-03",
+          "title": "enum给状态命名，不是自动检查器",
+          "beginner": {
+            "analogy": "交通灯写RED、GREEN比写0、1更容易读，但仅换名字不会阻止你给出荒唐状态。规则仍要由程序检查。",
+            "example": "定义RED=0、GREEN=1。\n当前light=RED。\nswitch明确处理两种灯色，default接住未知状态。",
+            "steps": [
+              "定义RED=0、GREEN=1。",
+              "当前light=RED。",
+              "switch明确处理两种灯色，default接住未知状态。"
+            ]
+          },
+          "professional": {
+            "mechanism": "enum定义整数常量及枚举类型，提升可读性。C不会像某些强类型语言那样禁止所有无效整数赋给枚举对象，外部输入仍需校验。",
+            "boundaries": "枚举不表示字符串，输出名称需手动映射；不要依赖未指定的存储宽度进行文件序列化。",
+            "misconceptions": [
+              "以为enum变量只可能取列出的值。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "状态名字",
+              "term": "枚举常量",
+              "meaning": "以名称表达整数状态"
+            },
+            {
+              "plain": "不认识的灯色",
+              "term": "default",
+              "meaning": "处理不在预期枚举值内的情况"
+            }
+          ],
+          "pitfalls": [
+            "以为enum变量只可能取列出的值。"
+          ],
+          "questions": [
+            {
+              "question": "printf(\"%s\", light)正确吗？",
+              "answer": "不正确，枚举不是字符串指针。"
+            },
+            {
+              "question": "为什么保留default？",
+              "answer": "外部输入或转换可能产生未列举数值。"
+            },
+            {
+              "question": "RED默认值是多少？",
+              "answer": "此例显式设置0；未显式时首项通常从0依次递增。"
+            }
+          ],
+          "pseudocode": "1. 定义RED=0、GREEN=1。\n2. 当前light=RED。\n3. switch明确处理两种灯色，default接住未知状态。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nenum Light { RED = 0, GREEN = 1 }; // 为两种合法状态指定名字和数值\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    enum Light light = RED; // 使用有意义的状态名\n    switch (light) // 按当前状态选择行为\n    { // 分支集合开始\n        case RED: // 匹配红灯状态\n            puts(\"stop\"); // 红灯对应停止行为\n            break; // 结束switch，避免落入后续分支\n        case GREEN: // 匹配绿灯状态\n            puts(\"go\"); // 绿灯对应前进行为\n            break; // 结束switch，避免落入后续分支\n        default: // 处理未列举的状态数值\n            puts(\"invalid\"); // 未知状态给出明确反馈\n            break; // 结束switch\n    } // switch结束\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "stop\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        }
+      ]
+    },
+    {
+      "moduleId": 10,
+      "title": "动态内存",
+      "points": [
+        {
+          "id": "F10-01",
+          "title": "malloc按字节申请：先检查大小与成功",
+          "beginner": {
+            "analogy": "借箱子装三只球，要申请三只球所占空间，拿到箱子前还要确认仓库没说缺货。malloc不会替你保证申请成功。",
+            "example": "n=3，需要n*sizeof *p字节。\n先检查乘法不会越过SIZE_MAX，再申请。\n成功后逐项写入，使用完free。",
+            "steps": [
+              "n=3，需要n*sizeof *p字节。",
+              "先检查乘法不会越过SIZE_MAX，再申请。",
+              "成功后逐项写入，使用完free。"
+            ]
+          },
+          "professional": {
+            "mechanism": "malloc返回未初始化内存或NULL，void*在C中可隐式转换为对象指针。sizeof *p随指针目标类型改变，比硬编码字节数稳妥。",
+            "boundaries": "本例n>0；零大小分配有特殊规则，业务上可单独处理。动态内存并不自动置零。",
+            "misconceptions": [
+              "malloc(n)却想存n个int。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "箱子字节容量",
+              "term": "分配大小",
+              "meaning": "元素数乘单项大小"
+            },
+            {
+              "plain": "仓库缺货",
+              "term": "NULL",
+              "meaning": "分配失败"
+            }
+          ],
+          "pitfalls": [
+            "malloc(n)却想存n个int。"
+          ],
+          "questions": [
+            {
+              "question": "为何不用固定4乘n？",
+              "answer": "int字节数由实现决定，sizeof *p更可移植。"
+            },
+            {
+              "question": "malloc后元素都是0吗？",
+              "answer": "不保证，读取前要初始化。"
+            },
+            {
+              "question": "申请失败后还能p[0]=1吗？",
+              "answer": "不能，先检查NULL。"
+            }
+          ],
+          "pseudocode": "1. n=3，需要n*sizeof *p字节。\n2. 先检查乘法不会越过SIZE_MAX，再申请。\n3. 成功后逐项写入，使用完free。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n#include <stdlib.h> // 引入stdlib.h的标准库声明\n#include <stdint.h> // 引入stdint.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    size_t n = 3; // 准备三个整数位置\n    int *p = NULL; // 尚未取得动态内存\n    if (n > SIZE_MAX / sizeof *p) // 先防止字节数乘法溢出\n    { // 请求过大\n        return 1; // 不发起错误大小的申请\n    } // 大小检查结束\n    p = malloc(n * sizeof *p); // 申请足够保存n个int的字节数\n    if (p == NULL) // 内存不足时不能解引用\n    { // 分配失败\n        return 1; // 报告失败\n    } // 成功后才使用\n    p[0] = 7; // 先初始化实际要读取的元素\n    printf(\"%d\\n\", p[0]); // 读取已赋值的元素\n    free(p); // 归还本次成功申请的内存\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "7\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(n)",
+            "reason": "申请n个int；示例只使用其中一项，操作次数固定。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F10-02",
+          "title": "realloc先放临时指针：失败仍要找得到旧块",
+          "beginner": {
+            "analogy": "换大仓库失败时，旧仓库还在。如果你先把旧地址擦掉再等回复，失败后就找不到自己的货了。",
+            "example": "已有一项p[0]=7。\n用tmp接收扩成两项的返回值。\ntmp成功再赋给p；失败则释放仍有效的旧p并结束。",
+            "steps": [
+              "已有一项p[0]=7。",
+              "用tmp接收扩成两项的返回值。",
+              "tmp成功再赋给p；失败则释放仍有效的旧p并结束。"
+            ]
+          },
+          "professional": {
+            "mechanism": "realloc失败返回NULL，原块保持有效；成功可能原地扩展，也可能移动并使旧指针失效。新增加的部分未初始化。",
+            "boundaries": "成功后不能继续使用旧块的内部指针。这里扩容大小是固定且大于0，避免realloc(p,0)的特殊边界。",
+            "misconceptions": [
+              "p=realloc(p,...)失败导致原地址丢失。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "先记候选新地址",
+              "term": "临时指针",
+              "meaning": "确认成功前保留旧地址"
+            },
+            {
+              "plain": "搬到新仓库",
+              "term": "重新分配",
+              "meaning": "可能改变存储位置"
+            }
+          ],
+          "pitfalls": [
+            "p=realloc(p,...)失败导致原地址丢失。"
+          ],
+          "questions": [
+            {
+              "question": "失败时原p还能free吗？",
+              "answer": "可以，也应该按业务决定继续使用或释放。"
+            },
+            {
+              "question": "新增第二项自动为0吗？",
+              "answer": "不保证，要初始化。"
+            },
+            {
+              "question": "成功后旧p里某元素指针还能用吗？",
+              "answer": "不要用，应基于新p重新取得地址。"
+            }
+          ],
+          "pseudocode": "1. 已有一项p[0]=7。\n2. 用tmp接收扩成两项的返回值。\n3. tmp成功再赋给p；失败则释放仍有效的旧p并结束。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n#include <stdlib.h> // 引入stdlib.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int *p = malloc(sizeof *p); // 先申请一个元素\n    if (p == NULL) // 确認初次申请成功\n    { // 失败退出\n        return 1; // 不访问空指针\n    } // 初次检查结束\n    p[0] = 7; // 保存需在扩容后保留的数据\n    int *tmp = realloc(p, 2 * sizeof *p); // 候选新地址先交给tmp\n    if (tmp == NULL) // 扩容失败时原p仍然有效\n    { // 处理失败\n        free(p); // 释放仍可找到的旧块\n        return 1; // 报告无法扩容\n    } // 扩容检查结束\n    p = tmp; // 确认成功后再更新所有者地址\n    p[1] = 9; // 新增空间先写再读\n    printf(\"%d %d\\n\", p[0], p[1]); // 旧值7仍保留，新值9已初始化\n    free(p); // 只释放当前有效块一次\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "7 9\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F10-03",
+          "title": "free后置NULL有帮助，但不会清理所有别名",
+          "beginner": {
+            "analogy": "一张仓库地址纸条作废，不会自动让别人手里的复印件消失。释放内存后要同时停止通过所有旧地址使用它。",
+            "example": "p指向一块内存，alias复制这个地址。\nfree(p)归还内存，p置NULL。\nalias仍是失效地址，只能停止使用而非再次释放。",
+            "steps": [
+              "p指向一块内存，alias复制这个地址。",
+              "free(p)归还内存，p置NULL。",
+              "alias仍是失效地址，只能停止使用而非再次释放。"
+            ]
+          },
+          "professional": {
+            "mechanism": "free结束动态对象生命周期。对该对象的解引用、再次free均不合法；将某一个指针变量置NULL只改变该变量。free(NULL)无效果。",
+            "boundaries": "应设计单一清晰所有者，借用指针不得自行释放。把指针设NULL是局部防护，不是内存安全证明。",
+            "misconceptions": [
+              "以为p=NULL能自动让alias=NULL。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "地址复印件",
+              "term": "别名",
+              "meaning": "多个指针指向同一对象"
+            },
+            {
+              "plain": "归还责任人",
+              "term": "所有者",
+              "meaning": "负责唯一一次释放"
+            }
+          ],
+          "pitfalls": [
+            "以为p=NULL能自动让alias=NULL。"
+          ],
+          "questions": [
+            {
+              "question": "free后内容看起来还在能读吗？",
+              "answer": "不能，生命周期已结束。"
+            },
+            {
+              "question": "free(NULL)会报错吗？",
+              "answer": "标准规定无效果。"
+            },
+            {
+              "question": "alias该再次free吗？",
+              "answer": "不该，会双重释放。"
+            }
+          ],
+          "pseudocode": "1. p指向一块内存，alias复制这个地址。\n2. free(p)归还内存，p置NULL。\n3. alias仍是失效地址，只能停止使用而非再次释放。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n#include <stdlib.h> // 引入stdlib.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int *p = malloc(sizeof *p); // p拥有这次分配\n    if (p == NULL) // 检查分配结果\n    { // 失败退出\n        return 1; // 不访问无效对象\n    } // 检查结束\n    *p = 6; // 初始化存活对象\n    printf(\"%d\\n\", *p); // 只在释放前读取\n    free(p); // 所有者执行唯一一次释放\n    p = NULL; // 本地变量不再保存失效地址\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "6\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        }
+      ]
+    },
+    {
+      "moduleId": 11,
+      "title": "文件与流",
+      "points": [
+        {
+          "id": "F11-01",
+          "title": "读取驱动循环：不要while(!feof)",
+          "beginner": {
+            "analogy": "门口的“已关门”标记通常是你拉门失败后才知道的。提前看“还没发现关门”并不表示下一次一定能拿到数据。",
+            "example": "临时文件写入4和6并回到开头。\nfscanf每次返回1才累加。\n最后一次读取失败后循环停止，总和10。",
+            "steps": [
+              "临时文件写入4和6并回到开头。",
+              "fscanf每次返回1才累加。",
+              "最后一次读取失败后循环停止，总和10。"
+            ]
+          },
+          "professional": {
+            "mechanism": "feof查看流的文件结束指示器，它在读取尝试遇到文件末尾后才设置。正确循环以读取函数成功与否驱动；循环结束后可用ferror检查错误。",
+            "boundaries": "数字格式不匹配时也可能停止，不能一律称作正常EOF；应根据输入协议判断。",
+            "misconceptions": [
+              "while(!feof(f))内不检查读取返回值。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "确实拿到数据",
+              "term": "读取成功条件",
+              "meaning": "fscanf返回1"
+            },
+            {
+              "plain": "曾遇到末尾",
+              "term": "EOF指示器",
+              "meaning": "不是对下一次读取的预言"
+            }
+          ],
+          "pitfalls": [
+            "while(!feof(f))内不检查读取返回值。"
+          ],
+          "questions": [
+            {
+              "question": "为何可能重复最后一个数？",
+              "answer": "读取失败后变量还保留旧值，错误循环又使用一次。"
+            },
+            {
+              "question": "遇到x能继续%d吗？",
+              "answer": "会匹配失败，需按协议处理，不会自动跳过。"
+            },
+            {
+              "question": "fclose谁负责？",
+              "answer": "成功打开文件的所有者在所有结束路径关闭。"
+            }
+          ],
+          "pseudocode": "1. 临时文件写入4和6并回到开头。\n2. fscanf每次返回1才累加。\n3. 最后一次读取失败后循环停止，总和10。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    FILE *f = tmpfile(); // 创建自动移除的临时流供演示\n    if (f == NULL) // 文件创建也可能失败\n    { // 失败退出\n        return 1; // 不操作空流指针\n    } // 文件检查结束\n    fputs(\"4 6\", f); // 写入两项演示数据\n    rewind(f); // 切回文件开头准备读取\n    int x = 0, sum = 0; // x接收本次数值，sum累计成功读取的项\n    while (fscanf(f, \"%d\", &x) == 1) // 只有真正读到一项才进入\n    { // 处理有效数据\n        sum += x; // 不在读取失败时重复使用旧x\n    } // 数据读完\n    printf(\"%d\\n\", sum); // 两项之和是10\n    fclose(f); // 关闭本次创建的流\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "10\n",
+          "complexity": {
+            "time": "O(n)",
+            "space": "O(1)",
+            "reason": "n个数各读取一次；总和与临时变量占常数辅助空间。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F11-02",
+          "title": "文本流里的换行和文件结尾可以各自存在",
+          "beginner": {
+            "analogy": "最后一张便条可以没画换行线，但它依然是一张便条。读取程序不能只等换行却忘了信箱已经空了。",
+            "example": "临时文件内容只有OK，没有末尾换行。\n每次用fgetc得到O、K。\n第三次返回EOF，循环停止。",
+            "steps": [
+              "临时文件内容只有OK，没有末尾换行。",
+              "每次用fgetc得到O、K。",
+              "第三次返回EOF，循环停止。"
+            ]
+          },
+          "professional": {
+            "mechanism": "fgetc与getchar同样返回int，EOF不依赖换行存在。文件的结束由流状态报告，换行只是普通数据字符。",
+            "boundaries": "读取文件时必须处理空文件、末行无换行以及错误状态。不能把EOF当作可见字符打印。",
+            "misconceptions": [
+              "while(ch!='\\n')忽略EOF导致停不下。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "最后一张没画线",
+              "term": "末行无换行",
+              "meaning": "仍属于合法文本情况"
+            },
+            {
+              "plain": "信箱确实空",
+              "term": "文件结束",
+              "meaning": "读取返回EOF"
+            }
+          ],
+          "pitfalls": [
+            "while(ch!='\\n')忽略EOF导致停不下。"
+          ],
+          "questions": [
+            {
+              "question": "只有OK的文件有几个字节？",
+              "answer": "本例ASCII共2个。"
+            },
+            {
+              "question": "读完K立即自动返回EOF吗？",
+              "answer": "读取K那次返回K，下次读取才返回EOF。"
+            },
+            {
+              "question": "空文件第一次返回什么？",
+              "answer": "EOF；如果是读取错误也可返回EOF，结合ferror区分。"
+            }
+          ],
+          "pseudocode": "1. 临时文件内容只有OK，没有末尾换行。\n2. 每次用fgetc得到O、K。\n3. 第三次返回EOF，循环停止。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    FILE *f = tmpfile(); // 准备独立临时文件\n    if (f == NULL) // 确认文件可用\n    { // 失败退出\n        return 1; // 不继续读写\n    } // 检查结束\n    fputs(\"OK\", f); // 故意不在末尾写换行\n    rewind(f); // 回到开头\n    int ch; // int保存普通字节或EOF\n    while ((ch = fgetc(f)) != EOF) // 文件结束同样能够停止循环\n    { // 一个实际字节\n        putchar(ch); // 只输出O和K，不输出EOF\n    } // 读完文件\n    putchar('\\n'); // 为演示输出补一行结束\n    fclose(f); // 关闭临时文件\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "OK\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "cert-eof"
+          ]
+        },
+        {
+          "id": "F11-03",
+          "title": "相对路径跟工作目录走，不跟源文件走",
+          "beginner": {
+            "analogy": "写“去隔壁店”要看你现在站哪儿。data.txt是相对于程序当前工作目录，不是自动相对于.c源码的文件夹。",
+            "example": "演示用tmpfile避免依赖某个现有目录。\n写一行7，rewind后读取。\n正式文件题用题面给定文件名，并检查fopen返回值。",
+            "steps": [
+              "演示用tmpfile避免依赖某个现有目录。",
+              "写一行7，rewind后读取。",
+              "正式文件题用题面给定文件名，并检查fopen返回值。"
+            ]
+          },
+          "professional": {
+            "mechanism": "相对路径由进程当前工作目录解释。应用评测每个检查点在独立目录准备题面文件，不能把个人桌面路径写死到题解。",
+            "boundaries": "fopen的w模式可能截断已有文件，r模式要求目标存在。选择模式前明确读写任务；不要把w用于只读输入。",
+            "misconceptions": [
+              "代码在Downloads就以为data.txt也从Downloads找。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "现在站的位置",
+              "term": "工作目录",
+              "meaning": "相对路径的解释起点"
+            },
+            {
+              "plain": "开门方式",
+              "term": "打开模式",
+              "meaning": "r读、w创建或截断写"
+            }
+          ],
+          "pitfalls": [
+            "代码在Downloads就以为data.txt也从Downloads找。"
+          ],
+          "questions": [
+            {
+              "question": "为什么提交绝对路径会失败？",
+              "answer": "评测环境没有你的个人目录。"
+            },
+            {
+              "question": "fopen返回NULL后可fscanf吗？",
+              "answer": "不可以，需处理失败。"
+            },
+            {
+              "question": "w模式对已有文件有什么影响？",
+              "answer": "会截断原内容，必须确认确实要重写。"
+            }
+          ],
+          "pseudocode": "1. 演示用tmpfile避免依赖某个现有目录。\n2. 写一行7，rewind后读取。\n3. 正式文件题用题面给定文件名，并检查fopen返回值。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    FILE *f = tmpfile(); // 使用独立临时文件，不依赖个人绝对路径\n    if (f == NULL) // 打开成功前不能操作流\n    { // 失败结束\n        return 1; // 向调用环境报告失败\n    } // 打开检查结束\n    fprintf(f, \"%d\\n\", 7); // 写入一行整数\n    rewind(f); // 写后定位到开头再读取\n    int value = 0; // 接收文件中的整数\n    if (fscanf(f, \"%d\", &value) == 1) // 确认确实读到值\n    { // 有效读取\n        printf(\"%d\\n\", value); // 展示读到的数\n    } // 读取检查结束\n    fclose(f); // 关闭本次流\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "7\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        }
+      ]
+    },
+    {
+      "moduleId": 12,
+      "title": "位运算与宏",
+      "points": [
+        {
+          "id": "F12-01",
+          "title": "位掩码：每盏开关占一个二进制位",
+          "beginner": {
+            "analogy": "三盏灯各有一个开关，用001、010、100标记。掩码5即101，表示第0和第2盏开着。",
+            "example": "从mask=0开始。\n用|加入第0位与第2位，得到5。\n用&检测第2位是否打开。",
+            "steps": [
+              "从mask=0开始。",
+              "用|加入第0位与第2位，得到5。",
+              "用&检测第2位是否打开。"
+            ]
+          },
+          "professional": {
+            "mechanism": "位运算对整数的各个二进制位操作。1u<<bit构造单个位，|设置，&检查，&~mask清除，^翻转。无符号类型更适合此类操作。",
+            "boundaries": "bit须非负且小于类型位宽。移位不是无限精度运算，不能超过有效范围。",
+            "misconceptions": [
+              "用&&代替&检测某个位。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "一盏开关",
+              "term": "二进制位",
+              "meaning": "仅0或1"
+            },
+            {
+              "plain": "整排开关状态",
+              "term": "掩码",
+              "meaning": "同时编码多个标志"
+            }
+          ],
+          "pitfalls": [
+            "用&&代替&检测某个位。"
+          ],
+          "questions": [
+            {
+              "question": "mask=5第1位开着吗？",
+              "answer": "没有，5的低三位是101。"
+            },
+            {
+              "question": "怎么关第2位？",
+              "answer": "mask &= ~(1u << 2);。"
+            },
+            {
+              "question": "bit等于位宽可以移吗？",
+              "answer": "不可以，移位数必须小于位宽。"
+            }
+          ],
+          "pseudocode": "1. 从mask=0开始。\n2. 用|加入第0位与第2位，得到5。\n3. 用&检测第2位是否打开。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    unsigned mask = 0; // 所有开关初始关闭\n    mask |= 1u << 0; // 打开第0盏\n    mask |= 1u << 2; // 打开第2盏，同时保留此前状态\n    printf(\"%u %d\\n\", mask, (mask & (1u << 2)) != 0); // 输出掩码5与第2位开启状态\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "5 1\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F12-02",
+          "title": "宏是文字替换：括号保护优先级",
+          "beginner": {
+            "analogy": "橡皮章只是把文字盖到纸上，不会像函数一样先算好实参。SQUARE(2+3)若没有括号，展开后可能变成2+3*2+3。",
+            "example": "把参数x包进括号，整个乘积也加括号。\n传2+3展开为((2+3)*(2+3))。\n结果25。",
+            "steps": [
+              "把参数x包进括号，整个乘积也加括号。",
+              "传2+3展开为((2+3)*(2+3))。",
+              "结果25。"
+            ]
+          },
+          "professional": {
+            "mechanism": "预处理宏进行记号替换，函数式宏不等同普通函数调用。参数和整体表达式应加括号以保护优先级，但括号不能防止参数被求值多次。",
+            "boundaries": "SQUARE(i++)仍然危险，同一完整表达式中多次未排序地修改i可导致未定义行为；有副作用参数应改函数。",
+            "misconceptions": [
+              "宏参数不加括号。",
+              "误认为加括号就能安全传i++。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "盖文字的章",
+              "term": "宏替换",
+              "meaning": "展开文本再交编译器"
+            },
+            {
+              "plain": "先算一个参数",
+              "term": "函数调用",
+              "meaning": "每个实参在调用前求值得到值"
+            }
+          ],
+          "pitfalls": [
+            "宏参数不加括号。",
+            "误认为加括号就能安全传i++。"
+          ],
+          "questions": [
+            {
+              "question": "SQUARE(2+3)正确值多少？",
+              "answer": "25，必须保持参数整体。"
+            },
+            {
+              "question": "SQUARE(i++)为何不宜？",
+              "answer": "宏重复出现x，导致多次修改同一变量且可能未排序。"
+            },
+            {
+              "question": "更稳妥替代是什么？",
+              "answer": "写有类型的函数，如int square(int x){return x*x;}并考虑溢出。"
+            }
+          ],
+          "pseudocode": "1. 把参数x包进括号，整个乘积也加括号。\n2. 传2+3展开为((2+3)*(2+3))。\n3. 结果25。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\n#define SQUARE(x) ((x) * (x)) // 参数与整体都加括号，但不要传有副作用的表达式\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int result = SQUARE(2 + 3); // 宏参数整体作为乘法两侧\n    printf(\"%d\\n\", result); // 正确结果为25\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "25\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F12-03",
+          "title": "逻辑与按位与：都叫“与”但问题不同",
+          "beginner": {
+            "analogy": "两个人是否都进场是整体真假；两张座位图哪些位置同时有人是逐格比较。&&回答前者，&回答后者。",
+            "example": "a=2二进制10，b=1二进制01。\na&&b为1，因为两者都非0。\na&b为0，因为没有同一位置同时是1。",
+            "steps": [
+              "a=2二进制10，b=1二进制01。",
+              "a&&b为1，因为两者都非0。",
+              "a&b为0，因为没有同一位置同时是1。"
+            ]
+          },
+          "professional": {
+            "mechanism": "&&把标量转换为真假并短路，结果0或1；&对整数按位操作，不提供逻辑短路。|与||也有类似区别。",
+            "boundaries": "条件里需要同时成立通常用&&；位标志筛选通常用&，并用!=0表达是否存在交集。",
+            "misconceptions": [
+              "用&误以为能保护除0或空指针。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "整体是否都真",
+              "term": "逻辑与",
+              "meaning": "&&产生布尔结果"
+            },
+            {
+              "plain": "每格是否都开",
+              "term": "按位与",
+              "meaning": "&保留共同为1的位"
+            }
+          ],
+          "pitfalls": [
+            "用&误以为能保护除0或空指针。"
+          ],
+          "questions": [
+            {
+              "question": "2&&1为何为1？",
+              "answer": "两个操作数均非0。"
+            },
+            {
+              "question": "2&1为何为0？",
+              "answer": "二进制10与01没有公共的1位。"
+            },
+            {
+              "question": "哪一个保证左侧假就不算右侧？",
+              "answer": "&&，不是&。"
+            }
+          ],
+          "pseudocode": "1. a=2二进制10，b=1二进制01。\n2. a&&b为1，因为两者都非0。\n3. a&b为0，因为没有同一位置同时是1。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int a = 2, b = 1; // 两个非零整数，但二进制1位位置不同\n    printf(\"%d %d\\n\", a && b, a & b); // 并列展示逻辑判断和逐位运算\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "1 0\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        }
+      ]
+    },
+    {
+      "moduleId": 13,
+      "title": "排序与查找",
+      "points": [
+        {
+          "id": "F13-01",
+          "title": "二分查找前先确认有序",
+          "beginner": {
+            "analogy": "找按号码排好的座位，才能看中间号码后扔掉半边；如果座位乱放，扔掉的一半里可能正好藏着目标。",
+            "example": "有序数组2、4、4、7，目标4。\n维护[lo,hi)，将小于4的部分丢到左边。\n最终lo=1，指向首个不小于4的位置。",
+            "steps": [
+              "有序数组2、4、4、7，目标4。",
+              "维护[lo,hi)，将小于4的部分丢到左边。",
+              "最终lo=1，指向首个不小于4的位置。"
+            ]
+          },
+          "professional": {
+            "mechanism": "lower_bound型二分维护半开区间，a[mid]<target时lo=mid+1，否则hi=mid。结束后lo可能等于n，若需确认目标存在，应先lo<n再a[lo]==target。",
+            "boundaries": "重复元素下“任意一个”“第一个”“最后一个”是不同任务；必须按题意定义。",
+            "misconceptions": [
+              "找到候选下标后未检查lo==n就访问。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "丢掉确定不含答案的一半",
+              "term": "二分排除",
+              "meaning": "靠有序性保证"
+            },
+            {
+              "plain": "右侧边界不取",
+              "term": "半开区间",
+              "meaning": "[lo,hi)"
+            }
+          ],
+          "pitfalls": [
+            "找到候选下标后未检查lo==n就访问。"
+          ],
+          "questions": [
+            {
+              "question": "目标8返回什么？",
+              "answer": "4即n，表示所有元素都小于8。"
+            },
+            {
+              "question": "为什么hi=mid而非mid-1？",
+              "answer": "mid仍可能是首个合格位置，且区间是半开形式。"
+            },
+            {
+              "question": "时间为何O(log n)？",
+              "answer": "每步把候选区间缩至约一半。"
+            }
+          ],
+          "pseudocode": "1. 有序数组2、4、4、7，目标4。\n2. 维护[lo,hi)，将小于4的部分丢到左边。\n3. 最终lo=1，指向首个不小于4的位置。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int a[4] = {2, 4, 4, 7}; // 有序是二分成立的前提\n    int lo = 0, hi = 4, target = 4; // 初始候选区间[0,4)\n    while (lo < hi) // 区间非空才继续\n    { // 排除约一半候选位置\n        int mid = lo + (hi - lo) / 2; // 避免直接lo+hi可能溢出的写法\n        if (a[mid] < target) // 中间及其左边都太小\n        { // 保留右半部分\n            lo = mid + 1; // 排除已经确认太小的mid\n        } // 小于目标分支结束\n        else // mid可能是首个合格位置\n        { // 保留左侧含mid的边界信息\n            hi = mid; // 半开右边界缩到mid\n        } // 分支结束\n    } // lo等于hi\n    printf(\"%d\\n\", lo); // 首个4的下标为1\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "1\n",
+          "complexity": {
+            "time": "O(log n)",
+            "space": "O(1)",
+            "reason": "每轮候选区间约减半，只保存固定边界变量。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F13-02",
+          "title": "qsort比较器只需负、零、正，别用相减冒险",
+          "beginner": {
+            "analogy": "裁判只需说甲小、相同、甲大，不必报两人的分差。极大数减极小数可能超范围，两个比较结果相减却只会得到-1、0、1。",
+            "example": "读取两个int值x和y。\nx>y得到0或1，x<y也得到0或1。\n相减生成符号结果，qsort据此排序。",
+            "steps": [
+              "读取两个int值x和y。",
+              "x>y得到0或1，x<y也得到0或1。",
+              "相减生成符号结果，qsort据此排序。"
+            ]
+          },
+          "professional": {
+            "mechanism": "qsort比较器接收const void*，需转换成实际元素指针后解引用，返回负/零/正表示关系。return x-y对有符号大数可能溢出，使用(x>y)-(x<y)避免该问题。",
+            "boundaries": "qsort不保证稳定排序，等键记录的相对顺序若重要需额外键或稳定算法；标准也没有承诺特定实现复杂度。",
+            "misconceptions": [
+              "int比较器直接相减。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "大小关系裁决",
+              "term": "比较器",
+              "meaning": "提供一致的顺序规则"
+            },
+            {
+              "plain": "同分原顺序",
+              "term": "稳定性",
+              "meaning": "相等键保持输入次序"
+            }
+          ],
+          "pitfalls": [
+            "int比较器直接相减。"
+          ],
+          "questions": [
+            {
+              "question": "为何结果不是必须差值？",
+              "answer": "qsort只看符号。"
+            },
+            {
+              "question": "比较器两参数能随意改吗？",
+              "answer": "不应修改待排序元素；接口使用const。"
+            },
+            {
+              "question": "同分顺序能依赖qsort吗？",
+              "answer": "不能，需额外说明次级键或换稳定排序。"
+            }
+          ],
+          "pseudocode": "1. 读取两个int值x和y。\n2. x>y得到0或1，x<y也得到0或1。\n3. 相减生成符号结果，qsort据此排序。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n#include <stdlib.h> // 引入stdlib.h的标准库声明\n\nint compare_int(const void *left, const void *right) // qsort要求的比较接口\n{ // 将通用地址恢复为正确元素类型\n    int x = *(const int *)left; // 只读左元素\n    int y = *(const int *)right; // 只读右元素\n    return (x > y) - (x < y); // 用比较产生安全的符号结果\n} // 比较器结束\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int a[3] = {9, -2, 4}; // 三个待排序整数\n    qsort(a, 3, sizeof a[0], compare_int); // 告知数量、元素大小与比较规则\n    printf(\"%d %d %d\\n\", a[0], a[1], a[2]); // 验证升序结果\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "-2 4 9\n",
+          "complexity": {
+            "time": "依赖qsort实现；每次比较O(1)",
+            "space": "依赖qsort实现",
+            "reason": "C标准未固定qsort算法、复杂度或稳定性，不把某实现行为冒称标准保证。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F13-03",
+          "title": "排序改变原顺序：需要原编号就一起保存",
+          "beginner": {
+            "analogy": "按分数重排球员后，位置0不再代表原来第1位报名者。若后面要报原编号，必须把编号与分数绑在同一记录中移动。",
+            "example": "记录{分数40,原编号1}和{分数10,原编号2}。\n比较分数后交换整个记录。\n排序后首项分数10，原编号仍为2。",
+            "steps": [
+              "记录{分数40,原编号1}和{分数10,原编号2}。",
+              "比较分数后交换整个记录。",
+              "排序后首项分数10，原编号仍为2。"
+            ]
+          },
+          "professional": {
+            "mechanism": "排序重新排列元素。原下标与新下标的语义不同，保存originalIndex可恢复来源。多关键字排序须明确优先级和相等时规则。",
+            "boundaries": "只排序score数组而不同步id数组会破坏关联。针对多个字段优先用结构体记录。",
+            "misconceptions": [
+              "把排序后下标当原始编号输出。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "报名时编号",
+              "term": "原下标",
+              "meaning": "排序前身份"
+            },
+            {
+              "plain": "排队后位置",
+              "term": "新下标",
+              "meaning": "排序后次序"
+            }
+          ],
+          "pitfalls": [
+            "把排序后下标当原始编号输出。"
+          ],
+          "questions": [
+            {
+              "question": "为何要交换整个结构体？",
+              "answer": "让分数与身份一起移动，维持一条记录关系。"
+            },
+            {
+              "question": "同分如何保证较小编号在前？",
+              "answer": "比较器增加编号作为第二关键字。"
+            },
+            {
+              "question": "排序后第1项一定原第1项吗？",
+              "answer": "不一定，顺序已经改变。"
+            }
+          ],
+          "pseudocode": "1. 记录{分数40,原编号1}和{分数10,原编号2}。\n2. 比较分数后交换整个记录。\n3. 排序后首项分数10，原编号仍为2。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\ntypedef struct // 定义带身份的数据项\n{ // 成员列表\n    int score; // 排序关键字\n    int original; // 排序前的编号\n} Entry; // 记录类型\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    Entry a[2] = {{40, 1}, {10, 2}}; // 每个分数携带自己的原始编号\n    if (a[0].score > a[1].score) // 两项示例按分数升序排列\n    { // 交换整条记录\n        Entry tmp = a[0]; // 暂存分数和身份的组合\n        a[0] = a[1]; // 同步移动所有字段\n        a[1] = tmp; // 恢复被暂存的完整记录\n    } // 排序结束\n    printf(\"%d %d\\n\", a[0].score, a[0].original); // 最小分数10属于原编号2\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "10 2\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        }
+      ]
+    },
+    {
+      "moduleId": 14,
+      "title": "链表与栈",
+      "points": [
+        {
+          "id": "F14-01",
+          "title": "栈顶用元素个数表示，先判空再弹出",
+          "beginner": {
+            "analogy": "一摞盘子的数量top=2时，最上面的盘子在下标1。取盘前先减数量再读，空摞不能取盘。",
+            "example": "push7使top从0变1。\npush9使top从1变2。\npop先减top到1，再读取stack[1]得到9。",
+            "steps": [
+              "push7使top从0变1。",
+              "push9使top从1变2。",
+              "pop先减top到1，再读取stack[1]得到9。"
+            ]
+          },
+          "professional": {
+            "mechanism": "数组栈可令top等于元素个数，范围0..capacity。入栈先确认top<capacity，再写stack[top++]；出栈确认top>0，再读stack[--top]。",
+            "boundaries": "另一种约定top指向栈顶下标也可行，但初始化和公式不同，不能混用。",
+            "misconceptions": [
+              "空栈也执行--top。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "盘子数量",
+              "term": "top计数",
+              "meaning": "下一个可写下标"
+            },
+            {
+              "plain": "后放先拿",
+              "term": "LIFO",
+              "meaning": "后进先出"
+            }
+          ],
+          "pitfalls": [
+            "空栈也执行--top。"
+          ],
+          "questions": [
+            {
+              "question": "top=0栈顶下标是多少？",
+              "answer": "没有栈顶，不应计算并访问-1。"
+            },
+            {
+              "question": "本例先弹出谁？",
+              "answer": "9，最后入栈者先出。"
+            },
+            {
+              "question": "容量2还可写stack[2]吗？",
+              "answer": "不可，满栈应拒绝或扩容。"
+            }
+          ],
+          "pseudocode": "1. push7使top从0变1。\n2. push9使top从1变2。\n3. pop先减top到1，再读取stack[1]得到9。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int stack[2]; // 最多保存两个整数\n    int top = 0; // 初始栈为空\n    stack[top++] = 7; // 放入第一项后元素数为1\n    stack[top++] = 9; // 放入第二项后元素数为2\n    if (top > 0) // 出栈前必须确认非空\n    { // 安全弹出栈顶\n        int value = stack[--top]; // 先减数量到1，再取下标1的9\n        printf(\"%d %d\\n\", value, top); // 输出弹出值与剩余数量\n    } // 出栈结束\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "9 1\n",
+          "complexity": {
+            "time": "O(1)",
+            "space": "O(1)",
+            "reason": "本示例只处理固定数量的数据，变量个数不随输入增长。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F14-02",
+          "title": "链表反转：改箭头前保存下一站",
+          "beginner": {
+            "analogy": "沿导航走路时，要先记住下一站，再把当前路牌转向身后。否则回头箭头一改，就失去前方线路。",
+            "example": "链表1→2→空，prev为空、cur指1。\n保存next=cur->next，再让cur->next指prev。\n推进prev与cur，最终头为2，指向1。",
+            "steps": [
+              "链表1→2→空，prev为空、cur指1。",
+              "保存next=cur->next，再让cur->next指prev。",
+              "推进prev与cur，最终头为2，指向1。"
+            ]
+          },
+          "professional": {
+            "mechanism": "反转维护已反转前缀prev和未处理后缀cur。写cur->next前必须保存旧后继；这里确实存在“覆盖后还要旧值”的依赖。",
+            "boundaries": "空链表和单节点都应正确。示例节点为局部对象，无malloc所以不free；动态节点须另按所有权释放。",
+            "misconceptions": [
+              "先cur->next=prev再cur=cur->next，丢失后缀。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "下一站路线",
+              "term": "后继指针",
+              "meaning": "next连接后续节点"
+            },
+            {
+              "plain": "已回转部分",
+              "term": "反转前缀",
+              "meaning": "prev作为其新头"
+            }
+          ],
+          "pitfalls": [
+            "先cur->next=prev再cur=cur->next，丢失后缀。"
+          ],
+          "questions": [
+            {
+              "question": "临时next保存什么？",
+              "answer": "当前节点修改前的原后继。"
+            },
+            {
+              "question": "空链表进入循环吗？",
+              "answer": "不进入，最终新头仍NULL。"
+            },
+            {
+              "question": "本例为什么不free节点？",
+              "answer": "它们是局部对象，不是动态分配块。"
+            }
+          ],
+          "pseudocode": "1. 链表1→2→空，prev为空、cur指1。\n2. 保存next=cur->next，再让cur->next指prev。\n3. 推进prev与cur，最终头为2，指向1。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\ntypedef struct Node // 节点类型可在自身内部引用\n{ // 节点字段\n    int value; // 当前节点的数据\n    struct Node *next; // 后继节点地址或NULL\n} Node; // 节点类型别名\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    Node b = {2, NULL}; // 原链表末尾节点\n    Node a = {1, &b}; // 原链表头连接末尾\n    Node *prev = NULL; // 已反转前缀初始为空\n    Node *cur = &a; // 未处理部分从原头开始\n    while (cur != NULL) // 还有节点时继续\n    { // 反转当前节点的一条链接\n        Node *next = cur->next; // 改写前保存仍需前进的原后继\n        cur->next = prev; // 当前箭头转向已反转前缀\n        prev = cur; // 当前节点成为新前缀头\n        cur = next; // 用保留的旧后继继续向前\n    } // prev现在是整条反转链表的头\n    printf(\"%d %d\\n\", prev->value, prev->next->value); // 验证顺序2、1\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "2 1\n",
+          "complexity": {
+            "time": "O(n)",
+            "space": "O(1)",
+            "reason": "每个节点访问一次，只使用固定数量指针。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F14-03",
+          "title": "队列与BFS：先发现先处理，入队时标记",
+          "beginner": {
+            "analogy": "排队叫号必须先来先服务。迷宫搜索按“离起点一步、两步”扩展时，首次把房间加入队列就贴访问标记，避免多个邻居重复登记它。",
+            "example": "队列先放起点0并标记已发现。\n处理0时发现1，立即标记1再入队。\n出队顺序为0、1，不重复加入1。",
+            "steps": [
+              "队列先放起点0并标记已发现。",
+              "处理0时发现1，立即标记1再入队。",
+              "出队顺序为0、1，不重复加入1。"
+            ]
+          },
+          "professional": {
+            "mechanism": "BFS用FIFO队列按无权图最短距离分层；visited通常在入队时设置，保证每点最多入队一次。邻接表实现时间O(V+E)，辅助空间O(V)。",
+            "boundaries": "带不同边权时普通BFS不保证最短路，应依据权值选0-1 BFS、Dijkstra等。队列容量需覆盖可能入队顶点数。",
+            "misconceptions": [
+              "出队才标记导致同一顶点被多次入队。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "先来先服务",
+              "term": "FIFO",
+              "meaning": "先进先出"
+            },
+            {
+              "plain": "报名就贴标",
+              "term": "入队标记",
+              "meaning": "阻止重复排队"
+            }
+          ],
+          "pitfalls": [
+            "出队才标记导致同一顶点被多次入队。"
+          ],
+          "questions": [
+            {
+              "question": "边权不同时BFS仍正确吗？",
+              "answer": "不保证，它最小化的是边数。"
+            },
+            {
+              "question": "visited什么时候设？",
+              "answer": "通常在首次入队时。"
+            },
+            {
+              "question": "队列与栈差别？",
+              "answer": "队列取最早加入，栈取最近加入。"
+            }
+          ],
+          "pseudocode": "1. 队列先放起点0并标记已发现。\n2. 处理0时发现1，立即标记1再入队。\n3. 出队顺序为0、1，不重复加入1。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int queue[2], visited[2] = {0}; // 两个顶点的队列与发现标记\n    int head = 0, tail = 0; // 初始队列为空，区间[head,tail)\n    queue[tail++] = 0; // 起点入队\n    visited[0] = 1; // 入队立即标记，防止再次登记\n    while (head < tail) // 队列非空才取元素\n    { // 处理最早发现的顶点\n        int u = queue[head++]; // 先进先出取队头\n        printf(\"%d\\n\", u); // 观察分层访问顺序\n        if (u == 0 && !visited[1]) // 本例只有一条从0到1的边\n        { // 首次发现邻居1\n            visited[1] = 1; // 先标记再入队\n            queue[tail++] = 1; // 每点最多入队一次，不超容量\n        } // 邻居处理结束\n    } // 搜索结束\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "0\n1\n",
+          "complexity": {
+            "time": "O(V+E)",
+            "space": "O(V)",
+            "reason": "一般邻接表图每点入队一次，每边检查一次；队列和标记各V项。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        }
+      ]
+    },
+    {
+      "moduleId": 15,
+      "title": "算法综合挑战",
+      "points": [
+        {
+          "id": "F15-01",
+          "title": "滑动窗口为何依赖非负数：单调性是前提",
+          "beginner": {
+            "analogy": "累计几场传球数时，每新增一场总数不会减少，移走左边一场总数不会增加。靠这个方向感才能放心只往前移动边界。",
+            "example": "数组2、1、3，目标至少4。\n右端加入到3时总和6，窗口长3。\n移去2还剩4，窗口缩为长2；再移1剩3，不再达标。",
+            "steps": [
+              "数组2、1、3，目标至少4。",
+              "右端加入到3时总和6，窗口长3。",
+              "移去2还剩4，窗口缩为长2；再移1剩3，不再达标。"
+            ]
+          },
+          "professional": {
+            "mechanism": "正数/非负数条件支持窗口和相对于端点的单调变化。求和至少k的最短非空子数组可在右扩后反复左缩，左右指针各最多前进n次。",
+            "boundaries": "含负数时该策略不普遍正确；例如移去负数会让和变大，需重新建模。k>0等条件也要明确，防止空窗口问题。",
+            "misconceptions": [
+              "认为代码里while套for必定O(n²)。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "只向前的边界",
+              "term": "双指针",
+              "meaning": "各自不回退"
+            },
+            {
+              "plain": "加场不会降总数",
+              "term": "单调性",
+              "meaning": "支撑安全排除候选"
+            }
+          ],
+          "pitfalls": [
+            "认为代码里while套for必定O(n²)。"
+          ],
+          "questions": [
+            {
+              "question": "sum==k应继续收缩吗？",
+              "answer": "应，在至少k任务里等于也合格。"
+            },
+            {
+              "question": "为什么总共O(n)？",
+              "answer": "右端n步，左端至多n步，总步数至多约2n。"
+            },
+            {
+              "question": "有负数能照搬吗？",
+              "answer": "不能，失去当前窗口策略所需单调性。"
+            }
+          ],
+          "pseudocode": "1. 数组2、1、3，目标至少4。\n2. 右端加入到3时总和6，窗口长3。\n3. 移去2还剩4，窗口缩为长2；再移1剩3，不再达标。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int a[3] = {2, 1, 3}; // 正数确保扩窗总和不降\n    int left = 0, sum = 0, best = 4; // best用大于n的值表示尚未找到\n    for (int right = 0; right < 3; ++right) // 右端每项只加入一次\n    { // 扩展窗口\n        sum += a[right]; // 总和包含当前右端\n        while (sum >= 4) // 等于目标也达标，尝试尽量缩短\n        { // 当前[left,right]可作为候选\n            int length = right - left + 1; // 闭区间长度要加1\n            if (length < best) // 保留更短的有效片段\n            { // 更新最优记录\n                best = length; // 本例最终变为2\n            } // 最优记录更新结束\n            sum -= a[left]; // 先从总和减去将离开的旧左端\n            ++left; // 再移动左端，使总和仍与窗口一致\n        } // 已不达标，等待右端加入新项\n    } // 所有右端处理完成\n    printf(\"%d\\n\", best == 4 ? 0 : best); // 未找到输出0，否则输出最短长度\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "2\n",
+          "complexity": {
+            "time": "O(n)",
+            "space": "O(1)",
+            "reason": "两个端点都最多前进n次，嵌套外观不代表n乘n。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F15-02",
+          "title": "动态规划先定义状态，再写转移和初值",
+          "beginner": {
+            "analogy": "楼梯每级收费不等，钱包账本要写清“已经站上这一阶并付费”的最少花费，不能一会儿包含当前费用、一会儿又不包含。",
+            "example": "费用10、15、20，可从0或1开始并付对应费用。\ndp[0]=10，dp[1]=15；dp[2]=20+min(10,15)=30。\n楼顶下标3不收费，取min(dp[1],dp[2])=15。",
+            "steps": [
+              "费用10、15、20，可从0或1开始并付对应费用。",
+              "dp[0]=10，dp[1]=15；dp[2]=20+min(10,15)=30。",
+              "楼顶下标3不收费，取min(dp[1],dp[2])=15。"
+            ]
+          },
+          "professional": {
+            "mechanism": "状态dp[i]表示到达并支付第i阶费用的最小总费用；转移来自i-1或i-2。初值对应允许的起点，答案位置依据终点是否收费决定。",
+            "boundaries": "本例n>=2、cost非负，与其他“从地面开始”“起点免费”的模型不同。必须由题意确定，不能只背同一个公式。",
+            "misconceptions": [
+              "把阶数i误当作cost[i]费用。",
+              "起点允许选择却漏算站上去的费用。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "付费后账本",
+              "term": "状态定义",
+              "meaning": "dp已包含cost[i]"
+            },
+            {
+              "plain": "从此前位置来",
+              "term": "状态转移",
+              "meaning": "枚举最后一步的合法来源"
+            }
+          ],
+          "pitfalls": [
+            "把阶数i误当作cost[i]费用。",
+            "起点允许选择却漏算站上去的费用。"
+          ],
+          "questions": [
+            {
+              "question": "从1开始付多少钱？",
+              "answer": "付cost[1]=15，不是付编号1元。"
+            },
+            {
+              "question": "为何答案不是dp[2]？",
+              "answer": "楼顶3可从1或2跳到，且楼顶免费。"
+            },
+            {
+              "question": "费用与下标相同吗？",
+              "answer": "没有这种默认关系，费用由输入数组给出。"
+            }
+          ],
+          "pseudocode": "1. 费用10、15、20，可从0或1开始并付对应费用。\n2. dp[0]=10，dp[1]=15；dp[2]=20+min(10,15)=30。\n3. 楼顶下标3不收费，取min(dp[1],dp[2])=15。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int cost[3] = {10, 15, 20}; // 数组值才是各阶费用，下标不是价格\n    int dp[3]; // dp[i]含到第i阶并支付本阶的最少费用\n    dp[0] = cost[0]; // 可选择从0开始，但仍需付10\n    dp[1] = cost[1]; // 可选择从1开始，付15\n    for (int i = 2; i < 3; ++i) // 后续阶从前一阶或前两阶转来\n    { // 计算当前阶最优费用\n        int prior = dp[i - 1] < dp[i - 2] ? dp[i - 1] : dp[i - 2]; // 选择更便宜的来源\n        dp[i] = prior + cost[i]; // 到当前阶后补上当前真实费用\n    } // 各付费阶计算完成\n    int answer = dp[1] < dp[2] ? dp[1] : dp[2]; // 楼顶免费，可从最后两阶到达\n    printf(\"%d\\n\", answer); // 直接从第1阶到楼顶，只花15\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "15\n",
+          "complexity": {
+            "time": "O(n)",
+            "space": "O(n)，可滚动压缩至O(1)",
+            "reason": "每个状态用前两项常数时间计算；完整表存n项，若只求值可保留两项。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        },
+        {
+          "id": "F15-03",
+          "title": "时空复杂度要数总工作与同时存储",
+          "beginner": {
+            "analogy": "8份快递检查两遍是16次；每份与每份配对是64次。两段循环写在一起不意味着相乘，要看实际做了多少工作。",
+            "example": "n=8，两段顺序循环各8次，总16次。\n双层各8次嵌套，总64次。\n前者增长O(n)，后者O(n²)；都只用固定计数变量。",
+            "steps": [
+              "n=8，两段顺序循环各8次，总16次。",
+              "双层各8次嵌套，总64次。",
+              "前者增长O(n)，后者O(n²)；都只用固定计数变量。"
+            ]
+          },
+          "professional": {
+            "mechanism": "时间复杂度研究输入规模增长时操作数量。顺序成本相加，嵌套按各轮真实次数求和；空间统计峰值同时存活的辅助存储，需说明是否排除输入/输出。",
+            "boundaries": "复杂度不是运行秒数。O(n²)和O(n log n)在n=10^5差异巨大；递归还要计栈，排序库不可无依据承诺实现复杂度。",
+            "misconceptions": [
+              "两个顺序循环算成O(n²)。",
+              "递归没开数组就说空间O(1)。"
+            ]
+          },
+          "terms": [
+            {
+              "plain": "一共做多少次",
+              "term": "时间复杂度",
+              "meaning": "工作随规模增长的阶"
+            },
+            {
+              "plain": "同时占多少格",
+              "term": "空间复杂度",
+              "meaning": "峰值辅助存储"
+            }
+          ],
+          "pitfalls": [
+            "两个顺序循环算成O(n²)。",
+            "递归没开数组就说空间O(1)。"
+          ],
+          "questions": [
+            {
+              "question": "n翻倍，n²工作量变多少？",
+              "answer": "约4倍，线性则约2倍。"
+            },
+            {
+              "question": "n项数组和log n栈同时存在空间是多少？",
+              "answer": "O(n+log n)=O(n)，不是相乘。"
+            },
+            {
+              "question": "通过小样例能证明复杂度适合最大规模吗？",
+              "answer": "不能，需根据约束推导，并用测量辅助检查常数。"
+            }
+          ],
+          "pseudocode": "1. n=8，两段顺序循环各8次，总16次。\n2. 双层各8次嵌套，总64次。\n3. 前者增长O(n)，后者O(n²)；都只用固定计数变量。",
+          "code": "#include <stdio.h> // 引入stdio.h的标准库声明\n\nint main(void) // 程序从这里开始执行，不接收命令行参数\n{ // 主函数作用域开始\n    int n = 8, sequential = 0, nested = 0; // 记录两种结构实际执行次数\n    for (int pass = 0; pass < 2; ++pass) // 固定两遍，不随n增长\n    { // 每遍检查所有项目\n        for (int i = 0; i < n; ++i) // 本遍执行n次\n        { // 计一次检查\n            ++sequential; // 两遍累计2n次\n        } // 本遍结束\n    } // 顺序重复检查完成\n    for (int i = 0; i < n; ++i) // 为每个项目寻找所有配对\n    { // 固定当前第一项\n        for (int j = 0; j < n; ++j) // 每个第一项都配n个第二项\n        { // 一个有序配对\n            ++nested; // 累计n*n次\n        } // 当前项配对结束\n    } // 全部配对完成\n    printf(\"%d %d\\n\", sequential, nested); // 展示16与64的实际次数\n    return 0; // 正常完成本次演示\n} // 主函数结束\n",
+          "sampleInput": "",
+          "expectedOutput": "16 64\n",
+          "complexity": {
+            "time": "顺序两遍O(n)，完整配对O(n²)",
+            "space": "O(1)",
+            "reason": "两段演示合在一起由n²主导；只用固定数量计数变量，辅助空间O(1)。"
+          },
+          "sources": [
+            "c-draft",
+            "beej"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "简短明确的学习主题"
+    },
+    "summary": {
+      "type": "string",
+      "description": "概括本轮具体知识点"
+    },
+    "answer": {
+      "type": "string",
+      "description": "完整中文双层讲解Markdown，3个自检答案使用details默认隐藏"
+    }
+  },
+  "required": [
+    "title",
+    "summary",
+    "answer"
+  ],
+  "additionalProperties": false
+}

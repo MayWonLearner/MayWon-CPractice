@@ -1,0 +1,64 @@
+name: macOS build and offline checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run offline JavaScript regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p tests/reports .build/module-cache
+          node tests/annotations.test.cjs
+          node tests/analysis.test.cjs
+          node tests/collections.test.cjs
+          node tests/diagnostics.test.cjs
+          node tests/learning.test.cjs
+          node tests/review-regressions.cjs
+          node tests/v5-study-ui.cjs
+          python3 tests/foundations.test.py
+      - name: Build native app
+        run: bash scripts/build.sh ./dist/CPractice.app
+      - name: Run offline native validation checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          swiftc -swift-version 5 -module-cache-path .build/module-cache \
+            -framework AppKit -framework ImageIO \
+            Sources/Runner.swift Sources/StudyService.swift tests/StudyServiceTests.swift \
+            -o .build/backend-tests
+          .build/backend-tests dist/CPractice.app/Contents/Resources
+      - name: Verify signature and bundle privacy
+        shell: bash
+        run: |
+          set -euo pipefail
+          codesign --verify --deep --strict dist/CPractice.app
+          test ! -e dist/CPractice.app/Contents/Resources/qa-config.json
+          test ! -e dist/CPractice.app/Contents/Resources/selftest.js
+          test ! -e dist/CPractice.app/Contents/Resources/state.json
+          ditto -c -k --keepParent dist/CPractice.app dist/CPractice-macOS.zip
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CPractice-macOS-${{ runner.arch }}
+          path: dist/CPractice-macOS.zip
+          if-no-files-found: error
+          retention-days: 14

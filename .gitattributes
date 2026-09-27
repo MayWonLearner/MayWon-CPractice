@@ -1,0 +1,24 @@
+* text=auto
+*.sh text eol=lf
+*.swift text eol=lf
+*.c text eol=lf
+*.js text eol=lf
+*.cjs text eol=lf
+*.mjs text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.icns binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+Resources/editor.bundle.js linguist-generated=true
+Resources/editor.bundle.css linguist-generated=true
+Resources/curriculum.js linguist-generated=true
+Resources/foundations-v5.js linguist-generated=true
+Resources/acknowledgements.js linguist-generated=true
+Resources/vendor/** linguist-vendored=true

@@ -1,0 +1,53 @@
+# Build output and local dependencies
+.build/
+dist/
+work/
+*.app/
+*.zip
+Editor/node_modules/
+Vendor/node_modules/
+.DS_Store
+*.dSYM/
+
+# Test output and local QA injection
+tests/reports/
+tests/__pycache__/
+__pycache__/
+*.pyc
+qa-config.json
+Resources/selftest.js
+
+# Personal learning data and diagnostic exports
+state.json
+state-*.json
+qa-data/
+backups/
+private/
+screenshots/
+代码复盘/
+*.log
+
+# Authentication and signing material
+.codex/
+.env
+.env.*
+!.env.example
+auth.json
+*.key
+*.pem
+*.p12
+*.mobileprovision
+
+# Cross-platform runtime and packaging
+node_modules/
+*.exe
+*.msi
+*.AppImage
+*.dmg
+*.blockmap
+*.tar.gz
+.npm/
+.electron/
+before-restore-*.json
+Thumbs.db
+Desktop.ini

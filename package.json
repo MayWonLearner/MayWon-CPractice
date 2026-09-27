@@ -1,0 +1,97 @@
+{
+  "name": "maywon-cpractice",
+  "productName": "CPractice",
+  "version": "6.0.0",
+  "description": "跨平台 C 语言学习工作台：双层教程、650 道练习、本地评测与 AI 导师",
+  "author": "MayWonLearner",
+  "license": "MIT",
+  "repository": "https://github.com/MayWonLearner/MayWon-CPractice",
+  "main": "Desktop/main.cjs",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test tests/desktop.test.cjs",
+    "test:legacy": "node scripts/test-js.cjs",
+    "smoke": "electron . --smoke-test",
+    "dist": "electron-builder --publish never",
+    "pack": "electron-builder --dir --publish never",
+    "doctor": "node scripts/doctor.cjs"
+  },
+  "devDependencies": {
+    "electron": "44.4.5",
+    "electron-builder": "26.15.3"
+  },
+  "dependencies": {
+    "ajv": "8.20.0"
+  },
+  "build": {
+    "appId": "com.maywon.cpractice",
+    "asar": true,
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "Desktop/**",
+      "package.json",
+      "LICENSE",
+      "THIRD_PARTY.md"
+    ],
+    "extraResources": [
+      {
+        "from": "Resources",
+        "to": "learning",
+        "filter": [
+          "**/*",
+          "!selftest.js",
+          "!qa-config.json"
+        ]
+      },
+      {
+        "from": "ThirdParty",
+        "to": "ThirdParty"
+      },
+      {
+        "from": "Sources/limit-runner.c",
+        "to": "limit-runner.c"
+      },
+      {
+        "from": "Desktop/limit-win.c",
+        "to": "limit-win.c"
+      }
+    ],
+    "artifactName": "CPractice-${version}-${os}-${arch}.${ext}",
+    "mac": {
+      "target": [
+        "zip"
+      ],
+      "category": "public.app-category.education",
+      "icon": "Resources/AppIcon.icns",
+      "identity": null
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ],
+      "icon": "Resources/AppIcon.png",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "tar.gz"
+      ],
+      "category": "Education",
+      "icon": "Resources/AppIcon.png",
+      "executableName": "cpractice"
+    }
+  }
+}

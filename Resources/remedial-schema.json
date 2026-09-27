@@ -1,0 +1,227 @@
+{
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "topic": {
+      "type": "string"
+    },
+    "level": {
+      "type": "string",
+      "enum": [
+        "入门",
+        "基础",
+        "进阶",
+        "挑战"
+      ]
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "maxItems": 5
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "maxItems": 5
+    },
+    "description": {
+      "type": "string"
+    },
+    "input": {
+      "type": "string"
+    },
+    "output": {
+      "type": "string"
+    },
+    "constraints": {
+      "type": "string"
+    },
+    "hints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 2,
+      "maxItems": 4
+    },
+    "explanation": {
+      "type": "string"
+    },
+    "pseudocode": {
+      "type": "string",
+      "description": "逐行伪代码"
+    },
+    "solution": {
+      "type": "string",
+      "description": "完整C17程序，每行中文//注释"
+    },
+    "starter": {
+      "type": "string",
+      "description": "可编译C17空白主函数，不提前填答案"
+    },
+    "tests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "input": {
+            "type": "string"
+          },
+          "expected": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "input",
+          "expected"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 3,
+      "maxItems": 12
+    },
+    "sampleNotes": {
+      "type": "object",
+      "properties": {
+        "0": {
+          "type": "string",
+          "description": "普通样例解释"
+        },
+        "1": {
+          "type": "string",
+          "description": "边界样例解释"
+        },
+        "2": {
+          "type": "string",
+          "description": "针对错误的特殊样例解释"
+        }
+      },
+      "required": [
+        "0",
+        "1",
+        "2"
+      ],
+      "additionalProperties": false
+    },
+    "review": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 3,
+      "maxItems": 5
+    },
+    "complexity": {
+      "type": "object",
+      "properties": {
+        "time": {
+          "type": "string"
+        },
+        "space": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string",
+          "description": "按输入规模推导上界，区分输入存储与额外空间"
+        },
+        "alternative": {
+          "type": "string",
+          "description": "说明较慢方案在上界为何不可取，或说明无需更复杂方案"
+        }
+      },
+      "required": [
+        "time",
+        "space",
+        "reason",
+        "alternative"
+      ],
+      "additionalProperties": false
+    },
+    "assessment": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "type": "string"
+        },
+        "ambiguities": {
+          "type": "string"
+        },
+        "targetAlgorithm": {
+          "type": "string"
+        },
+        "constraintsReason": {
+          "type": "string"
+        },
+        "difficulty": {
+          "type": "string"
+        },
+        "targetedMistake": {
+          "type": "string"
+        },
+        "contextQuality": {
+          "type": "string"
+        },
+        "taskClarity": {
+          "type": "string"
+        },
+        "implementationNotes": {
+          "type": "string"
+        },
+        "sampleCoverage": {
+          "type": "string"
+        },
+        "qualityReview": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "model",
+        "ambiguities",
+        "targetAlgorithm",
+        "constraintsReason",
+        "difficulty",
+        "targetedMistake",
+        "contextQuality",
+        "taskClarity",
+        "implementationNotes",
+        "sampleCoverage",
+        "qualityReview"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "title",
+    "topic",
+    "level",
+    "tags",
+    "skills",
+    "description",
+    "input",
+    "output",
+    "constraints",
+    "hints",
+    "explanation",
+    "pseudocode",
+    "solution",
+    "starter",
+    "tests",
+    "sampleNotes",
+    "review",
+    "complexity",
+    "assessment"
+  ],
+  "additionalProperties": false
+}

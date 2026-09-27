@@ -1,0 +1,18 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const ctx={};vm.createContext(ctx);vm.runInContext(fs.readFileSync(__dirname+'/../Resources/collections.js','utf8'),ctx);
+const p={bank:'comprehensive',collection:'olympiad',tests:[{subtask:'basic'},{subtask:'basic'},{subtask:'full'},{subtask:'full'}],subtasks:[{id:'basic',points:30},{id:'full',points:70}]};
+const result=states=>({status:states.every(x=>x==='passed')?'passed':'failed',checks:states.map(status=>({status}))});
+assert.equal(ctx.scoreSubtasks(p,result(['passed','passed','passed','wrong_answer'])).earned,30);
+assert.equal(ctx.scoreSubtasks(p,result(['passed','wrong_answer','passed','passed'])).earned,70);
+assert.equal(ctx.scoreSubtasks(p,result(['passed','wrong_answer','passed','wrong_answer'])).earned,0);
+assert.equal(ctx.scoreSubtasks(p,result(['passed','passed','passed','passed'])).earned,100);
+assert.equal(ctx.scoreSubtasks(p,{status:'compile_error',checks:[]}).earned,0);
+assert.equal(ctx.scoreSubtasks(p,{status:'cancelled',checks:[{status:'passed'},{status:'passed'}]}).earned,0);
+assert.equal(ctx.scoreSubtasks(p,{status:'failed',checks:[{status:'passed'}]}).earned,0);
+assert.equal(ctx.judgeRatio(p,result(['passed','passed','wrong_answer','wrong_answer'])),.3);
+assert.equal(ctx.judgeRatio({tests:[{},{}]},result(['passed','wrong_answer'])),.5);
+const sports={bank:'comprehensive',collection:'sports',sport:'football'};
+assert(ctx.matchesBank(sports,'sports'));assert(ctx.matchesBank(sports,'football'));assert(ctx.matchesBank(sports,'comprehensive'));assert(!ctx.matchesBank(sports,'basketball'));assert(!ctx.matchesBank(sports,'classic'));
+assert(ctx.matchesBank({bank:'comprehensive'},'classic'));assert(!ctx.matchesBank({bank:'chapter'},'classic'));assert(ctx.matchesBank(p,'olympiad'));
+assert.equal(ctx.collectionLabel(sports),'足球综合');assert.equal(ctx.collectionLabel(p),'竞赛困难');
+console.log('PASS: collection filtering, grouped all-or-nothing scores, missing/cancelled checks, learning ratios');
