@@ -1,11 +1,11 @@
 """Compile original tutorial practice and compare independent small oracles."""
 import json, subprocess, tempfile, pathlib, random, itertools, math, shutil, sys
 root=pathlib.Path(__file__).resolve().parents[1]
-problems=json.loads((root/'Resources/course-exercises.json').read_text())['problems']
+problems=json.loads((root/'Resources/course-exercises.json').read_text(encoding='utf-8'))['problems']
 rng=random.Random(610)
 with tempfile.TemporaryDirectory(prefix='CPracticeCourse-') as tmp:
  for p in problems:
-  source=pathlib.Path(tmp)/(p['id']+'.c');binary=source.with_suffix('.exe' if sys.platform=='win32' else '');source.write_text(p['solution'])
+  source=pathlib.Path(tmp)/(p['id']+'.c');binary=source.with_suffix('.exe' if sys.platform=='win32' else '');source.write_text(p['solution'],encoding='utf-8')
   subprocess.run([shutil.which('cc') or shutil.which('gcc') or shutil.which('clang'),'-std=c17','-Wall','-Wextra','-Werror',str(source),'-o',str(binary)],check=True,capture_output=True)
   cases=[(t['input'],t['expected']) for t in p['tests']]
   if p['id']=='X205':

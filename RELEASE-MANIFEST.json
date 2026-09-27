@@ -924,8 +924,8 @@
     },
     {
       "path": "tests/course-exercises.test.py",
-      "bytes": 1990,
-      "sha256": "1d3308d259bda987c2d5447b58f5f2459437b47295ee4318bfbd5f05e82bb6a9"
+      "bytes": 2023,
+      "sha256": "1021d305bb65843e0f12cd86105cd06d30b01faf1188a74de3aa55a82a829c39"
     },
     {
       "path": "tests/desktop.test.cjs",
