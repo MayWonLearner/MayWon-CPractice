@@ -32,13 +32,16 @@ class Runner{
    dir=await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(),'CPracticeRun-')));
    const helper=path.join(dir,process.platform==='win32'?'limit.exe':'limit'),binary=path.join(dir,process.platform==='win32'?'program.exe':'program');
    const helperSource=path.join(this.nativeSources,process.platform==='win32'?'limit-win.c':'limit-runner.c');
-   const prep=await execute(cc.file,[...sdkFlags(),'-O2',helperSource,...(process.platform==='win32'?['-municode']:[]),'-o',helper],{cwd:dir,env,timeout:30000,signal});
+   // Relative input/output arguments avoid legacy Windows compiler argv code-page loss.
+   await fs.copyFile(helperSource,path.join(dir,'limit-helper.c'));
+   const buildEnv={...env,TMPDIR:dir,TMP:'.',TEMP:'.'};
+   const prep=await execute(cc.file,[...sdkFlags(),'-O2','limit-helper.c',...(process.platform==='win32'?['-municode']:[]),'-o',path.basename(helper)],{cwd:dir,env:buildEnv,timeout:30000,signal});
    if(prep.code!==0)throw Error('无法准备运行限制器：'+prep.err);
    await fs.writeFile(path.join(dir,'main.c'),request.code);
-   const flags=[...sdkFlags(),'-std=c17','-Wall','-Wextra','-Wpedantic','-fno-common','-O2','-g',...(cc.name==='clang'?['-fno-color-diagnostics','-ferror-limit=12']:['-fdiagnostics-color=never','-fmax-errors=12']),path.join(dir,'main.c'),'-o',binary,'-lm'];
+   const flags=[...sdkFlags(),'-std=c17','-Wall','-Wextra','-Wpedantic','-fno-common','-O2','-g',...(cc.name==='clang'?['-fno-color-diagnostics','-ferror-limit=12']:['-fdiagnostics-color=never','-fmax-errors=12']),'main.c','-o',path.basename(binary),'-lm'];
    let buildFile=cc.file,buildArgs=flags;
    if(process.platform==='darwin'){const profile=path.join(dir,'compile.sb');await fs.writeFile(profile,macProfile(dir,helper,true,cc.file));buildFile='/usr/bin/sandbox-exec';buildArgs=['-f',profile,cc.file,...flags];}
-   const built=await execute(buildFile,buildArgs,{cwd:dir,env:{...env,TMPDIR:dir,TMP:dir,TEMP:dir},timeout:30000,signal});
+   const built=await execute(buildFile,buildArgs,{cwd:dir,env:buildEnv,timeout:30000,signal});
    result.diagnostics=built.err.split(dir+path.sep).join('');
    if(signal?.aborted)return {...result,status:'cancelled'};
    if(built.code!==0||built.timedOut)return {...result,status:built.timedOut?'compile_timeout':'compile_error',diagnostics:result.diagnostics||'编译失败：'+built.code};

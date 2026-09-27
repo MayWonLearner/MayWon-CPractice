@@ -33,6 +33,7 @@ jobs:
           node-version: '24'
           cache: npm
       - name: Windows C toolchain
+        id: msys2
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@v2
         with:
@@ -43,7 +44,7 @@ jobs:
       - name: Expose Windows toolchain
         if: runner.os == 'Windows'
         shell: pwsh
-        run: Add-Content $env:GITHUB_PATH 'C:\msys64\ucrt64\bin'
+        run: Add-Content $env:GITHUB_PATH '${{ steps.msys2.outputs.msys2-location }}\ucrt64\bin'
       - name: Linux desktop libraries
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y build-essential clang clangd clang-format libgtk-3-0 libnss3 libasound2 libgbm1 xvfb
