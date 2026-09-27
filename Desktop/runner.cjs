@@ -12,7 +12,7 @@ function validateDynamic(request){
 }
 function macProfile(dir,helper,compiling,tool){
  const q=JSON.stringify,read=['/System','/usr/lib','/usr/share','/Library/Apple','/private/preboot','/private/var/db/dyld',dir,helper];
- if(compiling){read.push('/Library/Developer','/usr/bin','/bin',path.dirname(tool));const developer=developerDirectory();if(developer)read.push(developer);}
+ if(compiling){read.push('/Library/Developer','/usr/bin','/bin',path.resolve(tool,'../..'));const developer=developerDirectory();if(developer)read.push(developer);}
  return `(version 1)(deny default)(allow file-read-metadata)(allow file-read-data (literal "/"))(allow file-read* ${read.map(x=>`(subpath ${q(x)})`).join(' ')} (literal "/dev/null") (literal "/dev/urandom") (literal "/dev/random"))(allow file-write* (subpath ${q(dir)}) (literal "/dev/null"))(allow sysctl-read)(allow mach-lookup)(allow signal (target self))(allow process-info* (target self)) ${compiling?'(allow process-exec)(allow process-fork)':`(allow process-exec (literal ${q(helper)}) (literal ${q(path.join(dir,'program'))}))`}`;
 }
 class Runner{
@@ -38,7 +38,7 @@ class Runner{
    const flags=[...sdkFlags(),'-std=c17','-Wall','-Wextra','-Wpedantic','-fno-common','-O2','-g',...(cc.name==='clang'?['-fno-color-diagnostics','-ferror-limit=12']:['-fdiagnostics-color=never','-fmax-errors=12']),path.join(dir,'main.c'),'-o',binary,'-lm'];
    let buildFile=cc.file,buildArgs=flags;
    if(process.platform==='darwin'){const profile=path.join(dir,'compile.sb');await fs.writeFile(profile,macProfile(dir,helper,true,cc.file));buildFile='/usr/bin/sandbox-exec';buildArgs=['-f',profile,cc.file,...flags];}
-   const built=await execute(buildFile,buildArgs,{cwd:dir,env,timeout:30000,signal});
+   const built=await execute(buildFile,buildArgs,{cwd:dir,env:{...env,TMPDIR:dir,TMP:dir,TEMP:dir},timeout:30000,signal});
    result.diagnostics=built.err.split(dir+path.sep).join('');
    if(signal?.aborted)return {...result,status:'cancelled'};
    if(built.code!==0||built.timedOut)return {...result,status:built.timedOut?'compile_timeout':'compile_error',diagnostics:result.diagnostics||'编译失败：'+built.code};

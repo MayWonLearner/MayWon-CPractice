@@ -59,6 +59,12 @@ jobs:
         run: xvfb-run -a npm run smoke
       - name: Build distributables
         run: npm run dist
+      - name: Verify packaged desktop
+        if: runner.os != 'Linux'
+        run: node scripts/test-packaged.cjs
+      - name: Verify packaged desktop (Linux)
+        if: runner.os == 'Linux'
+        run: xvfb-run -a node scripts/test-packaged.cjs
       - uses: actions/upload-artifact@v4
         with:
           name: CPractice-${{ matrix.label }}
@@ -68,5 +74,6 @@ jobs:
             dist/*.AppImage
             dist/*.tar.gz
             tests/reports/desktop-smoke.json
+            tests/reports/packaged-smoke.json
           if-no-files-found: error
           retention-days: 14

@@ -14,8 +14,9 @@ class Language{
   this.starting=(async()=>{
    const tool=findTool('clangd');if(!tool)throw Error('未找到 clangd：语法着色与缩进仍可用；安装 clangd 后可启用语义补全。');
    this.dir=await fs.mkdtemp(path.join(os.tmpdir(),'CPracticeLanguage-'));this.uri=pathToFileURL(path.join(this.dir,'main.c')).href;
-   await fs.writeFile(path.join(this.dir,'compile_flags.txt'),['-std=c17','-Wall','-Wextra',...sdkFlags()].join('\n'));
-   const cc=compiler();this.child=spawn(tool,['--background-index=false','--clang-tidy=false','--header-insertion=never','--enable-config=false','--log=error','--query-driver='+cc.file],{cwd:this.dir,env:toolEnvironment(),windowsHide:true,detached:process.platform!=='win32',stdio:['pipe','pipe','pipe']});
+   const cc=compiler(),file=path.join(this.dir,'main.c');
+   await fs.writeFile(path.join(this.dir,'compile_commands.json'),JSON.stringify([{directory:this.dir,file,arguments:[cc.file,'-std=c17','-Wall','-Wextra',...sdkFlags(),'-c',file]}]));
+   this.child=spawn(tool,['--background-index=false','--clang-tidy=false','--header-insertion=never','--enable-config=false','--log=error','--query-driver='+cc.file],{cwd:this.dir,env:toolEnvironment(),windowsHide:true,detached:process.platform!=='win32',stdio:['pipe','pipe','pipe']});
    this.child.stdin.on('error',()=>{});this.child.stderr.resume();this.child.on('error',()=>{});
    let buffer=Buffer.alloc(0);
    this.child.stdout.on('data',chunk=>{buffer=Buffer.concat([buffer,chunk]);if(buffer.length>8000000){this.stop();return;}while(true){const end=buffer.indexOf('\r\n\r\n');if(end<0)break;const size=Number(buffer.subarray(0,end).toString().match(/Content-Length:\s*(\d+)/i)?.[1]);if(!Number.isFinite(size)||size>8000000){this.stop();return;}if(buffer.length<end+4+size)break;try{this.receive(JSON.parse(buffer.subarray(end+4,end+4+size)));}catch{}buffer=buffer.subarray(end+4+size);}});

@@ -6,7 +6,7 @@ function searchPaths(env=process.env,platform=process.platform){
  const dirs=(env.PATH||env.Path||'').split(platform==='win32'?';':':').filter(Boolean);
  if(platform==='win32')dirs.push(path.join(env.APPDATA||path.join(home,'AppData','Roaming'),'npm'),'C:\\msys64\\ucrt64\\bin','C:\\msys64\\clang64\\bin',path.join(env.ProgramFiles||'C:\\Program Files','LLVM','bin'),path.join(env.LOCALAPPDATA||path.join(home,'AppData','Local'),'Programs','Microsoft VS Code','bin'));
  else {
-  dirs.push(path.join(home,'.local/bin'),'/opt/homebrew/bin','/usr/local/bin','/usr/bin','/bin', '/Applications/Codex.app/Contents/Resources', '/Applications/Visual Studio Code.app/Contents/Resources/app/bin');
+  dirs.push(path.join(home,'.local/bin'),'/opt/homebrew/bin','/usr/local/bin','/usr/bin','/bin','/opt/homebrew/opt/llvm/bin','/usr/local/opt/llvm/bin', '/Applications/Codex.app/Contents/Resources', '/Applications/Visual Studio Code.app/Contents/Resources/app/bin');
   const nvm=path.join(home,'.nvm/versions/node');
   try{for(const version of fs.readdirSync(nvm).sort((a,b)=>b.localeCompare(a,undefined,{numeric:true})))dirs.push(path.join(nvm,version,'bin'));}catch{}
  }
@@ -33,7 +33,14 @@ function toolEnvironment(){const env={...process.env};for(const key of Object.ke
 function compiler(){
  // Windows GCC includes the C runtime headers; a standalone LLVM install often does not.
  const names=process.platform==='win32'?['gcc','clang']:['clang','gcc'];
- for(const name of names){const p=findTool(name);if(p)return {file:p,name};}
+ for(const name of names){const p=findTool(name);if(p){
+  // /usr/bin/clang is an xcrun shim. Resolve it before entering the compile sandbox.
+  if(process.platform==='darwin'&&p==='/usr/bin/clang'){
+   const r=spawnSync('/usr/bin/xcrun',['--find','clang'],{encoding:'utf8',timeout:5000});
+   if(r.status===0&&r.stdout.trim())return {file:fs.realpathSync(r.stdout.trim()),name};
+  }
+  return {file:p,name};
+ }}
  throw Error(process.platform==='win32'?'未找到 C 编译器。请按 README 安装 MSYS2 UCRT64 GCC。':process.platform==='darwin'?'未找到 C 编译器，请在终端运行 xcode-select --install。':'未找到 C 编译器，请安装 build-essential 或 clang。');
 }
 function sdkFlags(){if(process.platform!=='darwin')return [];const r=spawnSync('/usr/bin/xcrun',['--show-sdk-path'],{encoding:'utf8',timeout:5000});return r.status===0?['-isysroot',r.stdout.trim()]:[];}
