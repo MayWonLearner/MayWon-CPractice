@@ -64,8 +64,8 @@
     },
     {
       "path": "Desktop/main.cjs",
-      "bytes": 11179,
-      "sha256": "8d40f8bcdd182d4800d8b0a225f3cacd3b1cd748aaff0d2b0feb13a060fbc46f"
+      "bytes": 11255,
+      "sha256": "60bf394da796aba0bb7bac1f947fd59b7463f3ce3dc167cee91b063123b3b3a1"
     },
     {
       "path": "Desktop/models.cjs",
@@ -94,8 +94,8 @@
     },
     {
       "path": "Desktop/smoke.cjs",
-      "bytes": 2753,
-      "sha256": "5a44b13857ebba6e21fc457ef1590cde930ed330d715e70238c439ed8bd4da13"
+      "bytes": 2704,
+      "sha256": "570821a47eaa143f725345bf0532b2497cbd5969a2865281b3a4c219023ac10d"
     },
     {
       "path": "Desktop/state.cjs",
@@ -789,8 +789,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 2271,
-      "sha256": "e0c7a57925c93e53d6c2c4db775d108867300894b520dbd7be33df9942112f8d"
+      "bytes": 2407,
+      "sha256": "97b44eba38d14f91508ae0a4822d42bedc70cadb4d57137f6c3ba78ac2504797"
     },
     {
       "path": "scripts/build-vendor.mjs",
@@ -829,8 +829,8 @@
     },
     {
       "path": "scripts/test-packaged.cjs",
-      "bytes": 895,
-      "sha256": "31c218e4bc0cc6b033bbe0c48529ccdaf30806f3ee17039e385ebd72c553771b"
+      "bytes": 1232,
+      "sha256": "c5962ef8a53b5a4c60bdfeb5159ca82721073d69bf0476f3739f894434840b6f"
     },
     {
       "path": "tests/StudyServiceTests.swift",

@@ -12,6 +12,6 @@ async function run({window,store,dataDir,quit}){
   assert.equal(judged.status,'passed',JSON.stringify(judged));checks.push({nativeIPCJudge:'passed'});
   await store.queue;
   const dest=process.env.CPRACTICE_SMOKE_REPORT||path.join(process.cwd(),'tests/reports/desktop-smoke.json');await fs.mkdir(path.dirname(dest),{recursive:true});await fs.writeFile(dest,JSON.stringify({platform:process.platform,arch:process.arch,passed:true,checks},null,2));console.log('Desktop smoke passed:',process.platform,process.arch);
- }finally{await quit();await fs.rm(dataDir,{recursive:true,force:true});}
+ }finally{await quit();}
 }
 module.exports={run};

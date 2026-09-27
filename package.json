@@ -59,6 +59,10 @@
       {
         "from": "Desktop/limit-win.c",
         "to": "limit-win.c"
+      },
+      {
+        "from": "node_modules/electron/dist/LICENSES.chromium.html",
+        "to": "ThirdParty/LICENSES.chromium.html"
       }
     ],
     "artifactName": "CPractice-${version}-${os}-${arch}.${ext}",
