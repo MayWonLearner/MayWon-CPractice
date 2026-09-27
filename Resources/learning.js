@@ -106,7 +106,9 @@ function lessonForProblem(p){
  14:[[/链表.*反转|反转.*链表/,1],[/链表/,0],[/二叉树|树节点|祖先|子树|树高|树的/,4],[/队列|排队/,3],[/反转/,1],[/栈|括号|表达式|后缀/,2]],
  15:[[/Dijkstra|带权|非负.*权|网络延迟/,4],[/BFS|网格|迷宫|无权|最短.*步|层次/,2],[/回溯|排列|组合|皇后|子集/,3],[/滑动|窗口|无重复|不重复/,1],[/复杂度/,5]]
  };
- const chapter=tutorials[p.module-1],index=(rules[p.module]??[]).find(([re])=>re.test(text))?.[1]??0;
- return {lesson:chapter.lessons[Math.min(index,chapter.lessons.length-1)],index:Math.min(index,chapter.lessons.length-1)};
+ const chapter=tutorials[p.module-1],originalIndex=(rules[p.module]??[]).find(([re])=>re.test(text))?.[1]??0;
+ const id='L'+String(p.module).padStart(2,'0')+'-'+(originalIndex+1);
+ const found=chapter.lessons.findIndex(l=>l.id===id),index=found>=0?found:0;
+ return {lesson:chapter.lessons[index],index};
 }
 function dueLessonCards(skillID){const skill=SKILLS.find(s=>s.id===skillID),due=tutorials.filter(t=>skill.modules.includes(t.module)).flatMap(t=>t.lessons.map((l,i)=>({l,index:i,module:t.module}))).filter(({l})=>state.memory?.[l.id]?.due<=Date.now()).sort((a,b)=>state.memory[a.l.id].due-state.memory[b.l.id].due).slice(0,4);return due.length?`<div class="section-head"><h2>先复习这些到期知识点</h2></div><div class="recommend-grid" style="margin-bottom:25px">${due.map(({l,index,module})=>`<article class="recommend-card"><span class="id-cell">${l.id}</span><h3>${esc(l.title)}</h3><p>此理解题已到复习时间。旧答案已隐藏，请先独立回忆，再重新作答。</p><button class="button small" data-teach="${module},${index}">回到这一课 →</button></article>`).join('')}</div>`:'';}

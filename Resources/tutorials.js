@@ -1,10 +1,17 @@
 'use strict';
 const tutorials=window.CURRICULUM.tutorials;
 let tutorialModule=1,tutorialIndex=0,traceIndex=0,lessonResults={},tutorialFoundationID=null,tutorialView=null;
-function openTutorial(mod,index=0){if(!tutorials[mod-1])mod=1;saveDraft();current=null;page='tutorial';tutorialModule=mod;tutorialIndex=Math.max(0,Math.min(index,tutorials[mod-1].lessons.length-1));tutorialFoundationID=null;traceIndex=0;state.lessonLast={module:mod,index:tutorialIndex};persist();render();}
+function openTutorial(mod,index=0){if(!tutorials[mod-1])mod=1;saveDraft();current=null;page='tutorial';tutorialModule=mod;tutorialIndex=Math.max(0,Math.min(index,tutorials[mod-1].lessons.length-1));tutorialFoundationID=null;traceIndex=0;state.lessonLast={module:mod,index:tutorialIndex,lessonID:lessonNow().id};persist();render();}
+function resumeTutorial(){
+ const last=state.lessonLast,mod=last?.module??1,chapter=tutorials[mod-1];
+ // Old bookmarks used indexes before the seven introductory lessons were inserted.
+ const id=last?.lessonID??(last&&mod===1?'L01-'+((last.index??0)+1):null);
+ const found=id?chapter?.lessons.findIndex(l=>l.id===id):-1;
+ openTutorial(mod,found>=0?found:last?.lessonID?0:last?.index??0);
+}
 function renderTutorial(){renderTutorialContent(document.querySelector('#main'),false);}
 function renderEmbeddedTutorial(moduleID,host){if(!host||!tutorials[moduleID-1])return;tutorialModule=moduleID;tutorialIndex=0;tutorialFoundationID=null;traceIndex=0;renderTutorialContent(host,true);}
-function tutorialSelect(index,foundationID=null){tutorialIndex=index;tutorialFoundationID=foundationID;traceIndex=0;if(!tutorialView.embedded){state.lessonLast={module:tutorialModule,index};persist();}const view=tutorialView;renderTutorialContent(view.host,view.embedded);view.host.scrollTop=0;}
+function tutorialSelect(index,foundationID=null){tutorialIndex=index;tutorialFoundationID=foundationID;traceIndex=0;if(!tutorialView.embedded){state.lessonLast={module:tutorialModule,index,lessonID:lessonNow().id};persist();}const view=tutorialView;renderTutorialContent(view.host,view.embedded);view.host.scrollTop=0;}
 function tutorialHost(){return tutorialView?.host?.isConnected?tutorialView.host:document;}
 function foundationPoints(){return window.C_FOUNDATIONS?.modules.find(m=>m.moduleId===tutorialModule)?.points??[];}
 function lessonReadIDs(){const value=state.lessonRead;if(Array.isArray(value))return value;return value&&typeof value==='object'?Object.keys(value).filter(id=>value[id]===true):[];}

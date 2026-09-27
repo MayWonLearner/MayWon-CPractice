@@ -1,0 +1,764 @@
+[
+  {
+    "id": "L01-6",
+    "title": "先让屏幕说一句话：函数和 printf 是什么",
+    "introductory": true,
+    "prerequisite": "无需事先会写函数或指针。按本章前七节的顺序阅读；专业层暂时看不懂的术语，可以先用小白层和示例建立直觉。",
+    "analogy": [
+      "球场门口有一块电子屏，你希望它显示 Welcome。电脑不会因为你在编辑区写了这个单词，就把它当作运行结果。需要请一个已经写好的“输出小助手”做这件事，这个小助手叫 printf。函数就是一项有名字、可以被调用的操作；调用像按下按钮，让这项操作真正执行。这里先学会使用别人写好的函数，不需要自己设计函数。"
+    ],
+    "professional": [
+      "int main(void) 在这里是入口函数的定义：int 表示返回整数状态，void 表示这个定义不接收参数；{ 与 } 包围函数体。函数的完整语法会在后续章节展开，本节不要求用它编写自己的工具函数。",
+      "printf 自身也有返回值：成功时返回输出字符数，输出错误时返回负值。本例有意不使用这个返回值。它与 main 中的 return 0 是两件事；return 0 不会打印数字 0。"
+    ],
+    "boundary": "本节使用普通英文文本和换行。百分号在 printf 的格式字符串中有特殊含义，要显示百分号请写 %%。本课不让用户输入的未知字符串直接充当格式字符串；读取和格式化数据会分开讲。",
+    "code": "#include <stdio.h> // 让编译器认识标准输入输出工具\n\nint main(void) // 本程序从这里开始\n{ // 主函数的任务范围开始\n    printf(\"Welcome\\n\"); // 显示欢迎文字，然后换行\n    printf(\"Team A\\n\"); // 下一行显示队伍名，然后换行\n    return 0; // 向运行环境报告正常结束，不是输出零\n} // 主函数结束\n",
+    "expected": "Welcome\nTeam A\n",
+    "input": "",
+    "steps": [
+      {
+        "label": "调用前",
+        "state": "屏幕：空",
+        "explanation": "编辑区已有代码，但还没有执行输出。"
+      },
+      {
+        "label": "第一次调用",
+        "state": "Welcome\n",
+        "explanation": "引号提供文字；换行把光标移到下一行。"
+      },
+      {
+        "label": "第二次调用",
+        "state": "Welcome\nTeam A\n",
+        "explanation": "追加第二行，不覆盖第一行。"
+      }
+    ],
+    "quiz": {
+      "question": "哪一项会输出 Welcome 并换行？",
+      "options": [
+        "printf(\"Welcome\\n\");",
+        "return 0;",
+        "只在注释里写 Welcome"
+      ],
+      "answer": 0,
+      "explanation": "printf 调用产生输出，\\n 指定换行；注释和返回状态不会代替输出。"
+    },
+    "intro": "本节只增加一个小台阶。先读具体例子，预测结果，再运行；不要求一次背下全部标准库函数。",
+    "pseudocode": "OUTPUT \"Welcome\"\nOUTPUT NEWLINE\nOUTPUT \"Team A\"\nOUTPUT NEWLINE\nRETURN SUCCESS",
+    "walkthrough": [],
+    "mistakes": [],
+    "reviewQuotes": [
+      {
+        "id": "L01-6-rule",
+        "text": "写了 printf 这个名字还不等于调用；需要圆括号、所需参数，并把调用放进完整程序。",
+        "section": "入门提醒",
+        "keys": []
+      }
+    ],
+    "practiceSteps": [
+      "把 Team A 改成 Team B，只改引号中的文字，运行观察。",
+      "再加一条 printf 输出第三行，预测它出现的位置。",
+      "用纸写出三条输出语句的顺序，不看预期输出再运行。"
+    ],
+    "relatedTopics": [],
+    "teaching": {
+      "scene": "球场门口有一块电子屏，你希望它显示 Welcome。电脑不会因为你在编辑区写了这个单词，就把它当作运行结果。需要请一个已经写好的“输出小助手”做这件事，这个小助手叫 printf。函数就是一项有名字、可以被调用的操作；调用像按下按钮，让这项操作真正执行。这里先学会使用别人写好的函数，不需要自己设计函数。",
+      "steps": [
+        "看 printf(\"Welcome\\n\");。printf 是小助手的名字；英文圆括号里是交给它的内容；英文双引号把一段文字包起来；最后的英文分号表示这次调用语句结束。",
+        "引号里的 Welcome 是要显示的文字。\\n 是反斜杠和字母 n 组成的换行写法，运行时表示换到下一行，不会原样显示这两个符号。把它删掉再运行，观察下一句是否紧接在后面。",
+        "下一句 printf(\"Team A\\n\"); 再输出 Team A。两个调用先后发生，所以屏幕有两行。程序不会按字母顺序重新排列，也不会自动给每次 printf 增加换行。",
+        "下面把两句话放在一个完整程序里。#include <stdio.h> 先让编译器认识 printf；int main(void) 是本次程序的入口外壳；花括号中的语句依次执行；return 0 表示顺利结束。下一节专门拆解第一行。现在可以先保持外壳不变，只修改引号中的文字。"
+      ],
+      "core": "printf 是 C 标准库的格式化输出函数，把结果写到标准输出。在本应用中，标准输出显示在运行结果区。函数调用的一般外形是 函数名(实参列表)。实参是调用时提供的具体数据；本例只有一个字符串字面量。printf 不是 C 语言关键字，拼成 Printf 或 print 不会自动成为同一个函数。",
+      "boundary": "本节使用普通英文文本和换行。百分号在 printf 的格式字符串中有特殊含义，要显示百分号请写 %%。本课不让用户输入的未知字符串直接充当格式字符串；读取和格式化数据会分开讲。",
+      "terms": [
+        {
+          "plain": "输出小助手",
+          "term": "标准库函数 printf",
+          "meaning": "已经提供的输出操作，通过调用来使用。"
+        },
+        {
+          "plain": "交给小助手的材料",
+          "term": "实参",
+          "meaning": "圆括号中传入的具体数据。"
+        },
+        {
+          "plain": "用引号圈住一句话",
+          "term": "字符串字面量",
+          "meaning": "程序中表示一段文字的写法。"
+        },
+        {
+          "plain": "任务的起点",
+          "term": "main 函数",
+          "meaning": "本应用中普通 C 程序的入口。"
+        }
+      ],
+      "pitfalls": [
+        "写了 printf 这个名字还不等于调用；需要圆括号、所需参数，并把调用放进完整程序。",
+        "英文分号和中文分号不同；双引号与圆括号必须成对。",
+        "保存文件不会执行输出，return 0 也不会让屏幕显示 0。"
+      ],
+      "questions": [
+        {
+          "question": "如果删去第一句里的 \\n，其他代码不变，会看到什么？",
+          "answer": "两句内容连在同一行：WelcomeTeam A，第二句末尾仍会换行。"
+        },
+        {
+          "question": "调用一个已经存在的函数，是否必须先学会写自己的函数？",
+          "answer": "不必。先弄清它的名字、需要什么输入、会做什么或返回什么，就能学习调用；自己定义函数后面再学。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "L01-7",
+    "title": "认识 #include 和头文件：先找到工具说明书",
+    "introductory": true,
+    "prerequisite": "无需事先会写函数或指针。按本章前七节的顺序阅读；专业层暂时看不懂的术语，可以先用小白层和示例建立直觉。",
+    "analogy": [
+      "想用学校体育室的计时器，你先看使用说明，知道按钮叫什么、需要什么设置。C 的头文件也承担类似作用：让编译器先看到工具接口。stdio.h 可以记成 standard input/output（标准输入输出）的缩写。你要用 printf 或 scanf，首先包含它。它们不是需要额外下载的 Python 包，也不是每写一条输出就重新安装一次。"
+    ],
+    "professional": [
+      "常用头文件速查：stdio.h 提供 printf、scanf、getchar、fgets 等输入输出接口；ctype.h 提供 isdigit、isalpha、isspace、toupper 等单字节字符处理接口；string.h 提供 strlen、strcmp、memcpy 等字符串或内存处理接口；math.h 提供 sqrt、pow、fabs、floor、ceil 等数学接口。后面三节各给出可运行例子。",
+      "还会遇到：stdlib.h（abs、strtol、malloc、free 等通用工具）；stdbool.h（本应用 C17 中的 bool、true、false）；limits.h（如 INT_MAX，查看整数类型范围）；stdint.h（如 int32_t 等精确宽度整数类型，具体类型在实现支持该宽度时提供）。现在只需知道去哪里查，不要提前练习内存分配。",
+      "尖括号形式通常用于标准或工具链提供的头文件；双引号形式如 #include \"score.h\" 常用于自己的头文件，搜索方式与路径由实现和编译选项规定。不是把尖括号一律换成双引号就能修复缺失文件。"
+    ],
+    "boundary": "标准名称是 <math.h>，没有标准头文件 <maths.h>。头文件不是“把全部功能运行一遍”的包，也不保证包含后所有链接依赖都自动满足；数学库的链接选项在数学小课中说明。无需自己下载同名 .h 文件放进项目。",
+    "code": "#include <stdio.h> // 声明本例要使用的 printf\n#include <math.h> // 这里只展示数学头文件的正确拼写\n\nint main(void) // 程序执行入口\n{ // 下面才是运行时执行的语句\n    printf(\"Headers are ready.\\n\"); // 真正产生屏幕输出的是这一句\n    return 0; // 正常结束程序\n} // 主函数结束\n",
+    "expected": "Headers are ready.\n",
+    "input": "",
+    "steps": [
+      {
+        "label": "准备阶段",
+        "state": "#include <stdio.h>",
+        "explanation": "让 printf 的声明可见，此时没有屏幕输出。"
+      },
+      {
+        "label": "进入主函数",
+        "state": "printf(...)",
+        "explanation": "实际调用函数后才出现文字。"
+      },
+      {
+        "label": "没有数学调用",
+        "state": "输出仍只有一行",
+        "explanation": "包含 math.h 不会自动执行 sqrt。"
+      }
+    ],
+    "quiz": {
+      "question": "要使用 printf 和 scanf，应首先包含哪个头文件？",
+      "options": [
+        "<string.h>",
+        "<stdio.h>",
+        "<maths.h>"
+      ],
+      "answer": 1,
+      "explanation": "printf 和 scanf 的标准声明由 stdio.h 提供。string.h 主要处理字符串与内存；maths.h 不是标准头文件。"
+    },
+    "intro": "本节只增加一个小台阶。先读具体例子，预测结果，再运行；不要求一次背下全部标准库函数。",
+    "pseudocode": "PREPARE declarations FROM <stdio.h>\nPREPARE declarations FROM <math.h>\nBEGIN main\n    OUTPUT \"Headers are ready.\"\n    OUTPUT NEWLINE\nEND main",
+    "walkthrough": [],
+    "mistakes": [],
+    "reviewQuotes": [
+      {
+        "id": "L01-7-rule",
+        "text": "#include <stdio.h> 是预处理指令，末尾不加分号；printf(...); 是函数调用语句，要有分号。",
+        "section": "入门提醒",
+        "keys": []
+      }
+    ],
+    "practiceSteps": [
+      "在纸上为“显示分数、判断字符是不是数字、统计英文单词字节长度、求平方根”各选择一个头文件。",
+      "临时把 math.h 改成 maths.h，查看编译诊断，然后改回；不要把错误拼写留在最终代码里。"
+    ],
+    "relatedTopics": [],
+    "teaching": {
+      "scene": "想用学校体育室的计时器，你先看使用说明，知道按钮叫什么、需要什么设置。C 的头文件也承担类似作用：让编译器先看到工具接口。stdio.h 可以记成 standard input/output（标准输入输出）的缩写。你要用 printf 或 scanf，首先包含它。它们不是需要额外下载的 Python 包，也不是每写一条输出就重新安装一次。",
+      "steps": [
+        "把 #include <stdio.h> 单独放在程序上方一行。# 是这条预处理指令的开头，include 表示包含，<stdio.h> 指明标准头文件名。末尾不加分号。",
+        "这行发生在生成可执行程序的准备阶段，不是程序运行到这里才向屏幕输出什么。只包含 stdio.h 而不调用输出函数，屏幕仍没有文字。",
+        "下面特意同时包含 stdio.h 与 math.h，但只调用 printf。因此只出现 Headers are ready.，不会因为出现 math.h 就自动计算平方根。",
+        "以后按所用工具选头文件：printf/scanf 找 stdio.h；判断字母数字找 ctype.h；测量或比较字符串找 string.h；开方、绝对值等浮点运算找 math.h。先认用途，不要一口气背完整目录。"
+      ],
+      "core": "#include 是预处理指令，不是函数调用，也不宜叫作“include 函数声明”。它使被包含头文件中的内容进入当前翻译单元；其中可能有函数声明、类型定义和宏。函数声明告诉编译器函数名、参数和返回类型；函数实现则说明具体怎么做。标准库的实现由工具链在链接等阶段提供，头文件与库文件不是同一种文件。",
+      "boundary": "标准名称是 <math.h>，没有标准头文件 <maths.h>。头文件不是“把全部功能运行一遍”的包，也不保证包含后所有链接依赖都自动满足；数学库的链接选项在数学小课中说明。无需自己下载同名 .h 文件放进项目。",
+      "terms": [
+        {
+          "plain": "工具说明书",
+          "term": "头文件",
+          "meaning": "提供使用接口所需的声明、类型、宏等内容。"
+        },
+        {
+          "plain": "告诉编译器工具怎么调用",
+          "term": "函数声明",
+          "meaning": "描述接口，不等于函数的实现。"
+        },
+        {
+          "plain": "实际做事的工具",
+          "term": "库函数实现",
+          "meaning": "执行时完成操作的代码。"
+        },
+        {
+          "plain": "先把说明准备好",
+          "term": "预处理指令",
+          "meaning": "在翻译过程中处理，不是运行时函数调用。"
+        }
+      ],
+      "pitfalls": [
+        "#include <stdio.h> 是预处理指令，末尾不加分号；printf(...); 是函数调用语句，要有分号。",
+        "math.h 才是标准名称；多写一个 s 不会被自动纠正。",
+        "只有标准工具链提供头文件还不够运行任意程序，仍需要编译和链接；不应从不明网页随意下载缺失头文件。"
+      ],
+      "questions": [
+        {
+          "question": "只写 #include <stdio.h>，没有 printf，屏幕会自动显示什么吗？",
+          "answer": "不会。包含头文件是准备接口，真正输出需要执行相应函数调用。"
+        },
+        {
+          "question": "声明与实现分别回答什么问题？",
+          "answer": "声明回答“这个工具叫什么、需要哪些类型的数据、返回什么类型”；实现回答“它具体怎样完成工作”。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "L01-8",
+    "title": "printf 再走一步：变量、%d 和小数输出",
+    "introductory": true,
+    "prerequisite": "无需事先会写函数或指针。按本章前七节的顺序阅读；专业层暂时看不懂的术语，可以先用小白层和示例建立直觉。",
+    "analogy": [
+      "球票收据需要写“买了几张、每张多少钱”。固定文字可以直接写在引号里，变化的数字要先放到有名字的存储位置里，这个位置叫变量。把 int tickets = 2; 看成建立一个名叫 tickets 的整数格子，并放入 2。把 double price = 12.5; 看成建立能保存小数的格子。名字不是要打印的内容，真正输出时要取出格子里的值。"
+    ],
+    "professional": [
+      "printf 的格式与实参类型必须匹配。例如 printf(\"%d\", price) 把 double 当作 int 读取，是未定义行为，不是“自动取整”。实际输出不可靠，编译器通常会给出格式警告，应该修改格式而非忽略警告。",
+      "在 printf 这种可变参数调用中，float 会提升为 double，因此输出 float 和 double 常用 %f。读取时 scanf 的规则不同：float 用 %f 搭配 float*，double 用 %lf 搭配 double*。下一节会解释这里为何要传地址。"
+    ],
+    "boundary": "本节只演示小范围数值和英文字符；不讨论整数溢出、复杂浮点误差和多字节中文字符。%.2f 是格式化显示并可能舍入，不是“金额永远精确”的保证。",
+    "code": "#include <stdio.h> // 提供 printf 的声明\n\nint main(void) // 程序入口\n{ // 保存并显示一张收据\n    int tickets = 2; // 整数变量保存票数\n    double price = 12.5; // 浮点变量保存单价\n    char seat = 'A'; // 单个字符使用单引号\n    printf(\"tickets=%d\\n\", tickets); // 用整数二替换百分号占位符\n    printf(\"price=%.2f\\n\", price); // 显示小数点后两位\n    printf(\"seat=%c\\n\", seat); // 显示一个字符\n    printf(\"%s\\n\", \"Gate\"); // 显示一段固定文字\n    printf(\"100%% ready\\n\"); // 两个百分号输出一个百分号\n    return 0; // 正常结束\n} // 主函数结束\n",
+    "expected": "tickets=2\nprice=12.50\nseat=A\nGate\n100% ready\n",
+    "input": "",
+    "steps": [
+      {
+        "label": "保存",
+        "state": "tickets: 2；price: 12.5",
+        "explanation": "变量准备好了，还没有因此自动输出。"
+      },
+      {
+        "label": "整数填空",
+        "state": "tickets=2",
+        "explanation": "%d 的位置使用后面的 tickets 值。"
+      },
+      {
+        "label": "小数排版",
+        "state": "price=12.50",
+        "explanation": "显示两位小数，数值仍是十二点五。"
+      }
+    ],
+    "quiz": {
+      "question": "price 是 double，输出两位小数应选哪项？",
+      "options": [
+        "printf(\"%d\", price);",
+        "printf(\"%.2f\", price);",
+        "printf(\"price\");"
+      ],
+      "answer": 1,
+      "explanation": "%.2f 按浮点格式显示两位小数；%d 与 double 不匹配，\"price\" 只是文字。"
+    },
+    "intro": "本节只增加一个小台阶。先读具体例子，预测结果，再运行；不要求一次背下全部标准库函数。",
+    "pseudocode": "tickets ← 2\nprice ← 12.5\nseat ← CHARACTER \"A\"\nOUTPUT_FORMAT \"tickets={integer}\", tickets\nOUTPUT_FORMAT \"price={two decimal places}\", price\nOUTPUT seat\nOUTPUT \"Gate\"\nOUTPUT \"100% ready\"\n",
+    "walkthrough": [],
+    "mistakes": [],
+    "reviewQuotes": [
+      {
+        "id": "L01-8-rule",
+        "text": "printf(\"tickets\") 输出名字这段文字；printf(\"%d\", tickets) 才输出变量保存的整数。",
+        "section": "入门提醒",
+        "keys": []
+      }
+    ],
+    "practiceSteps": [
+      "把 tickets 改成 3，预测哪些行会变化，再运行。",
+      "把 %.2f 改成 %.1f，对比显示位数；其他格式先保持不变。"
+    ],
+    "relatedTopics": [],
+    "teaching": {
+      "scene": "球票收据需要写“买了几张、每张多少钱”。固定文字可以直接写在引号里，变化的数字要先放到有名字的存储位置里，这个位置叫变量。把 int tickets = 2; 看成建立一个名叫 tickets 的整数格子，并放入 2。把 double price = 12.5; 看成建立能保存小数的格子。名字不是要打印的内容，真正输出时要取出格子里的值。",
+      "steps": [
+        "读 printf(\"tickets=%d\\n\", tickets);。引号中的 tickets= 是原样显示的标签；%d 是一个等待整数填入的位置。逗号后的 tickets 提供当前整数值 2，所以输出 tickets=2。",
+        "读 printf(\"price=%.2f\\n\", price);。%f 用来格式化浮点数，.2 要求小数点后显示两位，因此 12.5 显示成 12.50。它改变显示方式，不会把 price 变量永久改成另一种类型。",
+        "字符使用单引号，如 char seat = 'A';；一段文字使用双引号，如 \"Gate\"。%c 输出一个字符，%s 输出以终止符结尾的字符串。本例先使用固定文字，不要求你已经掌握数组。",
+        "模板中的占位符按从左到右的顺序，对应逗号后的各个值。想输出百分号本身写 %%，它不消耗额外数值。不要把变量名放进引号期待它自动变成变量的值。"
+      ],
+      "core": "printf 的第一个实参是格式字符串，后面的实参提供要转换并输出的数据。常见对应为 %d 对应 int，%f 对应 double，%c 对应经整数提升后的字符值，%s 对应有效的零终止字符序列。变量的声明确定其类型；初始化给它第一次保存的值。",
+      "boundary": "本节只演示小范围数值和英文字符；不讨论整数溢出、复杂浮点误差和多字节中文字符。%.2f 是格式化显示并可能舍入，不是“金额永远精确”的保证。",
+      "terms": [
+        {
+          "plain": "有名字的存储格",
+          "term": "变量",
+          "meaning": "具有类型和值的对象。"
+        },
+        {
+          "plain": "给新格子第一次放值",
+          "term": "初始化",
+          "meaning": "例如 int tickets = 2。"
+        },
+        {
+          "plain": "输出模板中的填空位置",
+          "term": "转换说明",
+          "meaning": "例如 %d 指定如何解释并显示对应实参。"
+        },
+        {
+          "plain": "一个字母／一段文字",
+          "term": "字符／字符串",
+          "meaning": "本例分别用单引号与双引号书写。"
+        }
+      ],
+      "pitfalls": [
+        "printf(\"tickets\") 输出名字这段文字；printf(\"%d\", tickets) 才输出变量保存的整数。",
+        "%d 不能拿来输出 double，也不能凭输出看起来正常就认定类型匹配。",
+        "printf 和 scanf 的格式规则有差别，不能照抄小数格式。"
+      ],
+      "questions": [
+        {
+          "question": "printf(\"%d %d\", 2, 5) 中两个 %d 分别拿到什么？",
+          "answer": "从左到右分别对应 2、5，输出 2 5；中间空格来自格式字符串。"
+        },
+        {
+          "question": "为什么 printf(\"100%%\") 不需要额外传一个整数？",
+          "answer": "%% 表示输出字面百分号，不是取数值的占位符，因此不消耗额外实参。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "L01-9",
+    "title": "scanf 从哪里读：输入框、& 地址与成功数量",
+    "introductory": true,
+    "prerequisite": "无需事先会写函数或指针。按本章前七节的顺序阅读；专业层暂时看不懂的术语，可以先用小白层和示例建立直觉。",
+    "analogy": [
+      "售票员需要先知道你买几张票，才能计算费用。scanf 就像填写登记表的助手：它从输入中读出数据，再写进你指定的变量。printf 是“把值拿出来给人看”，scanf 是“把读到的值放进去”。所以两者的参数看着相似，用法却不同。先只读一个范围很小的整数，不急着混合字符串与小数。"
+    ],
+    "professional": [
+      "scanf 返回本次成功赋值的输入项数量。读一个整数成功应返回 1；遇到 x 等不匹配的字符可以返回 0；第一次完成转换前就遇到输入结束或读取失败可返回 EOF。判断 count != 1 同时覆盖这些未成功读取的情况。读取失败时不能继续把初始值当成有效输入。",
+      "常见格式对照：读取 int 用 \"%d\" 与 &整数变量；读取 double 用 \"%lf\" 与 &小数变量；读取 float 用 \"%f\" 与 &小数变量；读取单个 char 用 \"%c\" 与 &字符变量，且 %c 不自动跳过空白。多个目标时按格式顺序分别传入各自地址；字符与字符串输入的细节放在本章后续基础点。"
+    ],
+    "boundary": "本课假设成功输入的票数是 0～1000 的整数。scanf 返回成功数量不等于检查完业务范围，也不能安全处理任意超出目标整数类型范围的数字。完整不可信文本解析要在后续学习 fgets、strtol 和范围检查。本课不在格式末尾写 \\n，以免交互式读取继续等待非空白。",
+    "code": "#include <stdio.h> // 提供 scanf 和 printf 的声明\n\nint main(void) // 程序入口\n{ // 先读取，再确认，再计算\n    int tickets = 0; // 准备保存票数的整数格\n    int count = scanf(\"%d\", &tickets); // 把票数写入指定地址，并记录成功项数\n    if (count != 1) // 如果没有成功读到一个整数\n    { // 只在读取失败时进入\n        printf(\"INVALID\\n\"); // 说明这次输入没有成功\n        return 1; // 提前结束，不使用无效输入继续计算\n    } // 失败分支结束\n    printf(\"%d\\n\", tickets * 20); // 成功读取后，按每张二十元计算\n    return 0; // 正常结束\n} // 主函数结束\n",
+    "expected": "60\n",
+    "input": "3\n",
+    "steps": [
+      {
+        "label": "读取前",
+        "state": "tickets=0；输入流：3\\n",
+        "explanation": "零是程序设置的初值，不是本次有效输入。"
+      },
+      {
+        "label": "读取后",
+        "state": "tickets=3；count=1",
+        "explanation": "一个整数被成功转换并写入变量。"
+      },
+      {
+        "label": "分支检查",
+        "state": "1 != 1 为假",
+        "explanation": "跳过失败分支，计算三乘二十并输出六十。"
+      }
+    ],
+    "quiz": {
+      "question": "执行 scanf(\"%d\", &tickets)，成功读到 8 时返回值是多少？",
+      "options": [
+        "8",
+        "1",
+        "0"
+      ],
+      "answer": 1,
+      "explanation": "返回 1 表示成功赋值一个输入项；8 保存在 tickets 中。"
+    },
+    "intro": "本节只增加一个小台阶。先读具体例子，预测结果，再运行；不要求一次背下全部标准库函数。",
+    "pseudocode": "(count, tickets) ← TRY_READ_INTEGER()\nIF count ≠ 1 THEN\n    OUTPUT \"INVALID\"\n    RETURN FAILURE\nEND IF\nOUTPUT tickets × 20\nRETURN SUCCESS",
+    "walkthrough": [],
+    "mistakes": [],
+    "reviewQuotes": [
+      {
+        "id": "L01-9-rule",
+        "text": "读取 int 要传 &变量；输出 int 要传变量的值。不要把 scanf 与 printf 的参数机械互换。",
+        "section": "入门提醒",
+        "keys": []
+      }
+    ],
+    "practiceSteps": [
+      "输入 4，先写出预期总价 80，再运行。",
+      "输入 x，观察 INVALID；它来自自己写的失败处理，不是编译错误。",
+      "将程序口头拆成“准备位置、读取、核对、计算、输出”五步。"
+    ],
+    "relatedTopics": [],
+    "teaching": {
+      "scene": "售票员需要先知道你买几张票，才能计算费用。scanf 就像填写登记表的助手：它从输入中读出数据，再写进你指定的变量。printf 是“把值拿出来给人看”，scanf 是“把读到的值放进去”。所以两者的参数看着相似，用法却不同。先只读一个范围很小的整数，不急着混合字符串与小数。",
+      "steps": [
+        "先写 int tickets = 0;，准备一个有名字的整数格。这个 0 是初始值，不代表用户已经输入了 0。",
+        "再写 scanf(\"%d\", &tickets)。%d 告诉它把输入文字解释成十进制整数；&tickets 表示这个格子的地址，也就是应该把读到的数写到哪里。此时先把 & 理解为“交出存放位置”，不要求你先掌握完整指针知识。",
+        "int count = scanf(...) 把 scanf 的返回值另存到 count。输入 3 时，tickets 变成 3，count 是 1，因为成功填写了一项；count 不是用户输入的票数。",
+        "示例中的 if (count != 1) 可先读成“如果成功数不等于 1”。花括号里只在失败时执行：输出 INVALID，然后 return 1 提前结束。因此只有成功读到票数才会计算 tickets * 20；星号在这里表示乘法。",
+        "在应用的“标准输入”框预先填 3，再运行；不要把 3 写进代码区，也不要等结果区让你输入。终端交互运行时通常输入数字后按回车。在应用示例中已经填好了示例输入，可先直接运行观察。"
+      ],
+      "core": "scanf 从标准输入流按格式转换数据，将结果存入对应目标对象。%d 对应 int*，&tickets 是 int 对象的地址；printf(\"%d\", tickets) 则传入 int 值本身。不要写成 scanf(\"%d\", tickets)，那会让函数把数值误当作地址使用。",
+      "boundary": "本课假设成功输入的票数是 0～1000 的整数。scanf 返回成功数量不等于检查完业务范围，也不能安全处理任意超出目标整数类型范围的数字。完整不可信文本解析要在后续学习 fgets、strtol 和范围检查。本课不在格式末尾写 \\n，以免交互式读取继续等待非空白。",
+      "terms": [
+        {
+          "plain": "登记表的格子",
+          "term": "变量 tickets",
+          "meaning": "接收实际读到的整数。"
+        },
+        {
+          "plain": "告诉助手写在哪里",
+          "term": "对象地址 &tickets",
+          "meaning": "让 scanf 找到应修改的对象。"
+        },
+        {
+          "plain": "成功填了几格",
+          "term": "scanf 返回值",
+          "meaning": "与输入数字的大小不是同一个概念。"
+        },
+        {
+          "plain": "如果没填好就停止",
+          "term": "条件分支与提前返回",
+          "meaning": "if 决定是否执行失败处理，return 结束函数。"
+        }
+      ],
+      "pitfalls": [
+        "读取 int 要传 &变量；输出 int 要传变量的值。不要把 scanf 与 printf 的参数机械互换。",
+        "输入 3 时，scanf 的返回值是 1，不是 3。",
+        "在本应用中先填写标准输入，再运行；普通输出区不是可交互终端。"
+      ],
+      "questions": [
+        {
+          "question": "如果输入 x，本例会把初始值 0 当成票数继续计算吗？",
+          "answer": "不会。读取不匹配时 count 不是 1，程序输出 INVALID 并提前结束，没有执行乘法输出。"
+        },
+        {
+          "question": "double price 应用 scanf 的哪个格式读取？为什么 printf 的小数格式不能直接照抄？",
+          "answer": "用 scanf(\"%lf\", &price)。scanf 要区分 float* 和 double*；printf 中 float 会提升为 double，通常都用 %f 输出。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "L01-10",
+    "title": "<ctype.h>：判断一个字符，而不是一整段文字",
+    "introductory": true,
+    "prerequisite": "无需事先会写函数或指针。按本章前七节的顺序阅读；专业层暂时看不懂的术语，可以先用小白层和示例建立直觉。",
+    "analogy": [
+      "球衣登记处收到一个字符，你要问“它是数字吗”“它是字母吗”，或者把小写的队伍代号改成大写。ctype.h 里的工具就是逐个字符做这些小检查。先明确两件不同的东西：整数 7 用来算七张票，字符 '7' 表示写在纸上的那个数字符号；本节判断的是后者。"
+    ],
+    "professional": [
+      "本例的字符常量 '7'、'b' 可以直接使用。以后若从普通 char 数组取得字节，通常先转成 unsigned char 再调用，如 isdigit((unsigned char)text[i])。原因是某些实现中的 char 可能为负值；除 EOF 外的负参数不在接口允许范围内。这个边界现在认识即可，数组章节再练。",
+      "如果来源是 getchar，应先用 int 接收并检查 EOF，再处理实际读到的字节。不要为了调用字符函数而先把 EOF 窄化进 char。字符分类还可能受当前区域设置影响；本课只用基本英文字符。"
+    ],
+    "boundary": "这些函数不是通用的中文、emoji 或 Unicode 整字分类工具。UTF-8 中文通常占多个字节，不能把其中每个字节当成完整汉字去调用 isalpha。",
+    "code": "#include <stdio.h> // 提供输出函数\n#include <ctype.h> // 提供字符判断和大小写转换函数\n\nint main(void) // 程序入口\n{ // 本例只处理基本英文字符\n    char mark = '7'; // 这是字符七，不是拿来计数的整数七\n    char small = 'b'; // 保存小写字母\n    printf(\"digit=%d\\n\", isdigit(mark) != 0); // 将非零判断结果统一显示为一\n    printf(\"upper=%c\\n\", toupper(small)); // 显示函数返回的大写字母\n    printf(\"original=%c\\n\", small); // 原变量仍然是小写字母\n    return 0; // 正常结束\n} // 主函数结束\n",
+    "expected": "digit=1\nupper=B\noriginal=b\n",
+    "input": "",
+    "steps": [
+      {
+        "label": "分类",
+        "state": "isdigit('7')：非零",
+        "explanation": "只根据是否为零判断真假。"
+      },
+      {
+        "label": "转换",
+        "state": "toupper('b')：'B'",
+        "explanation": "转换结果是函数的返回值。"
+      },
+      {
+        "label": "原值",
+        "state": "small：'b'",
+        "explanation": "未对 small 赋新值，所以原变量不变。"
+      }
+    ],
+    "quiz": {
+      "question": "判断 isdigit(c) 为真，哪项可靠？",
+      "options": [
+        "isdigit(c) == 1",
+        "isdigit(c) != 0",
+        "isdigit(c) == 7"
+      ],
+      "answer": 1,
+      "explanation": "标准只保证真时非零，因此比较 != 0 或直接作为条件。"
+    },
+    "intro": "本节只增加一个小台阶。先读具体例子，预测结果，再运行；不要求一次背下全部标准库函数。",
+    "pseudocode": "mark ← CHARACTER \"7\"\nIF IS_DIGIT(mark) THEN\n    OUTPUT \"digit=1\"\nELSE\n    OUTPUT \"digit=0\"\nEND IF\nsmall ← CHARACTER \"b\"\nOUTPUT TO_UPPER(small)\nOUTPUT small",
+    "walkthrough": [],
+    "mistakes": [],
+    "reviewQuotes": [
+      {
+        "id": "L01-10-rule",
+        "text": "isdigit 的真值只保证非零，不保证等于 1；不要写 isdigit(c) == 1。",
+        "section": "入门提醒",
+        "keys": []
+      }
+    ],
+    "practiceSteps": [
+      "把 mark 改成 'A'，先预测 digit 那行的输出再运行。",
+      "把 toupper 改成 tolower，并把 small 设成 'B'，观察返回值与原值。"
+    ],
+    "relatedTopics": [],
+    "teaching": {
+      "scene": "球衣登记处收到一个字符，你要问“它是数字吗”“它是字母吗”，或者把小写的队伍代号改成大写。ctype.h 里的工具就是逐个字符做这些小检查。先明确两件不同的东西：整数 7 用来算七张票，字符 '7' 表示写在纸上的那个数字符号；本节判断的是后者。",
+      "steps": [
+        "写 char mark = '7';，把一个数字字符交给 isdigit(mark)。函数回答“是数字”时给出一个非零整数，回答“不是”时给出 0。不要猜它一定返回 1。",
+        "示例写 isdigit(mark) != 0，把“非零”整理成数字 1，把“零”整理成数字 0。因此第一行显示 digit=1。这里 != 表示“不等于”，比较表达式的真假结果用 1 或 0 表示。",
+        "toupper('b') 返回大写字符 B；用 printf 的 %c 才能按字符显示它。再输出原来的 small，仍是 b：这个函数返回转换结果，不会偷偷改掉变量。",
+        "常用同类工具还有 isalpha（是不是字母）、isspace（是不是空白）、tolower（返回小写形式）。一次交给它们一个字符，不要直接把 \"abc\" 一整串文字交给 isalpha。"
+      ],
+      "core": "ctype.h 提供字符分类和大小写映射接口。分类函数返回零或非零；大小写映射函数返回转换后的字符值，若无需转换则返回原值。它们的参数类型是 int，但合法参数值必须能表示为 unsigned char，或者等于 EOF。",
+      "boundary": "这些函数不是通用的中文、emoji 或 Unicode 整字分类工具。UTF-8 中文通常占多个字节，不能把其中每个字节当成完整汉字去调用 isalpha。",
+      "terms": [
+        {
+          "plain": "问是不是数字",
+          "term": "字符分类 isdigit",
+          "meaning": "返回零或非零。"
+        },
+        {
+          "plain": "把字母换成大写",
+          "term": "字符映射 toupper",
+          "meaning": "返回映射结果，不自动改实参变量。"
+        },
+        {
+          "plain": "逐张字符卡检查",
+          "term": "单字节字符处理",
+          "meaning": "不等于一次判断整段字符串。"
+        }
+      ],
+      "pitfalls": [
+        "isdigit 的真值只保证非零，不保证等于 1；不要写 isdigit(c) == 1。",
+        "toupper(c) 返回新值；要修改变量，需要自己保存返回结果。",
+        "字符 '7' 与整数 7 的用途不同，不要把字符分类当成整数位数判断。"
+      ],
+      "questions": [
+        {
+          "question": "只执行 toupper(small)，small 会自动变成大写吗？",
+          "answer": "不会。它返回转换结果；若要修改，可在已理解赋值后写 small = (char)toupper(small)。"
+        },
+        {
+          "question": "可以将 \"abc\" 直接传给 isalpha 判断整串都是字母吗？",
+          "answer": "不可以。该接口检查一个字符值，整串判断需要逐个处理，后续字符串与循环课再学。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "L01-11",
+    "title": "<string.h>：一串文字怎样测量和比较",
+    "introductory": true,
+    "prerequisite": "无需事先会写函数或指针。按本章前七节的顺序阅读；专业层暂时看不懂的术语，可以先用小白层和示例建立直觉。",
+    "analogy": [
+      "登记球队名时，一个字母不够，要保存 goal 这样的词。先把字符串想成排成一列的字符格子：g、o、a、l，最后再放一个值为零的结束标记 '\\0'。这个标记告诉处理文字的工具“到这里就结束了”，它不是字符 '0'，也不是键盘回车。string.h 提供测量、比较等工具，不需要你现在就学会所有数组操作。"
+    ],
+    "professional": [
+      "strcmp 按字符序列比较，以第一个不同的字节决定顺序，或较短字符串先结束。结果小于零、等于零、大于零分别表示前者较小、相等、较大；不要假定非零结果一定是 -1 或 1。用 == 比较两个字符数组表达式通常比较的是地址，不能用来判断文字内容。",
+      "同一头文件还提供 strcpy（连同终止符复制字符串）、strcat（追加字符串）、memcpy（复制指定字节数）和 memmove（允许源目标区域重叠的字节复制）。初学先会查用途；复制前必须知道目标容量够不够。memcpy 不负责自动补字符串终止符，不能把这些工具当成永不越界的魔法。"
+    ],
+    "boundary": "本例只用固定英文词。strlen(\"足球\") 在 UTF-8 编码下通常是 6，不能解释为两个汉字的“字数”。本例不输入未知长度的队名；安全输入需要容量限制，见后续字符串基础点。",
+    "code": "#include <stdio.h> // 提供 printf 的声明\n#include <string.h> // 提供 strlen 和 strcmp 的声明\n\nint main(void) // 程序入口\n{ // 先观察一个固定的英文单词\n    char team[] = \"goal\"; // 四个字母后自动带有字符串结束标记\n    printf(\"name=%s\\n\", team); // 按字符串输出队名\n    printf(\"length=%zu\\n\", strlen(team)); // 输出结束标记之前的字节数\n    printf(\"same=%d\\n\", strcmp(team, \"goal\") == 0); // 内容相等时比较返回零\n    return 0; // 正常结束\n} // 主函数结束\n",
+    "expected": "name=goal\nlength=4\nsame=1\n",
+    "input": "",
+    "steps": [
+      {
+        "label": "存储",
+        "state": "[g][o][a][l][\\0]",
+        "explanation": "容量五格，最后一格用于标记结束。"
+      },
+      {
+        "label": "测量",
+        "state": "strlen(team) → 4",
+        "explanation": "只数结束标记之前的四个字节。"
+      },
+      {
+        "label": "比较",
+        "state": "strcmp(team, \"goal\") → 0",
+        "explanation": "返回零表示内容相同，所以 == 0 的判断为一。"
+      }
+    ],
+    "quiz": {
+      "question": "char team[] = \"goal\" 的容量和 strlen(team) 分别是多少？",
+      "options": [
+        "4 和 4",
+        "5 和 4",
+        "5 和 5"
+      ],
+      "answer": 1,
+      "explanation": "四个字母加一个终止符占五个 char；strlen 不把终止符计入长度。"
+    },
+    "intro": "本节只增加一个小台阶。先读具体例子，预测结果，再运行；不要求一次背下全部标准库函数。",
+    "pseudocode": "team ← STRING \"goal\"\nOUTPUT team\nOUTPUT BYTE_LENGTH_BEFORE_TERMINATOR(team)\nIF COMPARE_STRINGS(team, \"goal\") = 0 THEN\n    OUTPUT \"same=1\"\nELSE\n    OUTPUT \"same=0\"\nEND IF",
+    "walkthrough": [],
+    "mistakes": [],
+    "reviewQuotes": [
+      {
+        "id": "L01-11-rule",
+        "text": "strlen 的长度不含 '\\0'，但存储字符串的容量需要给它留空间。",
+        "section": "入门提醒",
+        "keys": []
+      }
+    ],
+    "practiceSteps": [
+      "把 team 初始化为 \"basket\"，预测 length 及 same 的输出再运行。",
+      "画出 \"A\" 和空字符串 \"\" 的存储格子，分别找出终止符的位置。"
+    ],
+    "relatedTopics": [],
+    "teaching": {
+      "scene": "登记球队名时，一个字母不够，要保存 goal 这样的词。先把字符串想成排成一列的字符格子：g、o、a、l，最后再放一个值为零的结束标记 '\\0'。这个标记告诉处理文字的工具“到这里就结束了”，它不是字符 '0'，也不是键盘回车。string.h 提供测量、比较等工具，不需要你现在就学会所有数组操作。",
+      "steps": [
+        "char team[] = \"goal\"; 准备一列足够的字符格子。空方括号在这个初始化写法中让编译器根据右侧内容确定容量：四个字母加一个结束标记，共五格。双引号字符串初始化会安排结尾的 '\\0'。",
+        "strlen(team) 测量结束标记之前的字节数，得到 4，不把结尾标记计入长度。printf 用 %zu 显示它的结果；这是专门匹配 size_t 结果类型的格式，先整体记住这个搭配。",
+        "strcmp(team, \"goal\") 返回 0，表示两段字符串内容相同。这里的 0 与“条件假”不要混淆：比较函数把 0 当作“没有大小差异”，所以判断相同写 strcmp(...) == 0。",
+        "示例把“比较结果等于零”这个判断用 %d 显示，于是 same=1 表示确实相同。如果将对照文字换成 \"goalkeeper\"，结果就不再相同。"
+      ],
+      "core": "标准 C 字符串是以空字符终止的字符序列；字符数组可以承载字符串，但并非任何字符数组都有终止符。strlen 的返回类型是 size_t，长度单位是字节，返回值不含终止符。调用者必须保证从给定位置能在有效内存内找到终止符。",
+      "boundary": "本例只用固定英文词。strlen(\"足球\") 在 UTF-8 编码下通常是 6，不能解释为两个汉字的“字数”。本例不输入未知长度的队名；安全输入需要容量限制，见后续字符串基础点。",
+      "terms": [
+        {
+          "plain": "一列文字格",
+          "term": "字符数组",
+          "meaning": "连续存放多个 char 对象。"
+        },
+        {
+          "plain": "文字末尾的结束牌",
+          "term": "空字符终止符 '\\0'",
+          "meaning": "字符值为零，用于界定字符串。"
+        },
+        {
+          "plain": "量结束牌前面有几格",
+          "term": "strlen 返回的字节长度",
+          "meaning": "不包括结束牌，不等于通用文字字数。"
+        },
+        {
+          "plain": "比较两份内容",
+          "term": "strcmp",
+          "meaning": "相同返回零，非零只保证正负关系。"
+        }
+      ],
+      "pitfalls": [
+        "strlen 的长度不含 '\\0'，但存储字符串的容量需要给它留空间。",
+        "strcmp 返回 0 才表示内容相同；不要把字符数组的 == 当作内容比较。",
+        "size_t 用 %zu 输出；不要因为本例长度很小就随意改成 %d。"
+      ],
+      "questions": [
+        {
+          "question": "strcmp(a, b) 返回零是什么意思？",
+          "answer": "两段有效零终止字符串的内容相同，不是“比较失败”。判断相同用 strcmp(a, b) == 0。"
+        },
+        {
+          "question": "为什么 strlen 不一定等于屏幕上看到的字数？",
+          "answer": "它计算字节数。中文等字符在 UTF-8 中可能占多个字节，所以字节长度与人看到的字符数量不一定相同。"
+        }
+      ]
+    }
+  },
+  {
+    "id": "L01-12",
+    "title": "<math.h>：开方、绝对值与取整，先看输入输出",
+    "introductory": true,
+    "prerequisite": "无需事先会写函数或指针。按本章前七节的顺序阅读；专业层暂时看不懂的术语，可以先用小白层和示例建立直觉。",
+    "analogy": [
+      "一块正方形训练区的面积是 9 平方米，边长是多少？数学上是 √9=3，C 可以请 sqrt 计算。负的温差只想看变化幅度，可以请 fabs 取绝对值。math.h 就像数学工具架：每把工具负责一种计算，先看它接收什么、返回什么，再调用。正确名字是 math.h，不是 maths.h。"
+    ],
+    "professional": [
+      "要先检查数学定义域。例如实数范围内 sqrt 的参数应不小于零；log 的参数应大于零；pow 也有输入限制。违反定义域不能依赖得到某个普通数值继续算。浮点计算和输出可能有误差，pow 不适合替代需要精确结果的大整数乘方或取模快速幂。",
+      "头文件解决声明可见的问题，库链接解决实现在哪里的问题。在常见 GNU/Linux GCC 命令中可用 gcc main.c -o main -lm，将 -lm 放在源文件或目标文件之后；macOS 工具链通常不需要单独指定数学库。本应用桌面评测已包含所需链接选项。undefined reference to sqrt 与 math.h 文件找不到属于不同阶段的问题。"
+    ],
+    "boundary": "本课使用能精确解释的小例子，关注工具用途。其他常见函数还有 sin、cos（角度单位为弧度）和 log（自然对数）。现在不需要背公式或使用所有工具；后续遇到具体问题再核对定义域、精度和算法复杂度。",
+    "code": "#include <stdio.h> // 提供输出函数\n#include <math.h> // 注意标准名字没有末尾的字母 s\n\nint main(void) // 程序入口\n{ // 每次只展示一项数学工具的结果\n    double area = 9.0; // 正方形面积为九平方米\n    printf(\"side=%.1f\\n\", sqrt(area)); // 平方根给出边长三\n    printf(\"distance=%.1f\\n\", fabs(-2.5)); // 绝对值表示离零的距离\n    printf(\"floor=%.1f\\n\", floor(-2.3)); // 向负无穷取整得到负三\n    printf(\"ceil=%.1f\\n\", ceil(-2.3)); // 向正无穷取整得到负二\n    printf(\"power=%.1f\\n\", pow(2.0, 3.0)); // 二的三次方是八\n    return 0; // 正常结束\n} // 主函数结束\n",
+    "expected": "side=3.0\ndistance=2.5\nfloor=-3.0\nceil=-2.0\npower=8.0\n",
+    "input": "",
+    "steps": [
+      {
+        "label": "开方",
+        "state": "sqrt(9.0) → 3.0",
+        "explanation": "求得边长后，再由 printf 决定怎么显示。"
+      },
+      {
+        "label": "数轴向下",
+        "state": "floor(-2.3) → -3.0",
+        "explanation": "取不大于输入的最大整数值，返回类型仍为 double。"
+      },
+      {
+        "label": "数轴向上",
+        "state": "ceil(-2.3) → -2.0",
+        "explanation": "取不小于输入的最小整数值。"
+      }
+    ],
+    "quiz": {
+      "question": "floor(-2.3) 的结果是多少？",
+      "options": [
+        "-2.0",
+        "-3.0",
+        "2.0"
+      ],
+      "answer": 1,
+      "explanation": "floor 向负无穷取整：-3 不大于 -2.3，且是满足条件的最大整数值。"
+    },
+    "intro": "本节只增加一个小台阶。先读具体例子，预测结果，再运行；不要求一次背下全部标准库函数。",
+    "pseudocode": "area ← 9.0\nside ← SQUARE_ROOT(area)\nOUTPUT side WITH 1 DECIMAL PLACE\nOUTPUT ABSOLUTE_VALUE(-2.5)\nOUTPUT FLOOR(-2.3)\nOUTPUT CEILING(-2.3)\nOUTPUT POWER(2.0, 3.0)",
+    "walkthrough": [],
+    "mistakes": [],
+    "reviewQuotes": [
+      {
+        "id": "L01-12-rule",
+        "text": "标准头文件写 <math.h>，不是 <maths.h>；sqrt 返回计算结果，不负责显示结果。",
+        "section": "入门提醒",
+        "keys": []
+      }
+    ],
+    "practiceSteps": [
+      "把面积改为 16.0，先预测边长，再运行。",
+      "同时把两个取整参数改成 2.3，对照正负数数轴，解释 floor 和 ceil 各去哪个方向。"
+    ],
+    "relatedTopics": [],
+    "teaching": {
+      "scene": "一块正方形训练区的面积是 9 平方米，边长是多少？数学上是 √9=3，C 可以请 sqrt 计算。负的温差只想看变化幅度，可以请 fabs 取绝对值。math.h 就像数学工具架：每把工具负责一种计算，先看它接收什么、返回什么，再调用。正确名字是 math.h，不是 maths.h。",
+      "steps": [
+        "double area = 9.0; 保存面积。sqrt(area) 返回平方根 3.0。把返回值放进 printf(\"side=%.1f\\n\", ...) 就显示 side=3.0；内层先算出值，外层再显示。",
+        "fabs(-2.5) 返回 2.5，表示距离零的大小。这里选择 fabs，因为处理的是浮点数；整数绝对值的 abs 在 stdlib.h 中，是另一个接口。",
+        "floor(-2.3) 向负无穷方向取整，得到 -3.0；ceil(-2.3) 向正无穷方向取整，得到 -2.0。先把 -3、-2.3、-2 放在数轴上看位置，就不容易误把“向下”理解成去掉小数。",
+        "pow(2.0, 3.0) 计算二的三次方，返回浮点数 8.0。它不像纸上把 2^3 写成幂：C 的 ^ 是按位异或运算符，不是乘方符号。"
+      ],
+      "core": "math.h 声明标准数学接口。这里使用的 sqrt、fabs、floor、ceil、pow 的基础形式以 double 运算并返回 double；名称带 f 或 l 的相关形式分别对应 float 或 long double，本节暂不展开。函数返回浮点值不意味着你已经得到了 int 类型。",
+      "boundary": "本课使用能精确解释的小例子，关注工具用途。其他常见函数还有 sin、cos（角度单位为弧度）和 log（自然对数）。现在不需要背公式或使用所有工具；后续遇到具体问题再核对定义域、精度和算法复杂度。",
+      "terms": [
+        {
+          "plain": "数学工具说明书",
+          "term": "math.h",
+          "meaning": "提供标准数学接口声明。"
+        },
+        {
+          "plain": "离零有多远",
+          "term": "浮点绝对值 fabs",
+          "meaning": "本例把 -2.5 变成 2.5。"
+        },
+        {
+          "plain": "数轴向下或向上找整数",
+          "term": "floor 与 ceil",
+          "meaning": "方向分别指负无穷与正无穷，不是简单删除小数。"
+        },
+        {
+          "plain": "把工具实现接到程序",
+          "term": "链接数学库",
+          "meaning": "常见 GCC/Linux 命令需要 -lm，区别于包含头文件。"
+        }
+      ],
+      "pitfalls": [
+        "标准头文件写 <math.h>，不是 <maths.h>；sqrt 返回计算结果，不负责显示结果。",
+        "floor(-2.3) 是 -3.0，不能按“把小数删掉”得到 -2.0。",
+        "C 的 ^ 不是幂运算；pow 返回浮点结果，也不是任意大整数的精确幂工具。"
+      ],
+      "questions": [
+        {
+          "question": "为什么只写 sqrt(9.0);，屏幕上不会自动出现 3？",
+          "answer": "sqrt 返回数值，没有输出职责。需要把返回值交给 printf 或其他输出函数。"
+        },
+        {
+          "question": "头文件存在，链接却报告找不到 sqrt，实现上应检查什么？",
+          "answer": "检查构建命令是否正确链接数学库，例如常见 GNU/Linux GCC 命令在源文件之后加 -lm；不要把 math.h 改成 maths.h。"
+        }
+      ]
+    }
+  }
+]
