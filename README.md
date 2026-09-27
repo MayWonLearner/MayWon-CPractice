@@ -1,5 +1,7 @@
 # MayWon CPractice · C 语言练习室
 
+**以下内容均为Codex生成，如有使用问题，欢迎通过底部GitHub Issues链接联系。**
+
 **从第一行 C 代码到算法综合题，把学习、编写、验证和复盘放在同一个桌面应用中。**
 
 面向中文零基础学习者，支持 **Windows、macOS（Apple Silicon / Intel）和 Linux**。教程与题库随应用提供，可离线学习和本地评测；AI 功能通过你自己登录的 Codex 按需使用。
@@ -231,7 +233,7 @@ tests/         合成回归测试，不含私人数据
 
 ## 联系、贡献与许可
 
-维护者：[MayWonLearner](https://github.com/MayWonLearner)。目前使用 [GitHub Issues](https://github.com/MayWonLearner/MayWon-CPractice/issues) 作为公开联系入口，未公开私人邮箱。
+维护者：[MayWonLearner](https://github.com/MayWonLearner)。目前使用 [GitHub Issues](https://github.com/MayWonLearner/MayWon-CPractice/issues) 作为公开联系入口。
 
 欢迎提交教程勘误、题面歧义、最小复现和跨平台兼容问题。参见 [CONTRIBUTING.md](CONTRIBUTING.md)、[SECURITY.md](SECURITY.md) 与 [RELEASE.md](RELEASE.md)。
 
