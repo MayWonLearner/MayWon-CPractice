@@ -1,5 +1,5 @@
 {
-  "version": "6.1.1",
+  "version": "6.2.0",
   "scope": "Public tracked source only",
   "files": [
     {
@@ -104,8 +104,8 @@
     },
     {
       "path": "Desktop/smoke.cjs",
-      "bytes": 4970,
-      "sha256": "daf04067d990ff13c69ffd7c0956f2e37f162e225307403769173f6aee9a195e"
+      "bytes": 8102,
+      "sha256": "0e969ae36ee5ed43ae4bdb3a798f7bf7069ff18b6a0f6e3da0c780c74bfa369e"
     },
     {
       "path": "Desktop/state.cjs",
@@ -144,8 +144,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 18394,
-      "sha256": "859300b29a645f0a6d05ae58178b9c539199c4fafef1e7a9a66994a77e348be7"
+      "bytes": 19857,
+      "sha256": "875e2cfffb00806054cc4cc43f5190e4e5391620d8793184bdc2bff4cce51247"
     },
     {
       "path": "RELEASE.md",
@@ -199,8 +199,8 @@
     },
     {
       "path": "Resources/app.js",
-      "bytes": 44502,
-      "sha256": "74f253e57582f2774a4a178cd8cf95f9e9b0d9d9547cca0c110c9cd110de003a"
+      "bytes": 44583,
+      "sha256": "1fb565d2c5443a347a57dc7525320182384a7c2bc82cb92d30fa51cfe1a5b837"
     },
     {
       "path": "Resources/chapter-additions.json",
@@ -229,28 +229,28 @@
     },
     {
       "path": "Resources/coursebook-data.js",
-      "bytes": 393833,
-      "sha256": "7d8e9899b35a6d9db6e04e8f5b32be05c2d1b50251eaa5c13f24c22b3022f738"
+      "bytes": 393260,
+      "sha256": "cf30136b639d43f9ee09fe50487f017c310be3adc6cc654a8b9a657fbbb242e1"
     },
     {
       "path": "Resources/coursebook.js",
-      "bytes": 7779,
-      "sha256": "86955936e5a5356066f429d4e515196f39dd9eb2208814dfda7498ab69d87d64"
+      "bytes": 7820,
+      "sha256": "4b748e9ba36487f822c41756c23645ad70ced91fb63c546c9a20dcfb8d2415f0"
     },
     {
       "path": "Resources/coursebook.json",
-      "bytes": 457710,
-      "sha256": "25667f1a14576c85a8b737ed589e761cec84702a761e169d7932b2a8306f1249"
+      "bytes": 465721,
+      "sha256": "8b562962cde4d407c7c80248c8fe451ea29badaa3957b51a9a00ad50c7332c40"
     },
     {
       "path": "Resources/curriculum.js",
-      "bytes": 52261783,
-      "sha256": "8909588a47f2d6a86a773a3f6da5306b48a703ef0f954cd791ed2a0545e410b4"
+      "bytes": 52179453,
+      "sha256": "bd41655517033fe4d58ae62e54f7afd5bb732fb6549abecc92fbb54ba55d6978"
     },
     {
       "path": "Resources/curriculum.json",
-      "bytes": 52933848,
-      "sha256": "f5b619b408e95225d944930699a839477a60e89b8a58ee507fe415825a76a764"
+      "bytes": 52941282,
+      "sha256": "0ff0b765cdfb9219aae002b4db2a88ade69ece042f52617e818a68755f3191e0"
     },
     {
       "path": "Resources/desktop.js",
@@ -294,8 +294,8 @@
     },
     {
       "path": "Resources/index.html",
-      "bytes": 4040,
-      "sha256": "9bc9a62d6dd47952f8161f8eadcda2a96314f2f676c949daf9e6952781dd6e0e"
+      "bytes": 4120,
+      "sha256": "99263c79e19ce6a80bdf734497fcaca9f6eaa3f15382d869b8ad2df0d8d5f941"
     },
     {
       "path": "Resources/intro-lessons.json",
@@ -374,8 +374,8 @@
     },
     {
       "path": "Resources/tutorials.js",
-      "bytes": 23156,
-      "sha256": "15905c84a4f1201e4e40b69a8ea684b978ba3eb40e4fdd5b4ec16a3b80f51208"
+      "bytes": 22370,
+      "sha256": "0a305c57468216d43c2cb9a1478581773f65a2224df0fa54a6c3a7ba34f2b17b"
     },
     {
       "path": "Resources/vendor/auto-render.js",
@@ -728,6 +728,16 @@
       "sha256": "c3e7118e92eb587a4de0b886dd4fedada575eee473ac1bb7be3307ef4efe50fa"
     },
     {
+      "path": "Resources/workspace.css",
+      "bytes": 2205,
+      "sha256": "9c1448ec22fb960ad3f97bc9adf66d42108016785dfc422b55d309190719770f"
+    },
+    {
+      "path": "Resources/workspace.js",
+      "bytes": 10895,
+      "sha256": "c81a295bb0772ca22fdb619637a587dcd358a683039e6e152c56d7d3e865ac53"
+    },
+    {
       "path": "SECURITY.md",
       "bytes": 2029,
       "sha256": "d4d15d67e797d2847b996024e9529b6187d65665e7bd44fbcf8c42c8d59e48f1"
@@ -824,8 +834,8 @@
     },
     {
       "path": "docs/learning-evidence/results.json",
-      "bytes": 24347,
-      "sha256": "fe640cda12bb116579476f6b2040fac677dd9aee358117efef49aa688085700f"
+      "bytes": 98654,
+      "sha256": "50c0597cadda4c4bdd8f491c3cc314f2d53b2a1eb36ea3a9274443e60d77d859"
     },
     {
       "path": "docs/learning-evidence/teacher-answers.json",
@@ -845,12 +855,12 @@
     {
       "path": "package-lock.json",
       "bytes": 127594,
-      "sha256": "76cfd8b554f2439cefe6de7d1f38302b580ce31489dcee1adb85d69adff5915b"
+      "sha256": "ba53795270c920ec4cdf9c7b87972652a646c61e441e2b10335f89cf9d46d97f"
     },
     {
       "path": "package.json",
       "bytes": 2594,
-      "sha256": "a60dce7d4bdedec61d2e0562e9596a93ec13aabc7ebf1c9b981ceb81e8897a2b"
+      "sha256": "89e8208ef6e95e122b9f86cd818795a1efcf0ec46e25643d77d691012598198b"
     },
     {
       "path": "scripts/build-vendor.mjs",
@@ -969,8 +979,8 @@
     },
     {
       "path": "tests/review-regressions.cjs",
-      "bytes": 7064,
-      "sha256": "894a1ab4c2c4844f2f621400ef434c640ae97d8d1bc4c89069a1625e9d2b4419"
+      "bytes": 8392,
+      "sha256": "4d07070e9fb3cc7828482b8ac8ca3850e23dbf90b0691b9b86532687191f3589"
     },
     {
       "path": "tests/v5-study-ui.cjs",

@@ -1,0 +1,19 @@
+.sidebar{width:var(--sidebar-width,226px);max-width:360px;min-width:0}
+#primary-nav [hidden]{display:none!important}
+#sidebar-resize{flex:0 0 6px;cursor:col-resize;background:var(--bg);position:relative;z-index:15;touch-action:none}
+#sidebar-resize:hover,#sidebar-resize:focus-visible,.resizing-sidebar #sidebar-resize{background:var(--green)}
+.resizing-sidebar{cursor:col-resize;user-select:none}
+.sidebar-collapsed>.sidebar{display:none}
+#sidebar-toggle{flex-shrink:0;margin-right:12px}
+#more-features{margin:6px 0 12px;text-align:left}
+.sidebar #primary-nav{overflow-y:auto;min-height:120px;flex-shrink:1}
+.sidebar #chapters{min-height:80px}
+.home-heading,.home-actions,.reading-toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.home-heading{justify-content:space-between;margin-bottom:24px}
+.home-actions{margin:24px 0}
+.compact-home .hero{min-height:0}.compact-home .hero-copy{max-width:none;padding:28px}
+.home-catalog{margin:28px 0}.home-catalog>summary{cursor:pointer;font-size:17px;padding:12px 0}.home-catalog .module-grid{margin-top:16px}
+.onboarding{max-width:850px;margin:auto}.onboarding fieldset{border:1px solid var(--line);border-radius:12px;margin:20px 0;padding:20px}.onboarding legend{padding:0 8px;font-weight:600}.onboarding fieldset label{display:block;padding:9px;cursor:pointer}.onboarding input{accent-color:var(--green)}
+.reading-toolbar{position:sticky;top:0;z-index:12;background:var(--bg,#11151b);padding:12px 0;border-bottom:1px solid var(--line);margin-bottom:20px}.reading-toolbar kbd,#next-lesson kbd,#course-next kbd{font-size:10px;opacity:.7;margin-left:6px}
+.reading-footer{position:static;margin-top:24px}.reading-fullscreen>.sidebar,.reading-fullscreen>#sidebar-resize,.reading-fullscreen>.shell>.topbar,.reading-fullscreen>.shell>.statusbar{display:none!important}.reading-fullscreen .shell{width:100%;min-width:0}.reading-fullscreen .tutorial-page{max-width:1600px;margin:auto}.reading-fullscreen .coursebook-entry{display:none}
+@media(max-width:850px){.sidebar{max-width:280px}.tutorial-layout{grid-template-columns:1fr}.lesson-outline{max-height:240px;overflow:auto}.reading-toolbar .button{font-size:11px}.compact-home .hero-copy{padding:20px}}

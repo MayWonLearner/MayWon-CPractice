@@ -14,5 +14,5 @@ function renderCoursebook(){
  const list=book.lessons.filter(x=>x.stage===l.stage),i=list.indexOf(l);host.querySelector('#course-prev').disabled=i===0;host.querySelector('#course-next').disabled=i===list.length-1;host.querySelector('#course-prev').onclick=()=>openCoursebook(list[i-1].id);host.querySelector('#course-next').onclick=()=>openCoursebook(list[i+1].id);
  host.querySelector('#coursebook-search').oninput=e=>{const q=e.target.value.trim().toLowerCase();host.querySelectorAll('#coursebook-outline button').forEach(b=>b.hidden=!b.textContent.toLowerCase().includes(q));};
  host.querySelector('#coursebook-coverage').onclick=()=>showModal('大纲与题库课程索引',`<p>以官方2025版大纲为核对依据。覆盖表示有学习入口，不代表仅阅读即达到竞赛熟练程度。C++专属内容需要独立的C++编译环境。</p><div class="table-scroll"><table><thead><tr><th>范围</th><th>知识点</th><th>学习入口</th></tr></thead><tbody>${book.coverage.map(c=>`<tr><td>${esc(c.scope)}</td><td>${esc(c.topic)}</td><td>${esc(c.lessons.join('、'))}</td></tr>`).join('')}</tbody></table></div>`);
- window.CAnnotations?.mount(host.querySelector('.lesson-article'),{docID:`coursebook:${l.id}`,context:`${l.title}\n${l.beginner}\n${l.professional}`});host.scrollTop=0;
+ window.CWorkspace?.readingControls(host);window.CAnnotations?.mount(host.querySelector('.lesson-article'),{docID:`coursebook:${l.id}`,context:`${l.title}\n${l.beginner}\n${l.professional}`});host.scrollTop=0;
 }

@@ -24,7 +24,7 @@ function harness() {
         cache.set(selector,{html,nodes:found});return found;
     };
     class ClockDate extends Date {constructor(...args){super(...(args.length?args:[clock.now]));}static now(){return clock.now;}}
-    const context={console,queueMicrotask:fn=>fn(),Date:ClockDate,setTimeout:()=>0,clearTimeout(){},window:{CURRICULUM:catalog,webkit:{messageHandlers:{native:{postMessage(){}}}},addEventListener(){}},document:{querySelector:element,querySelectorAll:list,addEventListener(){}}};
+    const context={console,queueMicrotask:fn=>fn(),Date:ClockDate,setTimeout:()=>0,clearTimeout(){},window:{C_FOUNDATIONS:JSON.parse(read('foundations-v5.json')),CURRICULUM:catalog,webkit:{messageHandlers:{native:{postMessage(){}}}},addEventListener(){}},document:{querySelector:element,querySelectorAll:list,addEventListener(){}}};
     vm.createContext(context);
     for(const file of ['coursebook.js','tutorials.js','learning.js','complexity.js','diagnostic-guides.js','diagnostics.js','collections.js','analysis.js','study.js','remedial.js','app.js'])vm.runInContext(read(file),context,{filename:file});
     vm.runInContext('persist=()=>{};flush=()=>{};',context);
@@ -45,6 +45,9 @@ check('restoring an assisted snapshot preserves assistance provenance',()=>{cons
 check('chapter opens with basic functions before original lessons',()=>{const h=harness();h.run('openTutorial(1);');assert.equal(h.run('lessonNow().id'),'L01-6');assert.equal(h.run('state.lessonLast.lessonID'),'L01-6');});
 check('legacy and stable bookmarks survive introductory insertion',()=>{const h=harness();for(let index=0;index<5;index++){h.run(`state.lessonLast={module:1,index:${index}};navigate('tutorial');`);assert.equal(h.run('lessonNow().id'),'L01-'+(index+1));}h.run("state.lessonLast={module:1,index:0,lessonID:'L01-9'};navigate('tutorial');");assert.equal(h.run('lessonNow().id'),'L01-9');h.run("navigate('tutorial');");assert.equal(h.run('lessonNow().id'),'L01-9');});
 check('input review recommendations retain original lesson identity',()=>{const h=harness();assert.equal(h.run("lessonForProblem({module:1,title:'输入一个整数',description:'',tags:[]}).lesson.id"),'L01-3');});
+check('chapter lessons continue into every foundation before next chapter',()=>{const h=harness();h.run('openTutorial(1,tutorials[0].lessons.length-1);tutorialNext();');assert.equal(h.run('tutorialFoundationID'),h.run('foundationPoints()[0].id'));const count=h.run('foundationPoints().length');for(let i=1;i<count;i++){h.run('tutorialNext();');assert.equal(h.run('tutorialFoundationID'),h.run('foundationPoints()['+i+'].id'));}h.run('tutorialNext();');assert.equal(h.run('tutorialModule'),2);assert.equal(h.run('tutorialIndex'),0);assert.equal(h.run('tutorialFoundationID'),null);});
+check('foundation bookmarks resume the selected point without marking it learned',()=>{const h=harness();h.run("openTutorial(1);tutorialSelect(0,'F01-10');navigate('home');resumeTutorial();");assert.equal(h.run('tutorialFoundationID'),'F01-10');assert.equal(h.run('lessonReadIDs().length'),0);assert.equal(h.element('#main').innerHTML.includes('把过程慢放一遍'),false);});
+check('sidebar resizing snaps closed and clamps its width',()=>{const context={window:{}};vm.runInNewContext(read('workspace.js'),context);const clamp=context.window.CWorkspace.normalizeWidth;assert.equal(clamp(150),0);assert.equal(clamp(160),180);assert.equal(clamp(250),250);assert.equal(clamp(500),360);});
 console.log(JSON.stringify(results,null,2));
 console.log(`${results.filter(r=>r.ok).length}/${results.length} review regressions passed`);
 if(results.some(r=>!r.ok))process.exitCode=1;
