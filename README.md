@@ -14,7 +14,7 @@ A cross-platform C learning desktop app with beginner-friendly lessons, 660 exer
 
 | 板块 | 内容 |
 |---|---|
-| 完整教程 | 15章、83课，另有66个基础点细讲；6.1新增6节前置课、35节算法/竞赛课与100篇题目导读；小白生活例子与专业机制双层解释，术语对照、常见误解、伪代码、多行C程序、默认隐藏的理解题答案。 |
+| 完整教程 | 15章、83课，另有66个基础点细讲，以及6节前置课、35节算法/竞赛课与100篇题目导读；小白生活例子与专业机制双层解释，术语对照、常见误解、伪代码、多行C程序、默认隐藏的理解题答案。 |
 | 分级题库 | 300道章节练习（每章20题）+200道经典综合题+50道足球/篮球题+100道竞赛困难题，另有10道进阶入门台阶题，共660题。 |
 | 代码工作台 | Monaco编辑器，语法着色、Enter自动缩进、补全、格式化、查找、`.c`导入/导出、VS Code工作区往返；安装clangd后提供语义诊断、跳转与重命名。 |
 | 本地验证 | C17编译、标准输入、自定义运行、逐检查点评测、文件输入输出题、中文错误解释、时间和输出限制、取消运行。 |
@@ -28,7 +28,15 @@ A cross-platform C learning desktop app with beginner-friendly lessons, 660 exer
 
 完整教程可从左侧章节、主页学习路径或独立教程页直接进入；练习页教程不会覆盖代码编辑器。算法题强调时间与空间复杂度，区分额外空间和输入存储。
 
-## 6.2：学习入口与连续阅读
+## 6.3：全量教程与题面改写
+
+按 Natural Writing Skills 与 anti-defensive-writing 复核并改写 950 项内容：83 节基础课、66 个关键点、141 节前置/进阶/题目导读，以及 660 道题。小白层从具体场景和数值变化讲起，专业层解释机制、前提和复杂度；每节教程提供三道默认隐藏答案的理解题。
+
+题面明确对象、费用、下标、操作次数、边界和输出格式，解法补充状态含义、样例推演与常见错误。删除重复段落和无信息声明，保留影响正确使用的技术条件。文件读取、指针、二分和动态规划等课程的复习引用给出具体检查顺序与修正原因。
+
+[改写与勘误记录](docs/EDITORIAL-REVIEW.md)列出覆盖范围及六处复杂度修正。原有题目编号、输入协议、约束、代码和检查点保持一致；旧笔记继续按原标识关联，引用文字变化时显示原文变化提示。
+
+## 学习入口与连续阅读
 
 首次使用时，回答“是否学过 C、学习目标、学习方式”三个选择题。首页按入门、巩固或竞赛阶段展示常用入口；点击首页右上角可重新选择。旧用户保留原来的记录，可主动设置学习目标。左侧“展开全部功能”始终可以进入其他栏目。
 
@@ -251,12 +259,12 @@ tests/         合成回归测试，不含私人数据
 
 ## 来源与致谢
 
-课程、题目与中文说明独立编写。以下资料帮助组织教学路线、核对C规则或参考竞赛题面结构；**不是转载授权，也不表示官方合作或背书**。
+课程、题目与中文说明由项目编写，AI 参与编写与复核。以下资料用于组织教学路线、核对 C 规则和参考竞赛题面结构；转载内容与依赖的许可见 THIRD_PARTY.md。
 
 - [Harvard CS50](https://cs50.harvard.edu/x/)：C、数组、内存与算法课程路线。
 - [Beej’s Guide to C](https://beej.us/guide/bgc/) 和 [GNU C Manual](https://www.gnu.org/software/c-intro-and-ref/manual/)：语言机制与系统学习参考。
 - [WG14公开文档](https://www.open-std.org/jtc1/sc22/wg14/) 和 [SEI CERT C](https://wiki.sei.cmu.edu/confluence/display/c/)：标准语义、输入边界、EOF和内存使用核查。
-- [廖雪峰教程](https://liaoxuefeng.com/books/python/introduction/index.html)：仅参考由具体例子逐步解释的教学组织，不作为C语义来源，不复制其文字。
+- [廖雪峰教程](https://liaoxuefeng.com/books/python/introduction/index.html)：参考由具体例子逐步解释的教学组织；C 规则另据语言与标准库资料核查。
 - [Exercism C](https://exercism.org/tracks/c)、[LeetCode](https://leetcode.com/studyplan/)、[IOI](https://ioinformatics.org/)：分级训练、题面规范和算法挑战的组织参考。
 - [Electron](https://www.electronjs.org/)、[Monaco Editor](https://microsoft.github.io/monaco-editor/)、[LLVM/Clang](https://clang.llvm.org/)、[MSYS2](https://www.msys2.org/)、[GCC](https://gcc.gnu.org/)：桌面、编辑器与本地编译基础。
 - Marked、DOMPurify、KaTeX、Ajv：Markdown、HTML净化、公式渲染与结构验证。
@@ -270,14 +278,14 @@ tests/         合成回归测试，不含私人数据
 
 欢迎提交教程勘误、题面歧义、最小复现和跨平台兼容问题。参见 [CONTRIBUTING.md](CONTRIBUTING.md)、[SECURITY.md](SECURITY.md) 与 [RELEASE.md](RELEASE.md)。
 
-原创代码、教程与题目采用 [MIT License](LICENSE)。第三方内容按各自许可证授权；MIT不替代第三方许可。本项目与OpenAI、Microsoft、LeetCode及引用作者没有官方隶属关系。
+项目代码、教程与题目采用 [MIT License](LICENSE)。第三方内容按各自许可证授权，详见 [THIRD_PARTY.md](THIRD_PARTY.md)。
 
 
 ## 6.1 教程更新
 
 主页与“学习教程”页都可进入“从零开始”“算法与竞赛进阶”“100道竞赛题逐题导读”。基础点删除了重复的例子展示；每个点保留双层讲解、术语、边界、自查答案，伪代码改为有赋值与控制流的结构化写法。前置课先解释环境、标准输入输出、伪代码符号、流程图与复杂度，避免先抛术语。
 
-进阶课按 [教学覆盖索引](docs/TEACHING-COVERAGE.md) 连接NOI大纲与现有100道困难题，每题可回到对应先修课程。新增10道完整编程题提供SG、概率、贝叶斯、线性基、Huffman、卷积、高精度、2-SAT等台阶。高阶选拔主题的概念导论不等于完整专题训练或官方认证；C++内容在独立编译环境学习，本应用判题仍为C17。
+进阶课按 [教学覆盖索引](docs/TEACHING-COVERAGE.md) 连接NOI大纲与现有100道困难题，每题可回到对应先修课程。新增10道完整编程题提供SG、概率、贝叶斯、线性基、Huffman、卷积、高精度、2-SAT等台阶。高阶选拔主题先提供概念导论，后续结合配套题开展专题训练。C++内容在独立编译环境学习，本应用判题使用C17。
 
 前置课P05内提供可视流程图。“在VS Code中编辑流程图”会准备原创 `.drawio` 文件，并在桌面版中按需安装 `hediet.vscode-drawio`。也可手动执行：
 
@@ -287,7 +295,7 @@ code --install-extension hediet.vscode-drawio
 
 需要已经安装完整VS Code及其 `code` 命令。扩展由官方Marketplace单独安装，默认支持离线编辑；应用内Monaco并不运行VS Code扩展。已有流程图不会被模板覆盖。保留的Swift外壳会打开流程图与工作区推荐，首次需在VS Code接受扩展安装。
 
-[学习实验报告](docs/LEARNING-EXPERIMENT.md)提供从空词表拟合的小型学习模型、20个固定探针、3次真实内置High提问和可复现结果。它用于发现教材定位与可读性缺口，不冒充从零训练的GPT，也不把课程定位率当作真人理解效果。
+[学习实验报告](docs/LEARNING-EXPERIMENT.md)提供从空词表拟合的小型学习模型、20个固定探针、3次真实内置High提问和可复现结果。实验衡量小型模型的课程定位率，用于寻找教材定位与可读性缺口。真人理解与迁移效果仍需独立的学习者测试。
 
 新增验证命令：
 

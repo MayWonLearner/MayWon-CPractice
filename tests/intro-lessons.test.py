@@ -10,7 +10,7 @@ assert compiler, 'A C17 compiler is required'
 cases = 0
 with tempfile.TemporaryDirectory(prefix='CPracticeIntro-') as tmp:
     for lesson in lessons:
-        assert len(lesson['teaching']['questions']) == 2  # Plus the multiple-choice check.
+        assert len(lesson['teaching']['questions']) == 3  # Three hidden-answer checks, plus the existing quiz.
         for line in lesson['code'].splitlines():
             assert not line.strip() or '//' in line, lesson['id']
         source = pathlib.Path(tmp) / (lesson['id'] + '.c')

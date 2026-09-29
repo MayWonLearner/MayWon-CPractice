@@ -1,7 +1,7 @@
 {
   "title": "来源、依赖与致谢",
   "updatedAt": "核查日期：2026-09-27",
-  "scope": "CPractice 是独立的 C17 学习与练习项目，与以下课程、网站和供应商无隶属或官方合作关系。生活场景、中文双层解释、推演、练习改编表达、教程示例、检查点及应用界面由本项目编写；外部资料用于核查规则和参考教学/命题组织。AI参与辅助编写与复核，具体代码仍需编译、测试与人工审阅。",
+  "scope": "CPractice 是独立的 C17 学习与练习项目。下列资料用于核查语言规则、组织课程和设计练习；各条目列出具体用途与许可。项目中的中文教程、生活场景、示例、检查点和界面由项目编写，AI 参与内容编写与复核。开源依赖的许可原文随源码提供。",
   "sections": [
     {
       "title": "语言规则与课程组织",
@@ -9,25 +9,25 @@
         {
           "title": "WG14 N1570：C11 公开委员会草案（本文仅引用与 C17 一致的基础规则）",
           "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf",
-          "usage": "核查语言和标准库机制；不是把 C11 草案冒称 C17 正式标准。",
+          "usage": "核查与 C17 一致的基础语言和标准库规则；资料版本为 C11 公开委员会草案。",
           "license": "仅链接参考，未打包原文"
         },
         {
           "title": "Beej’s Guide to C Programming",
           "url": "https://beej.us/guide/bgc/html/split/",
-          "usage": "参考从变量、数组、字符串到内存的教学顺序；不转载正文。",
+          "usage": "参考变量、数组、字符串与内存管理的教学顺序。",
           "license": "仅链接参考，未打包原文"
         },
         {
           "title": "Harvard CS50x 2025：Arrays",
           "url": "https://cs50.harvard.edu/x/2025/notes/2/",
-          "usage": "参考图像化数组和字符串教学；本项目不依赖 cs50.h。",
+          "usage": "参考数组和字符串的形象化教学方式。",
           "license": "仅链接参考，未打包原文"
         },
         {
           "title": "GNU C Library：Formatted Input Basics",
           "url": "https://snapshots.sourceware.org/glibc/trunk/latest/manual/html_node/Formatted-Input-Basics.html",
-          "usage": "核查格式输入与空白处理；示例不使用 GNU 专有扩展。",
+          "usage": "核查格式化输入与空白字符处理。",
           "license": "仅链接参考，未打包原文"
         },
         {
@@ -39,13 +39,13 @@
         {
           "title": "廖雪峰 Python 教程：简介",
           "url": "https://liaoxuefeng.com/books/python/introduction/index.html",
-          "usage": "参考面向零基础、短段落、生活例子再引出规则的讲解方式；该教程讲Python，并非本项目C语言规则来源。未翻译、复制或打包其文章。",
+          "usage": "参考面向零基础的短段落组织，以及从生活例子引出规则的讲解方式。",
           "license": "仅链接参考，未打包原文"
         },
         {
           "title": "Harvard CS50：C 与 Algorithms",
           "url": "https://cs50.harvard.edu/x/notes/1/",
-          "usage": "参考先用具体输入输出观察程序，再引入类型、内存和算法的教学路线；未打包课程视频、讲义或习题解答。",
+          "usage": "参考从具体输入输出观察程序，再引入类型、内存与算法的教学路线。",
           "license": "仅链接参考，未打包原文"
         }
       ]
@@ -56,19 +56,19 @@
         {
           "title": "LeetCode Study Plan",
           "url": "https://leetcode.com/studyplan/",
-          "usage": "参考按知识点递进、说明输入输出、用样例解释目标以及分析复杂度的练习组织。经典算法问题可能有共同数学模型；不宣称来自官方题库，不打包LeetCode题面、图像、平台测试或付费内容。",
+          "usage": "参考按知识点递进的练习组织，以及输入输出、样例和复杂度的说明方式。项目题面与检查点独立编写。",
           "license": "仅链接参考，未打包原文"
         },
         {
           "title": "Exercism C Track",
           "url": "https://github.com/exercism/c",
-          "usage": "参考小步练习、检查点验证与独立实现的学习模式。没有将该仓库实现或测试直接并入本项目。",
+          "usage": "参考小步练习、检查点验证和独立实现的学习模式。",
           "license": "参考项目采用MIT；本项目仅链接与方法参考"
         },
         {
           "title": "IOI 2023 Closing Time 公开题面",
           "url": "https://ioinformatics.org/files/ioi2023problem1.pdf",
-          "usage": "参考正式竞赛中变量定义、操作规则、数据范围、子任务与样例解释的组织。未复制原题故事、数据或评测程序。",
+          "usage": "参考变量定义、操作规则、数据范围、子任务与样例解释的组织方式。",
           "license": "仅链接参考，未打包原文"
         }
       ]
@@ -152,7 +152,7 @@
         {
           "title": "Visual Studio Code 扩展生态",
           "url": "https://code.visualstudio.com/docs/languages/cpp",
-          "usage": "导出工作区提供C/C++、clangd、Error Lens、CMake Tools扩展建议。扩展由各发布者维护，非本应用内置的VS Code扩展宿主，不承诺兼容或安装全部扩展。",
+          "usage": "导出的 VS Code 工作区提供 C/C++、clangd、Error Lens 和 CMake Tools 等扩展建议。扩展在外部 VS Code 中安装、运行；应用内编辑器使用 Monaco。",
           "license": "各扩展独立许可证与市场条款；不随项目重分发扩展"
         },
         {
@@ -169,13 +169,13 @@
         {
           "title": "OpenAI Codex CLI",
           "url": "https://developers.openai.com/codex/cli/",
-          "usage": "调用本机用户已安装的Codex；详细代码分析使用gpt-5.6-sol medium，教程提问与C导师使用gpt-5.6-sol high。失败时明确报错，不伪装为已生成答案。",
+          "usage": "通过本机 Codex CLI 调用模型：详细代码分析使用 gpt-5.6-sol medium，教程提问与 C 导师使用 gpt-5.6-sol high。调用失败时显示错误详情。",
           "license": "模型与服务使用受OpenAI条款及用户账户权限约束"
         },
         {
           "title": "OpenAI Codex Authentication",
           "url": "https://developers.openai.com/codex/auth/",
-          "usage": "连接页帮助检测本机登录并引导用户通过官方流程认证。项目不分发用户登录文件、API密钥或订阅凭据。拥有GPT套餐不代表每个套餐都可用指定模型；以实际权限、额度和服务可用性为准。",
+          "usage": "连接页检测本机登录状态，并引导用户按官方流程认证。模型可用性由账户权限、额度和服务状态决定；登录文件与 API 密钥保存在用户环境中。",
           "license": "仅链接参考，未打包原文"
         }
       ]
@@ -185,15 +185,15 @@
       "items": [
         {
           "title": "C与翻开书本图标",
-          "usage": "图标由本项目scripts/make_icon.swift使用AppKit矢量绘制，可重建。没有使用第三方品牌图标、照片或图标素材包。"
+          "usage": "图标由 scripts/make_icon.swift 使用 AppKit 矢量绘制，可从源码重建。"
         },
         {
           "title": "学习能力与遗忘曲线",
-          "usage": "曲线采用由学习事件驱动的指数衰减启发式估计，借鉴间隔复习思想；不是对任何人实际记忆的测量，也不是复刻某个受保护题库或科学实验数据。未学习项目按0计，不因浏览教程自动伪造答题成绩。"
+          "usage": "根据应用内学习事件，用指数衰减模型估计掌握程度，辅助安排间隔复习。未学习项目从 0 开始；估计值随实际练习记录更新。"
         },
         {
           "title": "个人代码、批注、上传照片和对话",
-          "usage": "这些内容由使用者提供并保存在其本机学习状态中。选择调用模型时，当前问题、相关引用、对话及已选择图片会发往用户登录的模型服务。公开发布包不含开发过程中的个人原稿、学习记录、代码复盘、模型对话或登录凭据。用户资料不因使用本项目自动变为开源内容。"
+          "usage": "个人资料保存在本机学习状态中，归使用者所有。调用模型时，当前问题、相关引用、对话及选中的图片会发送至用户登录的模型服务。公开发布包与个人学习资料分开保存。"
         }
       ]
     },
@@ -202,7 +202,7 @@
       "items": [
         {
           "title": "引用与转载边界",
-          "usage": "这里提供资料入口并说明使用性质，不通过致谢冒充转载授权。若后续贡献直接采用外部代码、数据、图片或题面，贡献者必须先确认兼容许可并保留版权和来源；付费或无许可内容不可因已列致谢就复制。"
+          "usage": "采用外部代码、数据、图片或题面时，须确认许可与项目兼容，并保留规定的版权、许可证和来源信息。致谢条目记录参考来源，转载权限以原资料许可为准。"
         },
         {
           "title": "来源纠错",
@@ -222,13 +222,13 @@
         {
           "title": "廖雪峰：Python教程简介",
           "url": "https://liaoxuefeng.com/books/python/introduction/index.html",
-          "usage": "参考先解释环境与基本概念、再进入完整示例的教学顺序；没有迁移其Python示例或语言性能断言。",
+          "usage": "参考先解释运行环境与基本概念，再进入完整示例的教学顺序。",
           "license": "仅链接；不复制正文"
         },
         {
           "title": "hediet / vscode-drawio",
           "url": "https://github.com/hediet/vscode-drawio",
-          "usage": "通过官方扩展ID安装Draw.io Integration，在VS Code编辑本项目原创流程图。Monaco本身不运行该扩展。",
+          "usage": "通过官方扩展 ID 安装 Draw.io Integration，在外部 VS Code 中编辑项目流程图。",
           "license": "扩展单独安装，其许可适用于扩展自身；本仓库不打包其代码"
         }
       ]

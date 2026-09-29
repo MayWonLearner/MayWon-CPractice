@@ -11,9 +11,9 @@
       "tags": [
         "Nim / 异或"
       ],
-      "description": "训练营把奖牌放成n堆，两名队员轮流行动，先手先行动。每次必须选一堆，取走至少一枚，至多取完该堆。不能行动的人输。两人均采取最优策略，判断先手能否获胜。空堆允许存在，不能从空堆取奖牌。",
-      "input": "第一行整数n；第二行n个整数a[i]，表示各堆奖牌数量。",
-      "output": "先手能保证获胜输出FIRST，否则输出SECOND，最后换行。",
+      "description": "训练营把奖牌分成 n 堆，两名队员轮流取奖牌，先手先行动。每次必须选择一个非空堆，从中取走至少一枚，也可以一次取完该堆；一次操作只能取同一堆。\n轮到某人时，如果所有堆都为空、无法取奖牌，这个人输。两名队员都采用最优策略，请判断先手是否能保证获胜。输入允许某些堆最初就为空。",
+      "input": "第一行输入整数 n，表示奖牌堆数。\n第二行输入 n 个非负整数 a[i]，表示各堆最初的奖牌数量。",
+      "output": "先手能保证获胜时输出一行 FIRST，否则输出一行 SECOND。",
       "constraints": "1≤n≤100000；0≤a[i]≤10^9。",
       "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint main(void)\n{\n    int n;\n    unsigned int value, total = 0;\n    if (scanf(\"%d\", &n) != 1)\n        return 1;\n    for (int i = 0; i < n; ++i)\n    {\n        if (scanf(\"%u\", &value) != 1)\n            return 1;\n        total ^= value; // 汇总独立石堆的 Nim 值。\n    }\n    puts(total ? \"FIRST\" : \"SECOND\");\n    return 0;\n}\n",
       "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
@@ -48,21 +48,28 @@
         1,
         2
       ],
-      "sampleNotes": {},
+      "sampleNotes": {
+        "0": "1 xor 2 xor 3=0，先手处于必败态，输出 SECOND。",
+        "1": "先手一次取完 7 枚，对手无法行动，输出 FIRST。",
+        "2": "开始时全为空，先手无法行动，输出 SECOND。",
+        "3": "相同大小成对异或抵消，4 xor 4 xor 9 xor 9=0，输出 SECOND。"
+      },
       "hints": [
-        "正常Nim中所有堆大小异或为0是必败态，否则存在一步使异或变成0。样例1中1 xor 2 xor 3=0；样例3一开始就无法行动。该结论不能直接套到“取最后一枚者输”的规则。"
+        "计算所有堆大小的按位异或，也称 Nim 和。",
+        "异或为 0 时是必败态，非零时可走到异或为 0 的状态。"
       ],
-      "explanation": "正常Nim中所有堆大小异或为0是必败态，否则存在一步使异或变成0。样例1中1 xor 2 xor 3=0；样例3一开始就无法行动。该结论不能直接套到“取最后一枚者输”的规则。",
+      "explanation": "设全部堆的异或为 X。X=0 时，任何合法取法把某堆 a 变为更小的 b，新的异或为 a^b，必非零。X≠0 时，找 X 最高的置位，在该位为 1 的某堆 a 上令 b=a^X，则 b<a，是合法减少，并让总异或归零。因此非零态能交给对手零态，零态无法保持零态；全空的零态恰好无法行动，证明判定成立。参考程序边读边异或，只需一个累积值。规则为无法行动者输，决定了空局面是败态。",
       "review": [
-        "我能用自己的话说明状态与合法操作。",
-        "我验证了样例和边界，并解释复杂度。"
+        "我一次只改变一堆。",
+        "我能解释非零异或如何通过减少某堆变为零。"
       ],
       "complexity": {
         "time": "O(n)",
         "space": "O(1)",
-        "reason": "正常Nim中所有堆大小异或为0是必败态，否则存在一步使异或变成0。样例1中1 xor 2 xor 3=0；样例3一开始就无法行动。该结论不能直接套到“取最后一枚者输”的规则。",
-        "alternative": "先用小规模枚举核对，再实现目标算法。"
-      }
+        "reason": "读入 n 个堆大小并各异或一次，时间 O(n)。只存当前值和异或累积量，空间 O(1)。",
+        "alternative": "小规模可枚举每一步判断必胜、必败，但大堆数与数量使状态空间巨大；Nim 异或判据将整局压缩到一次扫描。"
+      },
+      "pseudocode": "READ n\nSET nimSum TO 0\nREPEAT n TIMES\n    READ pileSize\n    nimSum ← nimSum XOR pileSize\nOUTPUT \"FIRST\" IF nimSum != 0 ELSE \"SECOND\""
     },
     {
       "id": "X202",
@@ -75,9 +82,9 @@
       "tags": [
         "离散期望 / 分数约分"
       ],
-      "description": "抽奖箱有n类票，第i类有w[i]张，每张写着积分v[i]。随机等概率抽出一张，得到票上积分；票可重复印刷，每张实物票等可能。计算一次抽奖的期望积分，用最简分数表示。",
-      "input": "第一行n；接下来n行，每行两个整数w[i] v[i]。",
-      "output": "输出两个整数p q，以空格分隔，表示最简分数p/q，q>0；期望为0时输出0 1。",
+      "description": "抽奖箱中有 n 类票。第 i 类有 w[i] 张，每张票上都写着积分 v[i]。从箱中等概率抽取一张实物票，每张票被抽中的机会相同，获得票面积分。\n请计算一次抽奖的期望积分，用最简分数表示。期望是按抽中概率加权的平均积分，可能不等于任何一张票上的实际积分。例如两张 1 分票和一张 2 分票，期望为 (1+1+2)/3=4/3。",
+      "input": "第一行输入整数 n，表示票的类别数。\n随后 n 行，每行输入两个整数 w[i]、v[i]，分别表示该类票的张数和每张积分。",
+      "output": "输出一行两个整数 p、q，以一个空格分隔，表示最简分数 p/q，q>0。期望为 0 时输出 0 1。",
       "constraints": "1≤n≤100000；1≤w[i]≤1000；0≤v[i]≤1000000。",
       "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nlong long gcd(long long a, long long b)\n{\n    while (b)\n    {\n        long long r = a % b;\n        a = b;\n        b = r;\n    }\n    return a;\n}\nint main(void)\n{\n    int n;\n    long long weights = 0, weighted = 0, w, v;\n    if (scanf(\"%d\", &n) != 1)\n        return 1;\n    for (int i = 0; i < n; ++i)\n    {\n        if (scanf(\"%lld%lld\", &w, &v) != 2)\n            return 1;\n        weights += w;\n        weighted += w * v; // 先按票数给积分加权。\n    }\n    long long g = gcd(weighted, weights);\n    printf(\"%lld %lld\\n\", weighted / g, weights / g);\n    return 0;\n}\n",
       "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
@@ -112,21 +119,28 @@
         1,
         2
       ],
-      "sampleNotes": {},
+      "sampleNotes": {
+        "0": "两张票积分为 0、2，平均为 1，最简分数输出 1 1。",
+        "1": "三张票总积分为 4，期望 4/3，输出 4 3。",
+        "2": "八张票都为 0 分，期望 0，输出 0 1。",
+        "3": "所有票都为 1000000 分，无论抽哪张都相同，输出 1000000 1。"
+      },
       "hints": [
-        "期望分子为Σw[i]v[i]，分母为Σw[i]，最后用gcd约分。第二例共有3张票，积分和4，故为4/3。加权和最大10^14，需要64位整数。期望不要求是一次实际可能获得的整数。"
+        "总票数为各类张数之和，总票面积分为各类张数乘积分后求和。",
+        "期望等于总积分除以总票数，再用最大公约数约分。"
       ],
-      "explanation": "期望分子为Σw[i]v[i]，分母为Σw[i]，最后用gcd约分。第二例共有3张票，积分和4，故为4/3。加权和最大10^14，需要64位整数。期望不要求是一次实际可能获得的整数。",
+      "explanation": "每一张票等概率，因此第 i 类被抽中概率为 w[i]/Σw，期望为 Σ(w[i]*v[i])/Σw。分别累加分子 weighted、分母 weights，求 gcd 后同除。各 w 正数保证分母非零；全部积分为 0 时，gcd(0,weights)=weights，统一公式得到 0/1。加权和最大为 10⁵×10³×10⁶=10¹⁴，应在 long long 中完成乘法和累加。不能直接平均各类别积分，因为类别票数可以不同。",
       "review": [
-        "我能用自己的话说明状态与合法操作。",
-        "我验证了样例和边界，并解释复杂度。"
+        "我按票数加权，而非按类别等权平均。",
+        "我用 64 位整数计算分子，并输出两个整数表示分数。"
       ],
       "complexity": {
         "time": "O(n+log S)，S为总票数",
         "space": "O(1)",
-        "reason": "期望分子为Σw[i]v[i]，分母为Σw[i]，最后用gcd约分。第二例共有3张票，积分和4，故为4/3。加权和最大10^14，需要64位整数。期望不要求是一次实际可能获得的整数。",
-        "alternative": "先用小规模枚举核对，再实现目标算法。"
-      }
+        "reason": "一次读入与累加需 O(n)，最大公约数需 O(log S)，S 为总票数，合计 O(n+log S)。固定数量的整数变量，空间 O(1)。",
+        "alternative": "展开每一张票后求平均会依赖总票数 S；按类别加权只扫描 n 条记录，并用整数分数避免浮点舍入。"
+      },
+      "pseudocode": "READ n\nSET tickets TO 0\nSET points TO 0\nREPEAT n TIMES\n    READ count, score\n    tickets ← tickets + count\n    points ← points + count * score\ng ← GCD(points,tickets)\nOUTPUT points DIV g, tickets DIV g"
     },
     {
       "id": "X203",
@@ -139,9 +153,9 @@
       "tags": [
         "SG / mex"
       ],
-      "description": "桌上有一堆n枚筹码。两人轮流从中取走1、3或4枚，不能取超过剩余数量的筹码。无法行动者输。请计算这局游戏的SG值；不是只判断输赢。规定SG(0)=0，SG(n)为所有合法后继SG值集合中未出现的最小非负整数。",
-      "input": "输入一个整数n。",
-      "output": "输出SG(n)，最后换行。",
+      "description": "桌上有一堆 n 枚筹码，两人轮流行动。每次可取走 1、3 或 4 枚，但不能超过剩余数量。轮到某人时无法行动，该人输。\n请输出这个局面的 SG 值，定义如下：SG(0)=0；对于剩余 x>0 枚的局面，收集每种合法取法得到的后继局面的 SG 值，SG(x) 等于这个集合中没有出现的最小非负整数，称为 mex。\n例如集合 {0,2} 的 mex 为 1，集合 {1} 的 mex 为 0。题目要求具体 SG 整数值。",
+      "input": "输入一个整数 n，表示初始筹码数。",
+      "output": "输出一行，一个非负整数，表示 SG(n)。",
       "constraints": "0≤n≤1000000。",
       "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nstatic int sg[1000001];\nint main(void)\n{\n    int n, moves[3] = {1, 3, 4};\n    if (scanf(\"%d\", &n) != 1)\n        return 1;\n    for (int x = 1; x <= n; ++x)\n    {\n        int seen[4] = {0};\n        for (int j = 0; j < 3; ++j)\n            if (x >= moves[j])\n                seen[sg[x - moves[j]]] = 1;\n        while (sg[x] < 4 && seen[sg[x]])\n            ++sg[x]; // 最多三个后继，mex不超过3。\n    }\n    printf(\"%d\\n\", sg[n]);\n    return 0;\n}\n",
       "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
@@ -176,21 +190,28 @@
         1,
         2
       ],
-      "sampleNotes": {},
+      "sampleNotes": {
+        "0": "空堆没有合法取法，SG(0)=0。",
+        "1": "剩 2 枚只能到 1 枚，SG(1)=1，mex{1}=0。",
+        "2": "可到 3、1、0 枚，对应 SG 为 1、1、0，mex{0,1}=2。",
+        "3": "7 枚可到 6、4、3 枚，SG 分别为 3、2、1，mex{1,2,3}=0。"
+      },
       "hints": [
-        "按剩余筹码数递增，所有合法后继都更小，已经计算。n=4的后继为3、1、0，SG值集合为{1,1,0}，mex为2。若只把SG写成0/1，会丢掉独立游戏组合所需信息。"
+        "按筹码数量从小到大计算，后继只可能是 x−1、x−3、x−4。",
+        "标记合法后继的 SG 值，再从 0 开始找第一个未标记值。"
       ],
-      "explanation": "按剩余筹码数递增，所有合法后继都更小，已经计算。n=4的后继为3、1、0，SG值集合为{1,1,0}，mex为2。若只把SG写成0/1，会丢掉独立游戏组合所需信息。",
+      "explanation": "初始 sg[0]=0。对每个 x，重置 seen[0..3]，只对 x≥move 的取法标记 seen[sg[x−move]]。最多有三个后继，因此它们的 SG 值集合最多含三个不同数，mex 不超过 3，四个标记位置足够。参考程序的静态 sg 数组初始全零，从零递增找 mex。SG=0 表示败态，正 SG 表示胜态；具体正值保留了多个独立局面合并时需要的信息。",
       "review": [
-        "我能用自己的话说明状态与合法操作。",
-        "我验证了样例和边界，并解释复杂度。"
+        "我只纳入当前剩余数量允许的取法。",
+        "我寻找未出现的最小非负值，而非给所有胜态写 1。"
       ],
       "complexity": {
         "time": "O(n)",
         "space": "O(n)",
-        "reason": "按剩余筹码数递增，所有合法后继都更小，已经计算。n=4的后继为3、1、0，SG值集合为{1,1,0}，mex为2。若只把SG写成0/1，会丢掉独立游戏组合所需信息。",
-        "alternative": "先用小规模枚举核对，再实现目标算法。"
-      }
+        "reason": "每个筹码数检查三种取法并扫描至多四个 mex 候选，时间 O(n)，状态数组空间 O(n)。",
+        "alternative": "转移只依赖前四个数量状态，可以用循环缓冲降到 O(1) 空间；保留完整表更便于逐项核对 mex 推导。"
+      },
+      "pseudocode": "READ n\nsg[0] ← 0\nFOR remaining FROM 1 TO n\n    SET seen[0..3] TO FALSE\n    FOR move IN [1,3,4]\n        IF remaining >= move\n            seen[sg[remaining-move]] ← TRUE\n    value ← 0\n    WHILE seen[value]\n        value ← value + 1\n    sg[remaining] ← value\nOUTPUT sg[n]"
     },
     {
       "id": "X204",
@@ -203,9 +224,9 @@
       "tags": [
         "Huffman / 最优合并"
       ],
-      "description": "有n个录像文件，长度分别为a[i]。每次选两个文件合并为一个，耗时等于两者长度之和，新文件长度也等于此和。反复合并到只剩一个文件，求最少总耗时。只有一个文件时无需合并，耗时0。",
-      "input": "第一行n；第二行n个正整数a[i]。",
-      "output": "输出最少总耗时，一个整数。",
+      "description": "训练营有 n 个录像文件，每个长度为 a[i] 个单位。每次可以任意选择当前两个文件合并，新文件长度为两者之和，这次合并耗时也等于这个和。新文件可以继续参与合并。\n请把全部文件合成一个，使每次合并耗时累加后的总耗时最小。合并的两个文件不要求在输入中相邻。只有一个文件时无需合并，总耗时为 0。",
+      "input": "第一行输入整数 n，表示文件数。\n第二行输入 n 个正整数 a[i]，表示各文件长度。",
+      "output": "输出一行，一个非负整数，表示完成全部合并的最少总耗时。",
       "constraints": "1≤n≤2000；1≤a[i]≤1000000。",
       "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nstatic long long a[2000];\nint main(void)\n{\n    int n;\n    long long answer = 0;\n    if (scanf(\"%d\", &n) != 1)\n        return 1;\n    for (int i = 0; i < n; ++i)\n        if (scanf(\"%lld\", &a[i]) != 1)\n            return 1;\n    while (n > 1)\n    {\n        int x = 0;\n        for (int i = 1; i < n; ++i)\n            if (a[i] < a[x])\n                x = i;\n        long long first = a[x];\n        a[x] = a[--n];\n        x = 0;\n        for (int i = 1; i < n; ++i)\n            if (a[i] < a[x])\n                x = i;\n        a[x] += first;\n        answer += a[x];\n    }\n    printf(\"%lld\\n\", answer);\n    return 0;\n}\n",
       "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
@@ -234,21 +255,27 @@
         1,
         2
       ],
-      "sampleNotes": {},
+      "sampleNotes": {
+        "0": "先合并 2 和 3 耗时 5，再合并 5 和 7 耗时 12，总计 17。",
+        "1": "只有一个文件，无需合并，耗时 0。",
+        "2": "先两次合并 1+1，各耗时 2，再合并 2+2 耗时 4，总计 8。"
+      },
       "hints": [
-        "每次合并两个最小长度符合Huffman贪心。样例1先合并2和3耗5，再将5与7合并耗12，总17。本题n≤2000允许每轮线性找两个最小值；若n增大，应改用小根堆降至O(n log n)。"
+        "每次合并当前长度最小的两个文件。",
+        "合并产生的新长度要放回候选集合，并将它加入累计耗时。"
       ],
-      "explanation": "每次合并两个最小长度符合Huffman贪心。样例1先合并2和3耗5，再将5与7合并耗12，总17。本题n≤2000允许每轮线性找两个最小值；若n增大，应改用小根堆降至O(n log n)。",
+      "explanation": "这是最优合并问题。将合并过程看作二叉树，总费用等于各原文件长度乘它在树中的深度；较短文件适合较深位置，所以可把最短两文件安排为最深的一对兄弟，先合并它们，再递归求缩小后的问题。参考程序每轮线性寻找最小值 first，用数组末项覆盖其位置并缩短有效长度；再找新的最小项，把 first 加上去。修改后的数组项就是新文件。每轮累加新文件长度，不能只输出所有原长度之和。",
       "review": [
-        "我能用自己的话说明状态与合法操作。",
-        "我验证了样例和边界，并解释复杂度。"
+        "我每轮从当前文件集合中选两个最短者。",
+        "我计入每一次合并耗时，而非只计最终长度。"
       ],
       "complexity": {
         "time": "O(n²)",
         "space": "O(n)",
-        "reason": "每次合并两个最小长度符合Huffman贪心。样例1先合并2和3耗5，再将5与7合并耗12，总17。本题n≤2000允许每轮线性找两个最小值；若n增大，应改用小根堆降至O(n log n)。",
-        "alternative": "先用小规模枚举核对，再实现目标算法。"
-      }
+        "reason": "最多 n−1 次合并，每次两趟线性寻找最小值，累计 O(n²) 时间。保存当前文件长度需要 O(n) 空间，额外计算变量为常数个。",
+        "alternative": "最小堆可在每轮 O(log n) 时间取出两最小值并插入合并值，将总耗时计算降为 O(n log n)。"
+      },
+      "pseudocode": "READ n AND lengths\nSET totalTime TO 0\nWHILE COUNT(lengths) > 1\n    REMOVE MINIMUM first FROM lengths\n    FIND MINIMUM second IN REMAINING lengths\n    combined ← first + second\n    REPLACE second WITH combined\n    totalTime ← totalTime + combined\nOUTPUT totalTime"
     },
     {
       "id": "X205",
@@ -261,9 +288,9 @@
       "tags": [
         "异或线性基"
       ],
-      "description": "收到n个非负整数编码，可以从中选择任意若干个下标，每个下标至多选一次，将所选编码逐位异或。也允许一个不选，此时结果为0。求可能得到的最大结果。",
-      "input": "第一行n；第二行n个整数a[i]。",
-      "output": "输出最大异或结果，一个十进制整数。",
+      "description": "收到 n 个非负整数信号编码。可以选择任意一些原位置，每个位置最多选一次，把所选编码逐位异或，得到一个结果。也可以一个都不选，此时结果为 0。\n请计算能够得到的最大结果，并用十进制输出。选择的编码不要求连续；相同编码在不同位置可分别选择，但同值异或会抵消。",
+      "input": "第一行输入整数 n，表示编码数量。\n第二行输入 n 个非负整数 a[i]，表示各位置的编码。",
+      "output": "输出一行，一个非负十进制整数，表示任意位置子集可得到的最大异或值。",
       "constraints": "1≤n≤100000；0≤a[i]<2^30。",
       "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint main(void)\n{\n    unsigned int basis[30] = {0}, x, answer = 0;\n    int n;\n    if (scanf(\"%d\", &n) != 1)\n        return 1;\n    for (int i = 0; i < n; ++i)\n    {\n        if (scanf(\"%u\", &x) != 1)\n            return 1;\n        for (int b = 29; b >= 0; --b)\n        {\n            if (!(x & (1u << b)))\n                continue;\n            if (!basis[b])\n            {\n                basis[b] = x;\n                break;\n            }\n            x ^= basis[b];\n        }\n    }\n    for (int b = 29; b >= 0; --b)\n        if ((answer ^ basis[b]) > answer)\n            answer ^= basis[b];\n    printf(\"%u\\n\", answer);\n    return 0;\n}\n",
       "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
@@ -292,21 +319,27 @@
         1,
         2
       ],
-      "sampleNotes": {},
+      "sampleNotes": {
+        "0": "选择 1、2、4，异或为二进制 111，即 7。",
+        "1": "选一个 5 得 5，选两个得 0，最大为 5。",
+        "2": "唯一编码为 0，任何选择结果都是 0。"
+      },
       "hints": [
-        "从高位消元，将每个主位保留一个基向量；查询同样从高位尝试能让结果变大的异或。重复的5不产生新独立信息，选一个5得到5，选两个得到0。30是本题固定有效位宽。"
+        "每个编码看成一个 30 位二进制向量，用异或做消元。",
+        "保留每个最高置位对应的一个基向量，再从高位到低位构造最大值。"
       ],
-      "explanation": "从高位消元，将每个主位保留一个基向量；查询同样从高位尝试能让结果变大的异或。重复的5不产生新独立信息，选一个5得到5，选两个得到0。30是本题固定有效位宽。",
+      "explanation": "basis[b] 若非零，表示一个最高置位为 b 的独立向量。插入 x 时从高位向下：对应位为 1 且已有基，就异或消去该位；没有基则将 x 存入该位并停止。若消到 0，说明 x 已能由现有基组合，不增加可表达结果。求最大值也从高位往下，若 answer^basis[b] 更大就采用；低主位向量不会改变已确定的更高位，因此贪心安全。线性基保存与原编码集合相同的异或组合空间，最多 30 个向量。",
       "review": [
-        "我能用自己的话说明状态与合法操作。",
-        "我验证了样例和边界，并解释复杂度。"
+        "我从高位开始插入和查询。",
+        "我知道被消为 0 的编码是可由已有基表示，而非输入无效。"
       ],
       "complexity": {
         "time": "O(30n)",
         "space": "O(30)",
-        "reason": "从高位消元，将每个主位保留一个基向量；查询同样从高位尝试能让结果变大的异或。重复的5不产生新独立信息，选一个5得到5，选两个得到0。30是本题固定有效位宽。",
-        "alternative": "先用小规模枚举核对，再实现目标算法。"
-      }
+        "reason": "每个输入最多处理 30 个有效位，最后查询再扫 30 位，时间 O(30n)。线性基固定 30 项、边读边处理，空间 O(30)。",
+        "alternative": "枚举 2ⁿ 个子集不适合 n=100000；线性基用位宽而非子集数量控制状态规模。"
+      },
+      "pseudocode": "READ n\nSET basis[0..29] TO 0\nREPEAT n TIMES\n    READ x\n    FOR bit FROM 29 DOWN TO 0\n        IF BIT bit OF x IS 0\n            CONTINUE\n        IF basis[bit] = 0\n            basis[bit] ← x\n            BREAK\n        x ← x XOR basis[bit]\nSET answer TO 0\nFOR bit FROM 29 DOWN TO 0\n    answer ← MAX(answer,answer XOR basis[bit])\nOUTPUT answer"
     },
     {
       "id": "X206",
@@ -319,9 +352,9 @@
       "tags": [
         "多项式卷积"
       ],
-      "description": "第一轮得分i有a[i]种方案，i从0到n-1；第二轮得分j有b[j]种方案，j从0到m-1。两轮独立选择，每对方案视为一种完整方案。输出每个总分k的方案数，k从0到n+m-2。这里的数是方案数，不是概率。",
-      "input": "第一行n m；第二行n个整数a[i]；第三行m个整数b[j]。",
-      "output": "按总分递增输出n+m-1个整数，空格分隔，最后换行。",
+      "description": "比赛分两轮。第一轮得分 i 有 a[i] 种方案，i 从 0 到 n−1；第二轮得分 j 有 b[j] 种方案，j 从 0 到 m−1。两轮独立选择，任意一个第一轮方案都能与任意一个第二轮方案组合，形成总分 i+j 的完整方案。\n请按总分从 0 到 n+m−2，依次计算完整方案数量。数组下标表示得分，输入在该位置的数值表示得到这个分数的方案数；即使某个总分无法出现，也要输出对应的 0。",
+      "input": "第一行输入两个整数 n、m，表示两轮方案表的长度。\n第二行输入 n 个整数 a[0] 至 a[n−1]。\n第三行输入 m 个整数 b[0] 至 b[m−1]。",
+      "output": "输出一行 n+m−1 个整数，第 k 项表示总分 k 的完整方案数，k 从 0 起。各项用一个空格分隔，末尾换行。",
       "constraints": "1≤n,m≤500；0≤a[i],b[j]≤1000。",
       "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nstatic long long a[500], b[500], c[999];\nint main(void)\n{\n    int n, m;\n    if (scanf(\"%d%d\", &n, &m) != 2)\n        return 1;\n    for (int i = 0; i < n; ++i)\n        if (scanf(\"%lld\", &a[i]) != 1)\n            return 1;\n    for (int j = 0; j < m; ++j)\n        if (scanf(\"%lld\", &b[j]) != 1)\n            return 1;\n    for (int i = 0; i < n; ++i)\n        for (int j = 0; j < m; ++j)\n            c[i + j] += a[i] * b[j];\n    for (int k = 0; k < n + m - 1; ++k)\n        printf(\"%s%lld\", k ? \" \" : \"\", c[k]);\n    putchar('\\n');\n    return 0;\n}\n",
       "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
@@ -350,21 +383,27 @@
         1,
         2
       ],
-      "sampleNotes": {},
+      "sampleNotes": {
+        "0": "总分 0 有 1×3=3 种，总分 1 有 1×4+2×3=10 种，总分 2 有 2×4=8 种。",
+        "1": "第一轮得分 0 没有方案，无法组成完整方案，输出 0。",
+        "2": "第二轮只能得 0 分且有两种方案，将第一轮每项计数乘 2，得到 4 0 10。"
+      },
       "hints": [
-        "所有i+j=k的方案乘积贡献到c[k]。第一例总分1来自0+1的1×4种和1+0的2×3种，共10。先实现确定正确的朴素卷积，再学习大规模FFT/NTT；这里不需要变换。"
+        "固定两轮得分 i、j，组合数量为 a[i]*b[j]。",
+        "把这个乘积累加到总分 i+j 对应的位置。"
       ],
-      "explanation": "所有i+j=k的方案乘积贡献到c[k]。第一例总分1来自0+1的1×4种和1+0的2×3种，共10。先实现确定正确的朴素卷积，再学习大规模FFT/NTT；这里不需要变换。",
+      "explanation": "c[k]=Σa[i]*b[j]，求和遍历所有 i+j=k 的得分组合。这就是两个方案表的离散卷积。双重循环枚举每对得分，独立选择用乘法，同总分的不同得分组合用加法汇总。静态 c 数组初始为 0，因此没有贡献的总分自动保留 0。每项输入为计数，计算和输出均为整数；两轮方案不要求具有等概率。",
       "review": [
-        "我能用自己的话说明状态与合法操作。",
-        "我验证了样例和边界，并解释复杂度。"
+        "我将下标解释为分数、数组值解释为方案数量。",
+        "我对不同轮次选择相乘，对相同总分贡献相加。"
       ],
       "complexity": {
         "time": "O(nm)",
         "space": "O(n+m)",
-        "reason": "所有i+j=k的方案乘积贡献到c[k]。第一例总分1来自0+1的1×4种和1+0的2×3种，共10。先实现确定正确的朴素卷积，再学习大规模FFT/NTT；这里不需要变换。",
-        "alternative": "先用小规模枚举核对，再实现目标算法。"
-      }
+        "reason": "枚举 n*m 对得分，时间 O(nm)，读入和输出 O(n+m)。两个输入表和结果表总空间 O(n+m)。",
+        "alternative": "更大规模的卷积可使用 FFT 或 NTT；当前长度至多 500，朴素双重循环易于验证且计算量适中。"
+      },
+      "pseudocode": "READ n, m\nREAD first[0..n-1], second[0..m-1]\nSET count[0..n+m-2] TO 0\nFOR i FROM 0 TO n - 1\n    FOR j FROM 0 TO m - 1\n        count[i+j] ← count[i+j] + first[i]*second[j]\nOUTPUT count IN TOTAL_SCORE ORDER"
     },
     {
       "id": "X207",
@@ -377,9 +416,9 @@
       "tags": [
         "高精度加法"
       ],
-      "description": "两笔奖学金以十进制非负整数记录，位数可能超过机器整数范围。计算两笔总额，输出标准十进制表示，不保留多余前导零。",
-      "input": "两行，每行一个由数字0到9组成的字符串。允许输入包含前导零。",
-      "output": "输出它们的和，仅一行；和为零时输出0。",
+      "description": "两笔奖学金金额以非负十进制整数记录，每笔可能长达 1000 位。请计算两笔金额之和，并输出完整准确的十进制结果。\n输入允许有前导零，例如 0012 表示 12。输出应去掉多余前导零；总额为零时只输出一个 0。",
+      "input": "输入两行，每行一个由数字 0 至 9 组成的非空字符串，分别表示两笔金额，每行长度为 1 至 1000。",
+      "output": "输出一行两数之和的标准十进制表示。除数值 0 本身外，结果不得以 0 开头。",
       "constraints": "每行长度1到1000。",
       "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint main(void)\n{\n    char a[1001], b[1001], result[1002];\n    if (scanf(\"%1000s%1000s\", a, b) != 2)\n        return 1;\n    int i = (int)strlen(a) - 1, j = (int)strlen(b) - 1, n = 0, carry = 0;\n    while (i >= 0 || j >= 0 || carry)\n    {\n        int value = carry;\n        if (i >= 0)\n            value += a[i--] - '0';\n        if (j >= 0)\n            value += b[j--] - '0';\n        result[n++] = (char)('0' + value % 10);\n        carry = value / 10;\n    }\n    while (n > 1 && result[n - 1] == '0')\n        --n;\n    while (n > 0)\n        putchar(result[--n]);\n    putchar('\\n');\n    return 0;\n}\n",
       "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
@@ -414,21 +453,27 @@
         1,
         2
       ],
-      "sampleNotes": {},
+      "sampleNotes": {
+        "0": "999 加 1 连续进位，结果为 1000。",
+        "1": "两数数值都为 0，规范输出一个 0。",
+        "2": "0012 表示 12，003 表示 3，相加输出 15。"
+      },
       "hints": [
-        "从末尾个位向前相加，结果逆序存储，value%10存当前位，value/10传进位。最后去掉高位多余零，再倒序输出。不能用double代替高精度整数，否则长输入丢失精度。"
+        "像竖式加法一样，从两个字符串的末尾个位向前相加。",
+        "每位加上进位，余数作为当前结果位，商作为下一位进位。"
       ],
-      "explanation": "从末尾个位向前相加，结果逆序存储，value%10存当前位，value/10传进位。最后去掉高位多余零，再倒序输出。不能用double代替高精度整数，否则长输入丢失精度。",
+      "explanation": "用 i、j 指向两数当前位，carry 保存进位。每轮把存在的数字与 carry 相加，存 value%10，更新 carry=value/10；某一串用完后该侧当作 0，直到两串和进位都处理完。结果按低位到高位保存，所以输出时倒序。参考程序先从结果末尾去掉多余高位 0，但至少保留一位；随后用计数 n 逐字符输出，不依赖结果数组的字符串终止符。1000 位相加最多产生 1001 位，结果缓冲已预留。",
       "review": [
-        "我能用自己的话说明状态与合法操作。",
-        "我验证了样例和边界，并解释复杂度。"
+        "我继续处理两串用完后的最后进位。",
+        "我保留零结果的一位，并倒序输出临时结果。"
       ],
       "complexity": {
         "time": "O(n+m)",
         "space": "O(n+m)",
-        "reason": "从末尾个位向前相加，结果逆序存储，value%10存当前位，value/10传进位。最后去掉高位多余零，再倒序输出。不能用double代替高精度整数，否则长输入丢失精度。",
-        "alternative": "先用小规模枚举核对，再实现目标算法。"
-      }
+        "reason": "设输入位数为 n、m，每位读取和参与一次加法，时间 O(n+m)。输入与结果数组总空间 O(n+m)。",
+        "alternative": "机器整数无法容纳千位输入，浮点数也无法保留全部整数精度；逐位竖式加法直接保持每一位的精确结果。"
+      },
+      "pseudocode": "READ a, b\nSET i TO LENGTH(a)-1\nSET j TO LENGTH(b)-1\nSET carry TO 0\nSET digits TO EMPTY LIST\nWHILE i >= 0 OR j >= 0 OR carry != 0\n    value ← carry + NEXT_DIGIT_OR_ZERO(a,i) + NEXT_DIGIT_OR_ZERO(b,j)\n    APPEND value MOD 10 TO digits\n    carry ← value DIV 10\nREMOVE EXTRA ZEROS FROM HIGH END WHILE MORE THAN ONE DIGIT REMAINS\nOUTPUT digits FROM HIGH END TO LOW END"
     },
     {
       "id": "X208",
@@ -441,9 +486,9 @@
       "tags": [
         "2-SAT / 强连通分量"
       ],
-      "description": "学校有n门课，每门课只能选择“选”或“不选”。有m条要求，每条由两个文字组成，要求至少一个成立。正整数x表示“选第x门”，负整数-x表示“不选第x门”。判断是否存在满足全部要求的选择，不要求输出选择方案。",
-      "input": "第一行n m；接下来m行，每行两个非零整数a b，表示(a或b)。",
-      "output": "有可行选择输出YES，否则输出NO。",
+      "description": "学校有 n 门课，编号为 1 至 n。每门课只能作出“选”或“不选”两种决定。学校提出 m 条要求，每条包含两个条件，只要其中至少一个成立，就满足这一条；所有要求必须同时满足。\n条件用非零整数表示：正数 x 表示选第 x 门课，负数 −x 表示不选第 x 门课。例如 (1,−2) 表示“选第 1 门，或不选第 2 门”，两者都成立也可以。\n请判断是否存在可行的选课方案。每条的两个条件允许相同；没有要求时任意选课方案均可。",
+      "input": "第一行输入两个整数 n、m，分别表示课程数和要求数。\n随后 m 行，每行输入两个非零整数 a、b，表示条件 a 或条件 b 至少一个成立，1≤|a|,|b|≤n。",
+      "output": "存在满足全部要求的选课方案时输出一行 YES，否则输出一行 NO。",
       "constraints": "1≤n≤100；0≤m≤1000；1≤|a|,|b|≤n。",
       "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nstatic int reach[200][200];\nint node(int x)\n{\n    return 2 * (abs(x) - 1) + (x < 0);\n}\nint main(void)\n{\n    int n, m, a, b;\n    if (scanf(\"%d%d\", &n, &m) != 2)\n        return 1;\n    for (int i = 0; i < m; ++i)\n    {\n        if (scanf(\"%d%d\", &a, &b) != 2)\n            return 1;\n        a = node(a);\n        b = node(b);\n        reach[a ^ 1][b] = reach[b ^ 1][a] = 1;\n    }\n    for (int k = 0; k < 2 * n; ++k)\n        for (int i = 0; i < 2 * n; ++i)\n            for (int j = 0; j < 2 * n; ++j)\n                reach[i][j] |= reach[i][k] && reach[k][j];\n    for (int i = 0; i < n; ++i)\n        if (reach[2 * i][2 * i + 1] && reach[2 * i + 1][2 * i])\n        {\n            puts(\"NO\");\n            return 0;\n        }\n    puts(\"YES\");\n    return 0;\n}\n",
       "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
@@ -472,21 +517,27 @@
         1,
         2
       ],
-      "sampleNotes": {},
+      "sampleNotes": {
+        "0": "(1,1) 强制选第 1 门，(−1,−1) 强制不选，无法同时满足。",
+        "1": "只要选第 2 门，两条要求都成立，输出 YES。",
+        "2": "没有任何要求，存在可行方案，输出 YES。"
+      },
       "hints": [
-        "子句(a∨b)对应¬a→b和¬b→a。若同一变量与否定互相可达，则处在同一SCC，产生矛盾。本题仅200个文字节点，可用Floyd求传递闭包；大规模改用Tarjan/Kosaraju线性求SCC。第一例同时强制选与不选，故无解。"
+        "将每门课的选与不选看成一对互为否定的节点。",
+        "要求 a 或 b，可转化为两条推导关系：不满足 a 就必须满足 b，不满足 b 就必须满足 a。"
       ],
-      "explanation": "子句(a∨b)对应¬a→b和¬b→a。若同一变量与否定互相可达，则处在同一SCC，产生矛盾。本题仅200个文字节点，可用Floyd求传递闭包；大规模改用Tarjan/Kosaraju线性求SCC。第一例同时强制选与不选，故无解。",
+      "explanation": "子句 (a∨b) 对应 ¬a→b 与 ¬b→a，构成蕴含图。参考程序把第 x 门的选与不选映射为相邻编号 2(x−1)、2(x−1)+1，异或 1 可切换否定。用 Floyd 求所有节点间可达性；若某门课的正、负条件互相可达，它们在同一强连通分量中，任何一种决定都会推出相反决定，因此无解。2-SAT 的判定定理保证：不存在这样的冲突时有解。这里课程最多 100，蕴含节点最多 200，传递闭包足以计算。",
       "review": [
-        "我能用自己的话说明状态与合法操作。",
-        "我验证了样例和边界，并解释复杂度。"
+        "我把每条“或”要求展开成两条蕴含边。",
+        "我检查同一课程与其否定是否双向可达。"
       ],
       "complexity": {
         "time": "O(n³+m)",
         "space": "O(n²)",
-        "reason": "子句(a∨b)对应¬a→b和¬b→a。若同一变量与否定互相可达，则处在同一SCC，产生矛盾。本题仅200个文字节点，可用Floyd求传递闭包；大规模改用Tarjan/Kosaraju线性求SCC。第一例同时强制选与不选，故无解。",
-        "alternative": "先用小规模枚举核对，再实现目标算法。"
-      }
+        "reason": "建图 O(m)，Floyd 在 2n 个节点上作三重循环，时间 O(n³+m)。可达矩阵空间 O(n²)。",
+        "alternative": "更大规模可在邻接表上使用 Tarjan 或 Kosaraju 求强连通分量，将 2-SAT 判定降为 O(n+m) 时间和空间。"
+      },
+      "pseudocode": "READ n, m\nSET reach[0..2n-1][0..2n-1] TO FALSE\nFOR EACH REQUIREMENT (a,b)\n    reach[NOT(a)][b] ← TRUE\n    reach[NOT(b)][a] ← TRUE\nFOR middle FROM 0 TO 2n - 1\n    FOR from FROM 0 TO 2n - 1\n        FOR to FROM 0 TO 2n - 1\n            reach[from][to] ← reach[from][to] OR (reach[from][middle] AND reach[middle][to])\nFOR EACH COURSE x\n    IF reach[x][NOT(x)] AND reach[NOT(x)][x]\n        OUTPUT \"NO\"\n        STOP\nOUTPUT \"YES\""
     },
     {
       "id": "X209",
@@ -499,9 +550,9 @@
       "tags": [
         "枚举 / 整数规划边界"
       ],
-      "description": "食堂最多制作100份A餐和100份B餐。A餐每份用2单位面粉、1单位牛奶，收入p；B餐每份用1单位面粉、2单位牛奶，收入q。现有F单位面粉和M单位牛奶，允许剩余，也允许不做餐。只制作整份餐，求最大收入。",
-      "input": "一行四个整数F M p q。",
-      "output": "输出最大收入，一个整数。",
+      "description": "食堂准备两种训练餐。A 餐每份使用 2 单位面粉和 1 单位牛奶，收入 p；B 餐每份使用 1 单位面粉和 2 单位牛奶，收入 q。\n现有 F 单位面粉、M 单位牛奶，每种餐最多制作 100 份。只能制作整份餐，可以剩余原料，也可以一种或两种都不做。请计算总收入的最大值。",
+      "input": "输入一行四个整数 F、M、p、q，依次表示面粉数量、牛奶数量、A 餐每份收入、B 餐每份收入。",
+      "output": "输出一行，一个非负整数，表示在两种原料及份数限制下的最大总收入。",
       "constraints": "0≤F,M≤300；0≤p,q≤10000。每种餐份数为0到100的整数。",
       "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint main(void)\n{\n    int f, m, p, q, best = 0;\n    if (scanf(\"%d%d%d%d\", &f, &m, &p, &q) != 4)\n        return 1;\n    for (int a = 0; a <= 100; ++a)\n        for (int b = 0; b <= 100; ++b)\n            if (2 * a + b <= f && a + 2 * b <= m && a * p + b * q > best)\n                best = a * p + b * q;\n    printf(\"%d\\n\", best);\n    return 0;\n}\n",
       "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
@@ -530,21 +581,27 @@
         1,
         2
       ],
-      "sampleNotes": {},
+      "sampleNotes": {
+        "0": "各做一份恰用 3 单位面粉和 3 单位牛奶，收入 4+5=9。",
+        "1": "两种原料都为 0，只能不生产，收入 0。",
+        "2": "可做一份 A 得 3，或一份 B 得 7；无法各做一份，选择 B，收入 7。"
+      },
       "hints": [
-        "枚举0..100的全部整数产量并检查两个资源不等式，因此不会遗漏可行整份方案。最后一例不能制作半份餐；连续线性规划即使给出分数解，也不能直接四舍五入当成整份最优解。本题用于理解建模边界，不需要单纯形。"
+        "设制作 A 餐 a 份、B 餐 b 份，检查 2a+b≤F、a+2b≤M。",
+        "每种份数只有 0..100，直接枚举全部整数组合。"
       ],
-      "explanation": "枚举0..100的全部整数产量并检查两个资源不等式，因此不会遗漏可行整份方案。最后一例不能制作半份餐；连续线性规划即使给出分数解，也不能直接四舍五入当成整份最优解。本题用于理解建模边界，不需要单纯形。",
+      "explanation": "外层枚举 a、内层枚举 b，两者均包含 0 和 100。只有两项资源约束同时满足时，才用 a*p+b*q 更新最大值。所有合法整份方案都在枚举范围内，因此不会遗漏最优解。best 从 0 开始，对应不生产的可行方案。连续数学模型可能给出分数份额，直接四舍五入不能保证资源合法或收入最优；本题的枚举直接搜索整数份数。",
       "review": [
-        "我能用自己的话说明状态与合法操作。",
-        "我验证了样例和边界，并解释复杂度。"
+        "我同时检查面粉和牛奶用量。",
+        "我允许原料剩余，并只枚举整数份数。"
       ],
       "complexity": {
         "time": "O(B²)，B=100",
         "space": "O(1)",
-        "reason": "枚举0..100的全部整数产量并检查两个资源不等式，因此不会遗漏可行整份方案。最后一例不能制作半份餐；连续线性规划即使给出分数解，也不能直接四舍五入当成整份最优解。本题用于理解建模边界，不需要单纯形。",
-        "alternative": "先用小规模枚举核对，再实现目标算法。"
-      }
+        "reason": "每种份数上限 B=100，共 (B+1)² 个组合，每个常数计算，时间 O(B²)，空间 O(1)。固定上限下只有 10201 次检查。",
+        "alternative": "固定 a 后，b 的最大可行值由剩余原料和 100 份上限共同决定；因 q≥0，可直接取该值，将枚举降到 O(B)。"
+      },
+      "pseudocode": "READ flour, milk, priceA, priceB\nSET best TO 0\nFOR a FROM 0 TO 100\n    FOR b FROM 0 TO 100\n        IF 2*a+b <= flour AND a+2*b <= milk\n            best ← MAX(best,a*priceA+b*priceB)\nOUTPUT best"
     },
     {
       "id": "X210",
@@ -557,9 +614,9 @@
       "tags": [
         "条件概率 / 贝叶斯"
       ],
-      "description": "先以相同概率选择甲箱或乙箱，再从选中的箱子等概率抽一张票。甲箱有a张红票和b张蓝票，乙箱有c张红票和d张蓝票。已经观察到抽出的是红票，求它来自甲箱的条件概率，用最简分数表示。",
-      "input": "一行四个整数a b c d。",
-      "output": "输出最简分数的分子p和正分母q，以空格分隔。",
+      "description": "有甲、乙两个抽奖箱。甲箱有 a 张红票、b 张蓝票，乙箱有 c 张红票、d 张蓝票。抽票分两步：先以各 1/2 的概率选一个箱子，再从选中的箱子里等概率抽一张票。\n现在只知道抽到的是红票，请计算它来自甲箱的条件概率，用最简分数表示。两个箱子都非空，且至少有一张红票，保证“抽到红票”这一条件有正概率。",
+      "input": "输入一行四个整数 a、b、c、d，依次表示甲箱红票数、甲箱蓝票数、乙箱红票数、乙箱蓝票数。",
+      "output": "输出一行两个整数 p、q，以一个空格分隔，表示所求条件概率的最简分数 p/q，q>0。概率为 0 输出 0 1，为 1 输出 1 1。",
       "constraints": "0≤a,b,c,d≤10000；a+b>0，c+d>0，a+c>0，保证观察到红票的事件概率大于0。",
       "solution": "#include <stdint.h>\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nlong long gcd(long long a, long long b)\n{\n    while (b)\n    {\n        long long r = a % b;\n        a = b;\n        b = r;\n    }\n    return a;\n}\nint main(void)\n{\n    long long a, b, c, d;\n    if (scanf(\"%lld%lld%lld%lld\", &a, &b, &c, &d) != 4)\n        return 1;\n    long long numerator = a * (c + d);\n    long long denominator = numerator + c * (a + b);\n    long long g = gcd(numerator, denominator);\n    printf(\"%lld %lld\\n\", numerator / g, denominator / g);\n    return 0;\n}\n",
       "starter": "#include <stdio.h>\n\nint main(void)\n{\n    // 读取输入，按题面输出结果。\n    return 0;\n}\n",
@@ -588,21 +645,27 @@
         1,
         2
       ],
-      "sampleNotes": {},
+      "sampleNotes": {
+        "0": "甲箱红票率 1/2，乙箱红票率 1/4，在先等概率选箱后，红票来自甲的条件概率为 2/3。",
+        "1": "甲箱没有红票，观察到红票后只能来自乙，输出 0 1。",
+        "2": "乙箱没有红票，观察到红票后必来自甲，输出 1 1。"
+      },
       "hints": [
-        "P(甲且红)=a/(2(a+b))，P(红)=a/(2(a+b))+c/(2(c+d))，相除通分得a(c+d)/[a(c+d)+c(a+b)]。第一例甲箱红票率1/2，乙箱1/4，观察红票后甲的概率2/3；不能用a/(a+c)替代，因为两个箱子大小可能不同。"
+        "先算“选择甲且抽到红票”的概率，再除以“抽到红票”的总概率。",
+        "先选箱等概率，箱内每张票的概率还取决于该箱票数。"
       ],
-      "explanation": "P(甲且红)=a/(2(a+b))，P(红)=a/(2(a+b))+c/(2(c+d))，相除通分得a(c+d)/[a(c+d)+c(a+b)]。第一例甲箱红票率1/2，乙箱1/4，观察红票后甲的概率2/3；不能用a/(a+c)替代，因为两个箱子大小可能不同。",
+      "explanation": "P(甲且红)=a/[2(a+b)]，P(乙且红)=c/[2(c+d)]。已知抽红时，甲的概率为前者除以两者之和，通分得到 a(c+d)/[a(c+d)+c(a+b)]。参考程序用整数算分子分母，再以 gcd 约分。分母因条件保证严格大于 0，a=0 时也能统一约为 0/1。不能只用 a/(a+c)，因为抽票过程先等概率选箱，大小不同的箱子里单张票的被抽中概率不同。",
       "review": [
-        "我能用自己的话说明状态与合法操作。",
-        "我验证了样例和边界，并解释复杂度。"
+        "我按先选箱、再选票的两步过程计算概率。",
+        "我用“甲且红”除以“红”，并对整数分数约分。"
       ],
       "complexity": {
         "time": "O(log D)，D为分数分母",
         "space": "O(1)",
-        "reason": "P(甲且红)=a/(2(a+b))，P(红)=a/(2(a+b))+c/(2(c+d))，相除通分得a(c+d)/[a(c+d)+c(a+b)]。第一例甲箱红票率1/2，乙箱1/4，观察红票后甲的概率2/3；不能用a/(a+c)替代，因为两个箱子大小可能不同。",
-        "alternative": "先用小规模枚举核对，再实现目标算法。"
-      }
+        "reason": "构造分数需常数次运算，设分母为 D，欧几里得约分时间 O(log D)，固定数量整数使空间为 O(1)。",
+        "alternative": "蒙特卡洛抽样只能估计概率，还会产生随机误差；题目票数已知，整数概率公式可直接给出准确分数。"
+      },
+      "pseudocode": "READ a, b, c, d\nnumerator ← a * (c+d)\ndenominator ← numerator + c * (a+b)\ng ← GCD(numerator,denominator)\nOUTPUT numerator DIV g, denominator DIV g"
     }
   ]
 }

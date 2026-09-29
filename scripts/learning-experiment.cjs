@@ -1,6 +1,6 @@
 'use strict';
 // Zero prior vocabulary or pretrained weights. A small multinomial Naive Bayes
-// learner predicts a source lesson; it does not claim language understanding.
+// learner predicts the source lesson most relevant to a question.
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const root=path.resolve(__dirname,'..');
 const hash=s=>crypto.createHash('sha256').update(s).digest('hex');
@@ -25,7 +25,7 @@ function experiment(answers=[]){const {documents,inputs}=corpus(),probes=JSON.pa
  for(const a of answers){if(a.model!=='gpt-5.6-sol'||a.effort!=='high'||!(a.sourceID||a.requestID)||!a.answer||!a.lessonID)throw Error('Only recorded in-app High answers may enter the training set');added.push({id:a.lessonID,source:a.sourceID||('in-app-question:'+a.requestID),text:a.answer});}
  learner.fit([...documents,...added]);const afterQuestions=evaluate(learner,probes);
  const summary=rows=>({correct:rows.filter(r=>r.correct).length,total:rows.length,accuracy:rows.filter(r=>r.correct).length/rows.length});
- return {report:{method:'从空词表开始拟合多项式朴素贝叶斯；字符二元组与英文标识符；无预训练权重。任务是定位相关教材，不是解题或理解测验。',limitations:['预训练High只扮演回答提问的教师，不扮演从零学习者。','这是固定探针的课程定位实验，不证明真人学习效果，不衡量算法掌握程度。','探针与答案未参与训练；提问后数据已针对已发现困难补充，因此提问后分数属于适应结果，不是新的盲测成绩。','低置信度与错误定位提示可读性审查方向；最后修改由具体语义与可运行示例验证，不能为提分堆关键词。'],inputs,documents:documents.length,answerDocuments:added.length,metrics:{before:summary(before),afterReading:summary(after),afterQuestions:summary(afterQuestions)},before,afterReading:after,afterQuestions,teacherAnswers:answers},model:learner.serialize()};
+ return {report:{method:'从空词表开始拟合多项式朴素贝叶斯；字符二元组与英文标识符；无预训练权重。评估任务为定位相关教材。',limitations:['教师为预训练 High；学生为从空词表拟合的朴素贝叶斯模型。','指标衡量固定探针的课程定位；真人理解、编程和迁移效果需另行测试。','评估探针及其标准答案与训练集分开；教师回答针对已发现困难补充，加入后的分数属于适应结果。','低置信度与错误定位提示审查方向；内容修订依据具体语义、可运行示例及面向人的可读性。'],inputs,documents:documents.length,answerDocuments:added.length,metrics:{before:summary(before),afterReading:summary(after),afterQuestions:summary(afterQuestions)},before,afterReading:after,afterQuestions,teacherAnswers:answers},model:learner.serialize()};
 }
 function saveExperiment(result,dir){fs.mkdirSync(dir,{recursive:true});fs.writeFileSync(path.join(dir,'learning-report.json'),JSON.stringify(result.report,null,2));fs.writeFileSync(path.join(dir,'learner-model.json'),JSON.stringify(result.model));}
 if(require.main===module){const answerFile=process.argv[2],answers=answerFile?JSON.parse(fs.readFileSync(answerFile)):[];const result=experiment(answers);saveExperiment(result,path.join(root,'tests/reports'));console.log(JSON.stringify(result.report.metrics,null,2));}
